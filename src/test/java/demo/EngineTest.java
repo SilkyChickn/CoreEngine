@@ -21,7 +21,6 @@ import de.coreengine.rendering.renderer.ppeffects.LightScatteringEffect;
 import de.coreengine.system.Game;
 import de.coreengine.system.Scene;
 import de.coreengine.system.gameObjects.DayNightCycle;
-import de.coreengine.system.gameObjects.particle.ParticleFountain;
 import de.coreengine.util.bullet.Physics;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -281,8 +280,8 @@ public class EngineTest {
         HsbEffect hsbEffect = new HsbEffect();
         hsbEffect.setSaturation(0.75f);
 
-        ParticleFountain fountain = new ParticleFountain();
-        scene.addGameObject(fountain);
+        //ParticleFountain fountain = new ParticleFountain();
+        //scene.addGameObject(fountain);
 
         Game.registerScene(scene);
 
