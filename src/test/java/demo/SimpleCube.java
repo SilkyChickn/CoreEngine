@@ -29,12 +29,12 @@ import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
-import io.github.suuirad.coreengine.asset.ObjLoader;
-import io.github.suuirad.coreengine.rendering.model.Model;
-import io.github.suuirad.coreengine.rendering.renderable.Entity;
-import io.github.suuirad.coreengine.rendering.renderer.MasterRenderer;
-import io.github.suuirad.coreengine.system.GameObject;
-import io.github.suuirad.coreengine.util.bullet.Physics;
+import de.coreengine.asset.ObjLoader;
+import de.coreengine.rendering.model.Model;
+import de.coreengine.rendering.renderable.Entity;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.GameObject;
+import de.coreengine.util.bullet.Physics;
 
 import javax.vecmath.Vector3f;
 

@@ -2,12 +2,12 @@ package demo;
 
 import com.bulletphysics.collision.shapes.*;
 import com.bulletphysics.linearmath.Transform;
-import io.github.suuirad.coreengine.asset.meta.MetaMaterial;
-import io.github.suuirad.coreengine.rendering.model.Material;
-import io.github.suuirad.coreengine.system.Game;
-import io.github.suuirad.coreengine.util.MaterialParser;
-import io.github.suuirad.coreengine.util.Toolbox;
-import io.github.suuirad.coreengine.util.bullet.CollisionShapeParser;
+import de.coreengine.asset.meta.MetaMaterial;
+import de.coreengine.rendering.model.Material;
+import de.coreengine.system.Game;
+import de.coreengine.util.MaterialParser;
+import de.coreengine.util.Toolbox;
+import de.coreengine.util.bullet.CollisionShapeParser;
 
 import javax.vecmath.Vector3f;
 

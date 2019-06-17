@@ -25,9 +25,9 @@
  */
 package demo.networkTest;
 
-import io.github.suuirad.coreengine.framework.Window;
-import io.github.suuirad.coreengine.network.NetworkManager;
-import io.github.suuirad.coreengine.system.Game;
+import de.coreengine.framework.Window;
+import de.coreengine.network.NetworkManager;
+import de.coreengine.system.Game;
 
 /**
  *

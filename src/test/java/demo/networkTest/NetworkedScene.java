@@ -25,10 +25,10 @@
  */
 package demo.networkTest;
 
-import io.github.suuirad.coreengine.rendering.renderable.Camera;
-import io.github.suuirad.coreengine.rendering.renderable.light.AmbientLight;
-import io.github.suuirad.coreengine.rendering.renderer.MasterRenderer;
-import io.github.suuirad.coreengine.system.Scene;
+import de.coreengine.rendering.renderable.Camera;
+import de.coreengine.rendering.renderable.light.AmbientLight;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.Scene;
 
 /**
  *

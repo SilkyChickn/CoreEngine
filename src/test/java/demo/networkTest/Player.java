@@ -26,13 +26,13 @@
 package demo.networkTest;
 
 import com.bulletphysics.collision.shapes.CapsuleShape;
-import io.github.suuirad.coreengine.asset.ObjLoader;
-import io.github.suuirad.coreengine.framework.Keyboard;
-import io.github.suuirad.coreengine.network.syncronized.SyncFloat;
-import io.github.suuirad.coreengine.rendering.renderable.Entity;
-import io.github.suuirad.coreengine.rendering.renderer.MasterRenderer;
-import io.github.suuirad.coreengine.system.PlayerGameObject;
-import io.github.suuirad.coreengine.util.FrameTimer;
+import de.coreengine.asset.ObjLoader;
+import de.coreengine.framework.Keyboard;
+import de.coreengine.network.syncronized.SyncFloat;
+import de.coreengine.rendering.renderable.Entity;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.PlayerGameObject;
+import de.coreengine.util.FrameTimer;
 import org.lwjgl.glfw.GLFW;
 
 /**

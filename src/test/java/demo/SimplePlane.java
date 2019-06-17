@@ -27,10 +27,10 @@ package demo;/*
 
 import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.RigidBody;
-import io.github.suuirad.coreengine.rendering.renderable.gui.GUIPane;
-import io.github.suuirad.coreengine.rendering.renderer.MasterRenderer;
-import io.github.suuirad.coreengine.system.GameObject;
-import io.github.suuirad.coreengine.util.bullet.Physics;
+import de.coreengine.rendering.renderable.gui.GUIPane;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.GameObject;
+import de.coreengine.util.bullet.Physics;
 
 import javax.vecmath.Vector3f;
 

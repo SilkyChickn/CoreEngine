@@ -1,11 +1,11 @@
 package demo;
 
-import io.github.suuirad.coreengine.framework.Keyboard;
-import io.github.suuirad.coreengine.framework.Mouse;
-import io.github.suuirad.coreengine.rendering.renderable.Camera;
-import io.github.suuirad.coreengine.rendering.renderer.MasterRenderer;
-import io.github.suuirad.coreengine.system.GameObject;
-import io.github.suuirad.coreengine.util.FrameTimer;
+import de.coreengine.framework.Keyboard;
+import de.coreengine.framework.Mouse;
+import de.coreengine.rendering.renderable.Camera;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.GameObject;
+import de.coreengine.util.FrameTimer;
 import org.lwjgl.glfw.GLFW;
 
 /*

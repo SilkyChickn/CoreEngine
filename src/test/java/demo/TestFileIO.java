@@ -1,7 +1,7 @@
 package demo;
 
-import io.github.suuirad.coreengine.asset.FileLoader;
-import io.github.suuirad.coreengine.rendering.model.Color;
+import de.coreengine.asset.FileLoader;
+import de.coreengine.rendering.model.Color;
 
 import java.io.IOException;
 import java.util.logging.Level;
