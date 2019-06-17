@@ -4,9 +4,44 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Project Coordinates -->
     <groupId>io.github.suuirad</groupId>
     <artifactId>coreengine</artifactId>
     <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <!-- Project Information -->
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>
+        CoreEngine is a LightWeight Java Game Library (LWJGL) framework.
+        Its a simple to use OpenGL game engine with several features.
+    </description>
+    <url>https://github.com/Suuirad/CoreEngine</url>
+
+    <!-- Project License -->
+    <licenses>
+        <license>
+            <name>BSD 2-Clause License</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
+
+    <!-- Developer Information -->
+    <developers>
+        <developer>
+            <name>Darius Dinger</name>
+            <email>darius-suirad@gmx.de</email>
+            <organization>GitHub</organization>
+            <organizationUrl>https://github.com/Suuirad</organizationUrl>
+        </developer>
+    </developers>
+
+    <!-- SCM Information -->
+    <scm>
+        <connection>scm:git:git://github.com/suuirad/coreengine.git</connection>
+        <developerConnection>scm:git:ssh://github.com:suuirad/coreengine.git</developerConnection>
+        <url>http://github.com/suuirad/coreengine/tree/master</url>
+    </scm>
 
     <properties>
 
