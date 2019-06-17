@@ -42,8 +42,8 @@ public class NetworkTestServer {
         Game.registerScene(scene);
         
         NetworkManager.host(25566, 5, "123", Player.class);
-        
-        while(!Window.shouldWindowClose()) Game.tick();
+
+        while (Window.keepAlive()) Game.tick();
         
         Game.exit(0);
     }

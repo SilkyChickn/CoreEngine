@@ -5,8 +5,8 @@ import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
 import de.coreengine.framework.Window;
 import de.coreengine.rendering.programs.Shader;
-import de.coreengine.system.Game;
 import de.coreengine.rendering.renderable.Camera;
+import de.coreengine.system.Game;
 import de.coreengine.system.gameObjects.FPCamera;
 import de.coreengine.util.FrameTimer;
 import de.coreengine.util.Toolbox;
@@ -72,7 +72,7 @@ public class TestPOM {
         
         boolean escPressed = false;
         boolean enFpc = true;
-        while(!Window.shouldWindowClose()){
+        while (Window.keepAlive()) {
             
             if(Keyboard.isKeyPressed(GLFW.GLFW_KEY_ESCAPE)){
                 if(!escPressed){

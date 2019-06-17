@@ -1,27 +1,29 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.network;
 
@@ -29,18 +31,16 @@ import de.coreengine.system.Game;
 import de.coreengine.system.PlayerGameObject;
 import de.coreengine.util.Configuration;
 import de.coreengine.util.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
+import java.net.*;
 import java.nio.channels.IllegalBlockingModeException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**Server class for a tcp connection
  *
@@ -117,10 +117,13 @@ public class TCPServer implements Runnable{
         for(TCPServerClient c: clients) if(c == null) return false;
         return true;
     }
-    
+
     /**Adding new server client to the clients and starting his thread
-     * 
-     * @param client Client to add to the server
+     *
+     * @param reader Clients reader
+     * @param writer Clients writer
+     * @param socket Clients socket
+     * @param name Clients username
      */
     private static void addClient(BufferedReader reader, PrintWriter writer, 
             Socket socket, String name){
@@ -145,7 +148,7 @@ public class TCPServer implements Runnable{
                     try {
                         player = playerClass.newInstance();
                         player.setup(name, false);
-                        Game.getCurrentScene().addGameObject(player);
+                        Objects.requireNonNull(Game.getCurrentScene()).addGameObject(player);
                     } catch (IllegalAccessException | InstantiationException ex) {
                         Logger.warn("Error adding player", "Error by instancing "
                                 + "players object in the server!");
@@ -249,8 +252,8 @@ public class TCPServer implements Runnable{
     }
     
     /**Stopping server
-     * 
-     * @param message 
+     *
+     * @param message Message to send to all clients before stopping
      */
     static void stop(String message){
         

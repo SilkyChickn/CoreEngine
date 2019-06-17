@@ -1,40 +1,43 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.framework;
 
 import de.coreengine.asset.meta.Image;
 import de.coreengine.util.Logger;
-import java.awt.Dimension;
-import java.util.LinkedList;
-import java.util.List;
-import javax.vecmath.Matrix4f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
+
+import javax.vecmath.Matrix4f;
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**Class to cteate and manage a glfw window
  *
@@ -55,10 +58,10 @@ public class Window implements GLFWWindowSizeCallbackI{
     private static float aspect = 1.0f;
     
     //Video mode of the primary monitor
-    static GLFWVidMode selectedVideoMode;
+    private static GLFWVidMode selectedVideoMode;
     
     //Orthogonal projection matrix of the window
-    static final Matrix4f ORTHO_MATRIX = new Matrix4f();
+    private static final Matrix4f ORTHO_MATRIX = new Matrix4f();
     
     //List with all listener to call at window changes
     private static final List<WindowChangedListener> 
@@ -161,13 +164,13 @@ public class Window implements GLFWWindowSizeCallbackI{
     
     /**@return if the window gets a request to close
      */
-    public static boolean shouldWindowClose(){
+    public static boolean keepAlive() {
         if(window == 0){
             Logger.err("Window not created", "GLFW window was not created yet!");
-            return true;
+            return false;
         }
-        
-        return GLFW.glfwWindowShouldClose(window);
+
+        return !GLFW.glfwWindowShouldClose(window);
     }
     
     /**Sets the interval, for the window update (Default 1)
@@ -263,8 +266,6 @@ public class Window implements GLFWWindowSizeCallbackI{
         aspect = 1.0f * width / height;
         
         //Call listeners
-        WINDOW_LISTENERS.forEach((t) -> {
-            t.resolutionChanged(width, height, aspect);
-        });
+        WINDOW_LISTENERS.forEach((t) -> t.resolutionChanged(width, height, aspect));
     }
 }

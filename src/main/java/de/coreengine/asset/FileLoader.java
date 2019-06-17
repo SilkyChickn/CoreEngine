@@ -1,42 +1,36 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.asset;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Scanner;
 
 /**Class that can read and write files onto the drive
@@ -64,12 +58,12 @@ public class FileLoader {
                 BufferedReader reader = new BufferedReader(freader)) {
             
             //Read lines from buffered reader
-            String line = "";
+            String line;
             while((line = reader.readLine()) != null){
                 fileData.add(line + lb);
             }
         }
-        return fileData.toArray(new String[fileData.size()]);
+        return fileData.toArray(new String[0]);
     }
     
     /**Writes an string array ascii decoded into a file.
@@ -108,7 +102,7 @@ public class FileLoader {
             ClassNotFoundException, ClassCastException{
         
         //Define object to read in
-        T object = null;
+        T object;
         
         //Create streams for reading bianry file
         try(FileInputStream fis = new FileInputStream(path); 
@@ -151,15 +145,15 @@ public class FileLoader {
         String lb = lineBreak ? "\n" : "";
         
         LinkedList<String> data = new LinkedList<>();
-        
-        Scanner sc = new Scanner(FileLoader.class.getClassLoader().
-                getResourceAsStream(path), "UTF-8");
+
+        Scanner sc = new Scanner(Objects.requireNonNull(FileLoader.class.getClassLoader().
+                getResourceAsStream(path)), "UTF-8");
         sc.useDelimiter("\n");
         
         while(sc.hasNext()){
             data.add(sc.next().replace("\r", "") + lb);
         }
-        
-        return data.toArray(new String[data.size()]);
+
+        return data.toArray(new String[0]);
     }
 }

@@ -1,27 +1,29 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.asset;
 
@@ -34,10 +36,11 @@ import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Model;
 import de.coreengine.rendering.model.SimpleModel;
 import de.coreengine.util.Logger;
-import de.coreengine.util.bullet.Physics;
 import de.coreengine.util.Toolbox;
+import de.coreengine.util.bullet.Physics;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -62,6 +65,7 @@ public class ObjLoader {
         Model model = loadModel(file, shape, asResource, null);
         
         //Check if enough models exist
+        assert model != null;
         if(model.getMeshCount() < 1){
             Logger.warn("Error by loading simple model", 
                     "The obj file doesnt contain any model or error by loading!");
@@ -85,7 +89,7 @@ public class ObjLoader {
             boolean asResource, MetaModel meta){
         
         try {
-            String[] objFile = null;
+            String[] objFile;
             if(asResource)objFile = FileLoader.getResource(file, false);
             else objFile = FileLoader.readFile(file, false);
             
@@ -93,7 +97,7 @@ public class ObjLoader {
             
             //Get path of file
             int lastSlash = file.lastIndexOf("/") +1;
-            String path = "";
+            String path;
             if(lastSlash == 0) path = "";
             else path = file.substring(0, lastSlash);
             
@@ -203,9 +207,9 @@ public class ObjLoader {
      * @param metaMaterials Meta material data
      * @return Converted model
      */
-    public static Model convertToModel(List<Float> verticesRaw, List<Float> texCoordsRaw, 
-            List<Float> normalsRaw, List<List<String>> objects,  Material[] materials, 
-            CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
+    private static Model convertToModel(List<Float> verticesRaw, List<Float> texCoordsRaw,
+                                        List<Float> normalsRaw, List<List<String>> objects, Material[] materials,
+                                        CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
         
         //Preparing containers
         VertexArrayObject vao       = new VertexArrayObject();

@@ -1,51 +1,38 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.util.bullet;
 
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysics.collision.shapes.CapsuleShape;
-import com.bulletphysics.collision.shapes.CapsuleShapeX;
-import com.bulletphysics.collision.shapes.CapsuleShapeZ;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.CompoundShape;
-import com.bulletphysics.collision.shapes.CompoundShapeChild;
-import com.bulletphysics.collision.shapes.ConeShape;
-import com.bulletphysics.collision.shapes.ConeShapeX;
-import com.bulletphysics.collision.shapes.ConeShapeZ;
-import com.bulletphysics.collision.shapes.ConvexHullShape;
-import com.bulletphysics.collision.shapes.CylinderShape;
-import com.bulletphysics.collision.shapes.CylinderShapeX;
-import com.bulletphysics.collision.shapes.CylinderShapeZ;
-import com.bulletphysics.collision.shapes.SphereShape;
-import com.bulletphysics.collision.shapes.TriangleMeshShape;
+import com.bulletphysics.collision.shapes.*;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import de.coreengine.util.Toolbox;
+
 import javax.vecmath.Vector3f;
 
 /**Parse and unparsing collisionshapes from/into strings
@@ -54,8 +41,8 @@ import javax.vecmath.Vector3f;
  */
 public class CollisionShapeParser {
     
-    private static final ConvexHullShape EMPTY_CONVEX_HULL = 
-            new ConvexHullShape(new ObjectArrayList<Vector3f>());
+    private static final ConvexHullShape EMPTY_CONVEX_HULL =
+            new ConvexHullShape(new ObjectArrayList<>());
     
     private static final TriangleMeshShape EMPTY_TRIANGLE_MESH = 
             new BvhTriangleMeshShape();
@@ -79,6 +66,7 @@ public class CollisionShapeParser {
                 Transform transform = new Transform();
                 transform.setFromOpenGLMatrix(
                         Toolbox.stringToArray(args[i+1], "-", 16));
+                assert child != null;
                 shape.addChildShape(transform, child);
             }
             return shape;
@@ -142,15 +130,15 @@ public class CollisionShapeParser {
             return "triangleMesh";
         else if(shape.getShapeType() == BroadphaseNativeType.COMPOUND_SHAPE_PROXYTYPE){
             CompoundShape comp = (CompoundShape) shape;
-            String result = "compound";
+            StringBuilder result = new StringBuilder("compound");
             for(CompoundShapeChild child: comp.getChildList()){
-                result += " " + toString(child.childShape);
+                result.append(" ").append(toString(child.childShape));
                 
                 float[] mat = new float[16];
                 child.transform.getOpenGLMatrix(mat);
-                result += " " + Toolbox.arrayToString(mat, "-");
+                result.append(" ").append(Toolbox.arrayToString(mat, "-"));
             }
-            return result;
+            return result.toString();
         }else if(shape.getShapeType() == BroadphaseNativeType.SPHERE_SHAPE_PROXYTYPE) 
             return "sphere/" + ((SphereShape) shape).getRadius();
         else if(shape.getShapeType() == BroadphaseNativeType.BOX_SHAPE_PROXYTYPE){

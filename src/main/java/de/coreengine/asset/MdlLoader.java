@@ -1,27 +1,29 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.asset;
 
@@ -31,12 +33,13 @@ import com.bulletphysics.collision.shapes.TriangleMeshShape;
 import de.coreengine.asset.meta.MetaModel;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Model;
-import de.coreengine.util.bullet.CollisionShapeParser;
 import de.coreengine.util.Logger;
 import de.coreengine.util.MaterialParser;
+import de.coreengine.util.bullet.CollisionShapeParser;
 import de.coreengine.util.bullet.Physics;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
+
 import java.io.IOException;
 
 /**Load that can load and save MDL Files.<br>
@@ -57,7 +60,7 @@ public class MdlLoader {
         try {
             
             //Read file
-            String[] lines = null;
+            String[] lines;
             if(asResource) lines = FileLoader.getResource(file, false);
             else lines = FileLoader.readFile(file, false);
             
@@ -98,12 +101,14 @@ public class MdlLoader {
                     shape = CollisionShapeParser.toShape(line.replaceFirst("shape ", ""));
                 }else if(line.startsWith("indexBuffer")){
                     String[] args = line.split(" ");
+                    assert indices != null;
                     indices[indexCounter] = new int[args.length -1];
                     for(int i = 0; i < indices[indexCounter].length; i++) 
                         indices[indexCounter][i] = Integer.parseInt(args[i +1]);
                     indexCounter++;
                 }else if(line.startsWith("material ")){
-                    materials[materialCounter++] = 
+                    assert materials != null;
+                    materials[materialCounter++] =
                             MaterialParser.toMaterial(line.replaceFirst("material ", ""), asResource);
                 }else if(line.startsWith("parts")){
                     String[] args = line.split(" ");
@@ -116,10 +121,13 @@ public class MdlLoader {
             }
             
             //Create collision shape
-            if(shape instanceof ConvexHullShape) 
+            if (shape instanceof ConvexHullShape) {
+                assert vertices != null;
                 shape = Physics.createConvexHullShape(vertices);
-            else if(shape instanceof TriangleMeshShape) 
+            } else if (shape instanceof TriangleMeshShape) {
+                assert indices != null;
                 shape = Physics.createTriangleMeshShape(vertices, indices);
+            }
             
             //Adding data to vao
             VertexArrayObject vao = new VertexArrayObject();
@@ -154,25 +162,25 @@ public class MdlLoader {
             //Prepare model data strings
             String parts = "parts " + partCount;
             String shape = "shape " + CollisionShapeParser.toString(model.getShape());
-            
-            String vertices = "vertices";
-            for(float vertex: model.getVertices()) vertices += " " + vertex;
-            
-            String texCoords = "texCoords";
-            for(float texCoord: model.getTexCoords()) texCoords += " " + texCoord;
-            
-            String normals = "normals";
-            for(float normal: model.getNormals()) normals += " " + normal;
-            
-            String tangents = "tangents";
-            for(float tangent: model.getTangents()) tangents += " " + tangent;
+
+            StringBuilder vertices = new StringBuilder("vertices");
+            for (float vertex : model.getVertices()) vertices.append(" ").append(vertex);
+
+            StringBuilder texCoords = new StringBuilder("texCoords");
+            for (float texCoord : model.getTexCoords()) texCoords.append(" ").append(texCoord);
+
+            StringBuilder normals = new StringBuilder("normals");
+            for (float normal : model.getNormals()) normals.append(" ").append(normal);
+
+            StringBuilder tangents = new StringBuilder("tangents");
+            for (float tangent : model.getTangents()) tangents.append(" ").append(tangent);
             
             //Prepare parts data strings
             String[] indexBuffers = new String[partCount];
             for(int i = 0; i < partCount; i++){
-                String indexBuffer = "indexBuffer";
-                for(int index: model.getIndices()[i]) indexBuffer += " " + index;
-                indexBuffers[i] = indexBuffer;
+                StringBuilder indexBuffer = new StringBuilder("indexBuffer");
+                for (int index : model.getIndices()[i]) indexBuffer.append(" ").append(index);
+                indexBuffers[i] = indexBuffer.toString();
             }
             
             String[] materials = new String[partCount];
@@ -183,10 +191,10 @@ public class MdlLoader {
             //Combine data strings
             String[] data = new String[6 +(partCount * 2)];
             data[0] = parts;
-            data[1] = vertices;
-            data[2] = texCoords;
-            data[3] = normals;
-            data[4] = tangents;
+            data[1] = vertices.toString();
+            data[2] = texCoords.toString();
+            data[3] = normals.toString();
+            data[4] = tangents.toString();
             data[5] = shape;
             for(int i = 0; i < partCount; i++){
                 data[6 +(i * 2)] = materials[i];

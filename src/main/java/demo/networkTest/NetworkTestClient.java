@@ -43,8 +43,8 @@ public class NetworkTestClient {
         
         NetworkManager.join("localhost", 25566, "123", "Player" + 
                 (int)(Math.random() * 1000), Player.class);
-        
-        while(!Window.shouldWindowClose()) Game.tick();
+
+        while (Window.keepAlive()) Game.tick();
         
         Game.exit(0);
     }

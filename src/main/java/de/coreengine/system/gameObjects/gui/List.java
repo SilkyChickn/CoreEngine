@@ -1,27 +1,29 @@
 /*
- * Copyright (c) 2019, Darius Dinger
+ * BSD 2-Clause License
+ *
+ * Copyright (c) 2019, Suuirad
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package de.coreengine.system.gameObjects.gui;
 
@@ -32,8 +34,9 @@ import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.Configuration;
-import java.util.LinkedList;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.LinkedList;
 
 /**List gui element
  *
@@ -101,7 +104,7 @@ public class List extends GameObject{
     /**@return Is mouse over one of the components of the list
      */
     private boolean isHover(){
-        if (items.stream().anyMatch((pane) -> (pane.isMouseOver()))) {
+        if (items.stream().anyMatch(GUIPane::isMouseOver)) {
             return true;
         }
         return background.isMouseOver() || topPane.isMouseOver() || 
@@ -110,7 +113,7 @@ public class List extends GameObject{
     
     /**Revalidating list gui
      */
-    public final void revalidate(){
+    private void revalidate() {
         
         //replace top and bottom pane
         topPane = new GUIPane(background);
@@ -128,13 +131,10 @@ public class List extends GameObject{
         bottomPane.setScaleX(1.0f);
         bottomPane.setScaleY(itemScale);
         bottomPane.getColor().set(background.getColor());
-        
-        items.stream().map((item) -> {
-            item.getColor().set(itemColor);
-            return item;
-        }).forEachOrdered((item) -> {
-            item.getText().getFontColor().set(itemColor);
-        });
+
+        items.stream().peek((item) -> item.getColor().set(itemColor)).forEachOrdered(
+                (item) -> item.getText().getFontColor().set(itemColor)
+        );
     }
     
     /**Adding item to the list. If item already exist in the list it return false
@@ -146,7 +146,7 @@ public class List extends GameObject{
     public boolean addItem(String item){
         
         //Check if item already exist
-        if (!items.stream().noneMatch((i) -> 
+        if (items.stream().anyMatch((i) ->
                 (i.getText().getText().equals(item)))) {
             return false;
         }
@@ -276,10 +276,8 @@ public class List extends GameObject{
         visibleItems.clear();
         items.stream().filter((pane) -> (pane.getPosY() +pane.getScaleY() <= 
                 background.getPosY() +background.getScaleY() && pane.getPosY() 
-                -pane.getScaleY() >= background.getPosY() 
-                -background.getScaleY())).forEachOrdered((pane) -> {
-                            visibleItems.add(pane);
-        });
+                -pane.getScaleY() >= background.getPosY()
+                - background.getScaleY())).forEachOrdered((pane) -> visibleItems.add(pane));
     }
     
     @Override
@@ -287,10 +285,8 @@ public class List extends GameObject{
         MasterRenderer.renderGui2D(background);
         MasterRenderer.renderGui2D(topPane);
         MasterRenderer.renderGui2D(bottomPane);
-        
-        visibleItems.forEach((item) -> {
-            MasterRenderer.renderGui2D(item);
-        });
+
+        visibleItems.forEach(MasterRenderer::renderGui2D);
         
         super.onRender();
     }

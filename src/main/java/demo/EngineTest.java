@@ -11,7 +11,6 @@ import de.coreengine.framework.Window;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.SimpleModel;
 import de.coreengine.rendering.renderable.LensFlare;
-import de.coreengine.rendering.renderable.Particle;
 import de.coreengine.rendering.renderable.Water;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.terrain.Terrain;
@@ -287,7 +286,7 @@ public class EngineTest {
 
         Game.registerScene(scene);
 
-        while(!Window.shouldWindowClose()){
+        while (Window.keepAlive()) {
             
             if(Keyboard.isKeyPressed(GLFW.GLFW_KEY_T)){
                 c1.getPhysicBody().applyCentralImpulse(new Vector3f(100, 0, 0));
