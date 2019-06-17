@@ -37,7 +37,7 @@ import de.coreengine.util.bullet.Physics;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-public class MovingParticle extends GameObject {
+class MovingParticle extends GameObject {
 
     //Particles mass
     private float mass;

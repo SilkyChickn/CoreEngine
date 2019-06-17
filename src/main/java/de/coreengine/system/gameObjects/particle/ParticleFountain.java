@@ -38,7 +38,7 @@ import de.coreengine.util.Toolbox;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-public class ParticleFountain extends GameObject {
+class ParticleFountain extends GameObject {
     private static final float DEFAULT_GENERATION_SPEED =
             Configuration.getValuef("PARTICLE_FOUNTAIN_DEFAULT_GENERATION_TIME");
     private static final float[] DEFAULT_TTL_RANGE =
