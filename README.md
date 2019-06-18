@@ -7,7 +7,7 @@
 
 CoreEngine is a LightWeight Java Game Library (LWJGL) framework. Its a simple to use OpenGL game engine with several features.
 
-# Getting Started
+## Getting Started
 
 CoreEngine is available at maven central repository.  So the easiest way ist to add the
 dependency into the project build file.

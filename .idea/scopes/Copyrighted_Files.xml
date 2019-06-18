@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Copyrighted Files" pattern="file[CoreEngine]:src/main/java/de/*||file[CoreEngine]:src/main/resources/shaders/*" />
+</component>
