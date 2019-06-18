@@ -7,7 +7,9 @@
 
 CoreEngine is a LightWeight Java Game Library (LWJGL) framework. Its a simple to use OpenGL game engine with several features.
 
-# Getting Started
+## Getting Started
+
+### Installation
 
 CoreEngine is available at maven central repository.  So the easiest way ist to add the
 dependency into the project build file.
@@ -26,11 +28,19 @@ Gradle:
 implementation 'io.github.suuirad:coreengine:1.0.0'
 ```
 
-# Documentation
+### Simple Game
+
+Coming soon...
+
+## Examples
+
+Coming soon...
+
+## Documentation
 
 > JavaDoc: [https://suuirad.github.io/CoreEngine/](https://suuirad.github.io/CoreEngine/)
 
-# License
+## License
 
 **BSD 2-Clause License**
 
