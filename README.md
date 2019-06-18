@@ -23,7 +23,7 @@ CoreEngine is available at maven central repository.  So the easiest way ist to 
 ```
 
 #### Gradle
-```json
+```gradle
 implementation 'io.github.suuirad:coreengine:1.0.0'
 ```
 
@@ -54,6 +54,7 @@ Now you are ready to go, to create any game you want!
 ## Links
 
 > Example Code: [https://github.com/Suuirad/CoreEngine/tree/master/examples](https://github.com/Suuirad/CoreEngine/tree/master/examples)
+
 > JavaDoc: [https://suuirad.github.io/CoreEngine/](https://suuirad.github.io/CoreEngine/)
 
 ## License
