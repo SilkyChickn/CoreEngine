@@ -24,7 +24,7 @@ CoreEngine is available at maven central repository.  So the easiest way ist to 
 
 #### Gradle
 ```gradle
-implementation 'io.github.suuirad:coreengine:1.0.0'
+compile group: 'io.github.suuirad', name: 'coreengine', version: '1.0.0'
 ```
 
 #### Manual
