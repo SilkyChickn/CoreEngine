@@ -112,7 +112,8 @@ public class TerrainShapeCreator {
      */
     private static float getHeightAt(float x, float y, ByteBuffer heights, 
             int width, int height, float amplitude){
-        
+        if(heights == null) return 0;
+
         int pixX = Integer.min((int) (x * width), width -1);
         int pixY = Integer.min((int) (y * height), height -1);
         

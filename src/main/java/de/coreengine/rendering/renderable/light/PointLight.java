@@ -39,7 +39,7 @@ import javax.vecmath.Vector3f;
 public class PointLight extends AmbientLight {
     private static Vector2f DEFAULT_ATTENUATION = new Vector2f(
             Configuration.getValuef("LIGHT_DEFAULT_LINEAR_DROP"),
-            Configuration.getValuef("LIGHT_DEFAULT_SUQARED_DROP"));
+            Configuration.getValuef("LIGHT_DEFAULT_SQUARED_DROP"));
     
     //Lights attenuation (x = linear drop, y = squared drop)
     private Vector2f attenuation = DEFAULT_ATTENUATION;

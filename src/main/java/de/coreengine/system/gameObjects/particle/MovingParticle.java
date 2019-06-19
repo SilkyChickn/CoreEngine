@@ -31,37 +31,62 @@ package de.coreengine.system.gameObjects.particle;
 import de.coreengine.rendering.renderable.Particle;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
+import de.coreengine.util.Configuration;
 import de.coreengine.util.FrameTimer;
 import de.coreengine.util.bullet.Physics;
 
-import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-class MovingParticle extends GameObject {
+public class MovingParticle extends GameObject {
+    private static final float DEFAULT_DAMPING =
+            Configuration.getValuef("MOVING_PARTICLE_DEFAULT_DAMPING");
+    private static final float DEFAULT_MASS =
+            Configuration.getValuef("MOVING_PARTICLE_DEFAULT_MASS");
+    private static final float DEFAULT_TTL =
+            Configuration.getValuef("MOVING_PARTICLE_DEFAULT_TTL");
+    private static final float[] DEFAULT_VELOCITY =
+            Configuration.getValuefa("MOVING_PARTICLE_DEFAULT_VELOCITY");
 
     //Particles mass
-    private float mass;
+    private float mass = DEFAULT_MASS;
 
     //Particles renderable
-    protected Particle particle;
+    private Particle particle = new Particle();
 
     //Particles velocity
-    private Vector3f velocity;
+    private Vector3f velocity = new Vector3f(DEFAULT_VELOCITY);
 
     //Particles time to live
-    private float ttl;
+    private float ttl = DEFAULT_TTL;
 
-    public MovingParticle(int texture, Vector3f pos, Vector2f size, Vector3f velocity, float mass, float ttl){
-        this.velocity = velocity;
+    //Particles damping factor per frame
+    private float damping = DEFAULT_DAMPING;
+
+    /**@return Read/Writeable particle renderable, that represents the particle in the scene
+     */
+    public Particle getParticle() {
+        return particle;
+    }
+
+    /**Setting up particle behavior and physics<br>
+     * Gravity formula: mass * Physics.GRAVITY_OF_EARTH * FrameTimer.getTslf()
+     *
+     * @param mass Particles mass
+     * @param velocity Particles velocity/move direction
+     * @param ttl Particles time to live (in seconds)
+     */
+    public void setup(float mass, Vector3f velocity, float ttl){
         this.mass = mass;
-
-        //Create renderable particle
-        this.particle = new Particle();
-        this.particle.setTexture(texture);
-        this.particle.getPosition().set(new Vector3f(0, 0, 0));
-        this.particle.getSize().set(size);
-
+        this.velocity = velocity;
         this.ttl = ttl;
+    }
+
+    /**Setting damping of the particle. Will be multiplied every frame to the velocity.
+     *
+     * @param damping New damping factor
+     */
+    public void setDamping(float damping) {
+        this.damping = damping;
     }
 
     @Override
@@ -70,13 +95,17 @@ class MovingParticle extends GameObject {
 
         //Move particle
         particle.getPosition().add(velocity);
-        velocity.scale(0.99f);
+        velocity.scale(damping);
         particle.getPosition().y += mass * Physics.GRAVITY_OF_EARTH * FrameTimer.getTslf();
 
         //Decrease ttl
         this.ttl -= FrameTimer.getTslf();
     }
 
+    /**If this method return true, the ttl of the particle is expired and it should be removed from the scene
+     *
+     * @return Should the particle be removed
+     */
     public boolean shouldDie(){
         return ttl <= 0;
     }
@@ -84,7 +113,6 @@ class MovingParticle extends GameObject {
     @Override
     public void onRender() {
         super.onRender();
-
         MasterRenderer.renderParticle(particle);
     }
 }

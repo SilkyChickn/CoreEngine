@@ -177,6 +177,16 @@ public class Toolbox {
         return min +((float) Math.random() * (max -min));
     }
 
+    /**Generating a random integer between min and max
+     *
+     * @param min Min value of the integer
+     * @param max Max value of the integer
+     * @return Generated value
+     */
+    public static int randomInt(int min, int max){
+        return min +(int)((float) Math.random() * (max -min));
+    }
+
     /**Generating random vector between min and max
      *
      * @param min Min vector values
