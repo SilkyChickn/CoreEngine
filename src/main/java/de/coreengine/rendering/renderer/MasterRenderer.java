@@ -34,10 +34,7 @@ import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.renderable.*;
 import de.coreengine.rendering.renderable.gui.GUIPane;
-import de.coreengine.rendering.renderable.light.AmbientLight;
-import de.coreengine.rendering.renderable.light.DirectionalLight;
-import de.coreengine.rendering.renderable.light.PointLight;
-import de.coreengine.rendering.renderable.light.SpotLight;
+import de.coreengine.rendering.renderable.light.*;
 import de.coreengine.rendering.renderable.terrain.Terrain;
 
 import org.lwjgl.BufferUtils;
@@ -80,6 +77,7 @@ public class MasterRenderer {
     private static final EntityRenderer ENTITY_RENDERER = new EntityRenderer();
     private static final FontRenderer FONT_RENDERER = new FontRenderer();
     private static final ParticleRenderer PARTICLE_RENDERER = new ParticleRenderer();
+    private static final ShadowMapRenderer SHADOW_MAP_RENDERER = new ShadowMapRenderer();
     
     //Singleton render stuff
     private static Camera camera = new Camera();
@@ -87,6 +85,7 @@ public class MasterRenderer {
     private static Moon moon = null;
     private static LensFlare lensFlare = null;
     private static Skybox skybox = null;
+    private static ShadowLight shadowLight = null;
     
     //Lists/maps that contains the stuff to render in the next frame
     private static final List<Entity> ENTITIES = new LinkedList<>();
@@ -197,6 +196,11 @@ public class MasterRenderer {
             w.getClipPlane().w = (clipDistance);
         });
         GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
+
+        //Prerender shadow map
+        if(shadowLight != null){
+            SHADOW_MAP_RENDERER.render(ENTITIES, GUIS_3D, shadowLight);
+        }
     }
     
     /**Rendering all 3 dimensional elements into the gbuffer
