@@ -274,7 +274,7 @@ public class TCPClient implements Runnable{
                                 "The game object for a joined player could not "
                                         + "be created!");
                     }
-                    
+
                 }else if(NetworkManager.getState() == NetworkManager.NetworkState.CLIENT &&
                         line.startsWith(NetworkMessenger.LEFT_BANNER)){
                     

@@ -50,6 +50,8 @@ public class ShadowMapRenderer {
      */
     void render(List<Entity> entities, List<GUIPane> guis, ShadowLight shadowLight){
         shadowLight.getShadowMap().bind(GL30.GL_COLOR_ATTACHMENT0);
+        GL11.glClearColor(0, 0, 0, 1);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
         shader.start();
         shader.setVPMat(shadowLight.getVpMat());

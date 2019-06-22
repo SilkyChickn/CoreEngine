@@ -13,6 +13,11 @@ uniform sampler2D normalBuffer;
 uniform sampler2D variable0Buffer;
 uniform sampler2D variable1Buffer;
 
+//Shadow Light
+uniform sampler2D shadowMap;
+uniform mat4 toShadowMapSpace;
+uniform float enableShadows;
+
 //Ambient Lights
 uniform vec3 alColors[MAX_LIGHTS];
 uniform float alIntensities[MAX_LIGHTS];
@@ -155,6 +160,27 @@ vec3[2] getSpotDiffuseSpecular(
 	return result;
 }
 
+//Factor if object is in shadow
+float getShadowFactor(vec3 position){
+	if(enableShadows == 0.0f) return 0.0f;
+
+	//Get position on shadowmap
+	vec3 shadowMapPos = (0.5 + (0.5 * toShadowMapSpace * vec4(position, 1.0))).xyz;
+
+	//Calculate shadow map value
+	float shadowFactor = 0;
+	if(shadowMapPos.x > 0 && shadowMapPos.x < 1 && shadowMapPos.y > 0 && shadowMapPos.y < 1){
+		float shadowMapColor = texture(shadowMap, shadowMapPos.xy).r;
+
+		//Check if texel is in shadow
+		if(shadowMapPos.z - 0.00001f > shadowMapColor){
+			shadowFactor -= 0.15f;
+		}
+	}
+
+	return shadowFactor;
+}
+
 void main(void){
 	vec4 color 			= texture(colorBuffer, tex_frag_in);
 	
@@ -171,7 +197,7 @@ void main(void){
 	float reflectivity 				= variable0.x;
 	float shineDamper 				= max(1.0, variable0.y);
 	float useFakeDiffuseLighting 	= variable0.z;
-	
+
 	vec3 position 		= texture(positionBuffer, tex_frag_in).rgb;
 	vec3 normal 		= texture(normalBuffer, tex_frag_in).rgb;
 	
@@ -185,8 +211,10 @@ void main(void){
 	vec3 diffuseFactor 	= (getAmbientDiffuse() +getDirectionalDiffuse(normal) +
 		pointDiffuseSpecular[0] +spotDiffuseSpecular[0]) * ao;
 	vec3 specularFactor = (pointDiffuseSpecular[1] +spotDiffuseSpecular[1]) * ao;
-	
-	vec4 finalLighting = vec4((color.rgb * diffuseFactor) + specularFactor, 1.0);
+
+	float shadowFactor = getShadowFactor(position);
+
+	vec4 finalLighting = vec4((color.rgb * diffuseFactor) + specularFactor +shadowFactor, 1.0);
 	
 	out_Color = mix(color, finalLighting, effected);
 }

@@ -127,7 +127,7 @@ public class Game {
     
     /**@return Current scene or null if no scene set
      */
-    public static Scene getCurrentScene(){
+    public static Scene getCurrentScene() {
         try {
             scenesSem.acquire();
             Scene result = scenes.get(currentScene);
@@ -136,6 +136,13 @@ public class Game {
         } catch (InterruptedException ex) {
             Logger.err("Interrupt exception", "An Interrupt exception occurs by "
                     + "getting current scene!");
+            Game.exit(1);
+        } catch (IndexOutOfBoundsException ex) {
+            if(scenes.size() == 0){
+                Logger.err("Error getting scene", "No scene registered!");
+            }else{
+                Logger.err("Error getting scene", "Scene with id " + currentScene + " doesn't exist!");
+            }
             Game.exit(1);
         }
         return null;
@@ -154,7 +161,7 @@ public class Game {
      */
     public static void tick(){
         Scene curScene = getCurrentScene();
-        
+
         //Tick current scene
         if(curScene != null){
             
@@ -194,8 +201,11 @@ public class Game {
         GLFW.deinit();
         AL.deinit();
         
-        if(code != 0) JOptionPane.showInternalMessageDialog(null, 
-                "Game crashed! See error log for more information.");
+        if(code != 0){
+            Logger.saveLog();
+            JOptionPane.showMessageDialog(null,
+                    "Game crashed! See error log for more information.");
+        }
         
         System.exit(code);
     }

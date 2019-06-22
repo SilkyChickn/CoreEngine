@@ -206,5 +206,33 @@ public class Toolbox {
     public static Vector2f randomVector(Vector2f min, Vector2f max){
         return new Vector2f(randomFloat(min.x, max.x), randomFloat(min.y, max.y));
     }
+
+    /**Getting the smallest float of values
+     * 
+     * @param values Floats to gets smallest from
+     * @return Smallest float of values
+     */
+    public static float min(float ... values){
+        if(values.length < 1) return 0;
+        float min = values[0];
+        for(float f: values){
+            if(f < min) min = f;
+        }
+        return min;
+    }
+
+    /**Getting the greatest float of values
+     *
+     * @param values Floats to gets greatest from
+     * @return Greatest float of values
+     */
+    public static float max(float ... values){
+        if(values.length < 1) return 0;
+        float max = values[0];
+        for(float f: values){
+            if(f > max) max = f;
+        }
+        return max;
+    }
 }
 

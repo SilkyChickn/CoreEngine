@@ -31,13 +31,13 @@ package de.coreengine.util;
  *
  * @author Darius Dinger
  */
-public class CoreEngineException extends Exception{
+class CoreEngineException extends Exception{
     
     /**Create new CoreEngineException with specific error message
      * 
      * @param msg Error message
      */
-    public CoreEngineException(String msg) {
+    CoreEngineException(String msg) {
         super(msg);
     }
     

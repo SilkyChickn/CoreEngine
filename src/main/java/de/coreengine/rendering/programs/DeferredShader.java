@@ -29,10 +29,8 @@ package de.coreengine.rendering.programs;
 
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.GBuffer;
-import de.coreengine.rendering.renderable.light.AmbientLight;
-import de.coreengine.rendering.renderable.light.DirectionalLight;
-import de.coreengine.rendering.renderable.light.PointLight;
-import de.coreengine.rendering.renderable.light.SpotLight;
+import de.coreengine.rendering.renderable.light.*;
+import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -46,14 +44,15 @@ import java.util.List;
 public class DeferredShader extends Shader{
     private static final int MAX_LIGHTS = 25;
     
-    private final int colorBufferUnit = 0, positionBufferUnit = 1, 
-            normalBufferUnit = 2, variable0BufferUnit = 3, variable1BufferUnit = 4;
+    private final int colorBufferUnit = 0, positionBufferUnit = 1, normalBufferUnit = 2, variable0BufferUnit = 3,
+            variable1BufferUnit = 4, shadowMapUnit = 5;
     
     private int camPosLoc, alColorsLoc, alIntensitiesLoc, dlColorsLoc, 
             dlIntensitiesLoc, dlDirectionsLoc, plColorsLoc, plIntensitiesLoc,
             plPositionsLoc, plAttenuationsLoc, slColorsLoc, slIntensitiesLoc,
             slPositionsLoc, slAttenuationsLoc, slDirectionsLoc, slLightConesLoc, 
-            alCountLoc, slCountLoc, dlCountLoc, plCountLoc;
+            alCountLoc, slCountLoc, dlCountLoc, plCountLoc, toShadowMapSpaceLoc,
+            enableShadowsLoc;
     
     @Override
     protected void addShaders() {
@@ -76,7 +75,11 @@ public class DeferredShader extends Shader{
         bindTextureUnit("normalBuffer", normalBufferUnit);
         bindTextureUnit("variable0Buffer", variable0BufferUnit);
         bindTextureUnit("variable1Buffer", variable1BufferUnit);
-        
+        bindTextureUnit("shadowMap", shadowMapUnit);
+
+        toShadowMapSpaceLoc = getUniformLocation("toShadowMapSpace");
+        enableShadowsLoc = getUniformLocation("enableShadows");
+
         camPosLoc = getUniformLocation("camPos");
         
         alColorsLoc = getUniformLocation("alColors");
@@ -123,7 +126,21 @@ public class DeferredShader extends Shader{
         bindTexture(gBuffer.getVariable0Buffer(), variable0BufferUnit, GL11.GL_TEXTURE_2D);
         bindTexture(gBuffer.getVariable1Buffer(), variable1BufferUnit, GL11.GL_TEXTURE_2D);
     }
-    
+
+    /**Set shadow light to render shadows from in next frame
+     *
+     * @param light Next shadow light
+     */
+    public void setShadowLight(ShadowLight light){
+
+        if(light != null){
+            bindTexture(light.getShadowMap().getDepthAttachment(), shadowMapUnit, GL11.GL_TEXTURE_2D);
+            setUniform(toShadowMapSpaceLoc, Toolbox.matrixToFloatArray(light.getVpMat()));
+        }
+
+        setUniform(enableShadowsLoc, light != null);
+    }
+
     /**Setting light sources for the next frame
      * 
      * @param pointLights To render point lights

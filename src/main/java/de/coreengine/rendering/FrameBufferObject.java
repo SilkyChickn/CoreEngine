@@ -122,12 +122,12 @@ public class FrameBufferObject {
             tex = GL11.glGenTextures();
             MemoryDumper.addTexture(tex);
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT32, 
-                    dimension.width, dimension.height, 0, GL11.GL_DEPTH_COMPONENT, 
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL14.GL_DEPTH_COMPONENT32,
+                    dimension.width, dimension.height, 0, GL11.GL_DEPTH_COMPONENT,
                     GL11.GL_FLOAT, 0);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, 
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT,
                     GL11.GL_TEXTURE_2D, tex, 0);
         }
         

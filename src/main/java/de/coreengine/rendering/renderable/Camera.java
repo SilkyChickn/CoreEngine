@@ -298,7 +298,7 @@ public class Camera {
         }
     }
     
-    /**Setting new camera fiel of view
+    /**Setting new camera field of view
      * 
      * @param fov New camera fov
      */
@@ -308,7 +308,31 @@ public class Camera {
             this.fov = fov;
         }
     }
-    
+
+    /**Gets cameras field of view
+     *
+     * @return New cameras fov
+     */
+    public float getFov() {
+        return fov;
+    }
+
+    /**Gets cameras near plane distance
+     *
+     * @return Cameras near plane distance
+     */
+    public float getNearPlane() {
+        return near_plane;
+    }
+
+    /**Gets cameras far plane distance
+     *
+     * @return Cameras far plane distance
+     */
+    public float getFarPlane() {
+        return far_plane;
+    }
+
     /**Gets cameras current position in world space as 3d vector
      * 
      * @return Current position as 3d vector

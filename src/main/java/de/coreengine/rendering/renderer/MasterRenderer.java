@@ -261,7 +261,7 @@ public class MasterRenderer {
             
             //Rendering lights into scene
             DEFFERED_RENDERER.render(GBUFFER, POINT_LIGHTS, SPOT_LIGHTS,
-            AMBIENT_LIGHTS, DIRECTIONAL_LIGHTS, camera);
+            AMBIENT_LIGHTS, DIRECTIONAL_LIGHTS, camera, shadowLight);
             
             //Clear light sources
             AMBIENT_LIGHTS.clear();
@@ -407,7 +407,15 @@ public class MasterRenderer {
     public static void setSkybox(Skybox skybox){
         MasterRenderer.skybox = skybox;
     }
-    
+
+    /**Setting the shadow light to render shadows from in the next frame
+     *
+     * @param shadowLight ShadowLight to render shadow from or null to remove shadows
+     */
+    public static void setShadowLight(ShadowLight shadowLight){
+        MasterRenderer.shadowLight = shadowLight;
+    }
+
     /**Read and writeable getter for the current setted sun.
      * Sun can be set with the setter or this getter can be used to
      * modify the current sun. Contains null, if no moon is set!

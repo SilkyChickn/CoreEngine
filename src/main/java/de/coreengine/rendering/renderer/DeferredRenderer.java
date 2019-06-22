@@ -31,10 +31,7 @@ import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.SimpleModel;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderable.Camera;
-import de.coreengine.rendering.renderable.light.AmbientLight;
-import de.coreengine.rendering.renderable.light.DirectionalLight;
-import de.coreengine.rendering.renderable.light.PointLight;
-import de.coreengine.rendering.renderable.light.SpotLight;
+import de.coreengine.rendering.renderable.light.*;
 import de.coreengine.rendering.programs.DeferredShader;
 import org.lwjgl.opengl.GL11;
 
@@ -56,10 +53,11 @@ public class DeferredRenderer {
      * @param ambientLights Ambient lights to render
      * @param directionalLights Directional lights to render
      * @param cam Camera to use for lighting calculation
+     * @param shadowLight Shadow light to render shadows from
      */
     void render(GBuffer gBuffer, List<PointLight> pointLights,
                 List<SpotLight> spotLights, List<AmbientLight> ambientLights,
-                List<DirectionalLight> directionalLights, Camera cam) {
+                List<DirectionalLight> directionalLights, Camera cam, ShadowLight shadowLight) {
         
         SimpleModel quad = Quad2D.getInstance();
         
@@ -71,6 +69,7 @@ public class DeferredRenderer {
         shader.setGBuffer(gBuffer);
         shader.setCameraPosition(cam.getPosition());
         shader.setLightSources(pointLights, spotLights, ambientLights, directionalLights);
+        shader.setShadowLight(shadowLight);
         
         GL11.glDrawElements(GL11.GL_TRIANGLES, quad.getIndexBuffer().getSize(), 
                 GL11.GL_UNSIGNED_INT, 0);
