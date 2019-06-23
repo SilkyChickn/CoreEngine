@@ -412,7 +412,7 @@ public class MasterRenderer {
      *
      * @param shadowLight ShadowLight to render shadow from or null to remove shadows
      */
-    public static void setShadowLight(ShadowLight shadowLight){
+    private static void setShadowLight(ShadowLight shadowLight){
         MasterRenderer.shadowLight = shadowLight;
     }
 

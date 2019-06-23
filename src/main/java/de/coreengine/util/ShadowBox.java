@@ -32,6 +32,7 @@ import de.coreengine.rendering.renderable.Camera;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
 
 public class ShadowBox {
 
@@ -45,8 +46,25 @@ public class ShadowBox {
      */
     public void alignTo(Camera cam, Vector3f lightDir){
         Matrix4f inverseCamLightMat = getInverseCamLightMat(cam, lightDir);
-        Vector3f[] corners = transformNDCCube(inverseCamLightMat);
-        recalcVPMatrix(corners);
+        Vector4f[] corners = transformNDCCube(inverseCamLightMat);
+
+        //DEBUG
+        Matrix4f invProjMat = new Matrix4f();
+        invProjMat.invert(cam.getProjectionMatrix());
+        Vector4f[] temp = transformNDCCube(invProjMat);
+
+        Matrix4f invCamMat = new Matrix4f();
+        invCamMat.invert(cam.getViewMatrix());
+
+        for(Vector4f vec: temp){
+            float t = vec.w;
+            vec.w = vec.z;
+            vec.z = t;
+            invCamMat.transform(vec);
+        }
+        //DEBUG
+
+        recalcVPMatrix(temp);
     }
 
     /**Transform the 8 corners of the opengl ndc cube with the given matrix.
@@ -54,39 +72,39 @@ public class ShadowBox {
      * @param mat Matrix to transform corners with
      * @return Transformed corners
      */
-    private Vector3f[] transformNDCCube(Matrix4f mat){
-        Vector3f[] corners = new Vector3f[8];
-
+    private Vector4f[] transformNDCCube(Matrix4f mat){
+        Vector4f[] corners = new Vector4f[8];
+        
         //Corner BottomLeftBack
-        corners[0] = new Vector3f(-1, -1, -1);
+        corners[0] = new Vector4f(-1, -1, 1, 1);
         mat.transform(corners[0]);
 
         //Corner BRB
-        corners[1] = new Vector3f(1, -1, -1);
+        corners[1] = new Vector4f(1, -1, 1, 1);
         mat.transform(corners[1]);
 
         //Corner TLB
-        corners[2] = new Vector3f(-1, 1, -1);
+        corners[2] = new Vector4f(-1, 1, 1, 1);
         mat.transform(corners[2]);
 
         //Corner TRB
-        corners[3] = new Vector3f(1, 1, -1);
+        corners[3] = new Vector4f(1, 1, 1, 1);
         mat.transform(corners[3]);
 
         //Corner BLF
-        corners[4] = new Vector3f(-1, -1, 1);
+        corners[4] = new Vector4f(-1, -1, -1, 1);
         mat.transform(corners[4]);
 
         //Corner BRF
-        corners[5] = new Vector3f(1, -1, 1);
+        corners[5] = new Vector4f(1, -1, -1, 1);
         mat.transform(corners[5]);
 
         //Corner TLF
-        corners[6] = new Vector3f(-1, 1, 1);
+        corners[6] = new Vector4f(-1, 1, -1, 1);
         mat.transform(corners[6]);
 
         //Corner TRF
-        corners[7] = new Vector3f(1, 1, 1);
+        corners[7] = new Vector4f(1, 1, -1, 1);
         mat.transform(corners[7]);
 
         return corners;
@@ -124,7 +142,7 @@ public class ShadowBox {
      *
      * @param corners 8 shadow map space corners
      */
-    private void recalcVPMatrix(Vector3f[] corners){
+    private void recalcVPMatrix(Vector4f[] corners){
 
         //Get minimum corners of axis aligned bounding box
         float aabbMinX = Toolbox.min(corners[0].x, corners[1].x, corners[2].x, corners[3].x, 
@@ -143,12 +161,13 @@ public class ShadowBox {
                 corners[4].z, corners[5].z, corners[6].z, corners[7].z);
 
         vpMat.setIdentity();
-        /*vpMat.m00 = 2.0f / (aabbMaxX -aabbMinX);
+        vpMat.m00 = 2.0f / (aabbMaxX -aabbMinX);
         vpMat.m11 = 2.0f / (aabbMaxY -aabbMinY);
         vpMat.m22 = -2.0f / (aabbMaxZ -aabbMinZ);
         vpMat.m03 = -1.0f * (aabbMaxX +aabbMinX) / (aabbMaxX -aabbMinX);
         vpMat.m13 = -1.0f * (aabbMaxY +aabbMinY) / (aabbMaxY -aabbMinY);
-        vpMat.m23 = -1.0f * (aabbMaxZ +aabbMinZ) / (aabbMaxZ -aabbMinZ);*/
+        vpMat.m23 = -1.0f * (aabbMaxZ +aabbMinZ) / (aabbMaxZ -aabbMinZ);
+        vpMat.setIdentity();
     }
 
     /**Getting shadow map view projection matrix (toShadowMapSpaceMatrix).

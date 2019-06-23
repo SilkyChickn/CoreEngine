@@ -309,6 +309,14 @@ public class Camera {
         }
     }
 
+    public Matrix4f getProjectionMatrix() {
+        return projectionMatrix;
+    }
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
+    }
+
     /**Gets cameras field of view
      *
      * @return New cameras fov

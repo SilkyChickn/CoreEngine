@@ -169,7 +169,7 @@ float getShadowFactor(vec3 position){
 
 	//Calculate shadow map value
 	float shadowFactor = 0;
-	if(shadowMapPos.x > 0 && shadowMapPos.x < 1 && shadowMapPos.y > 0 && shadowMapPos.y < 1){
+	if(shadowMapPos.x >= 0 && shadowMapPos.x <= 1 && shadowMapPos.y >= 0 && shadowMapPos.y <= 1){
 		float shadowMapColor = texture(shadowMap, shadowMapPos.xy).r;
 
 		//Check if texel is in shadow
