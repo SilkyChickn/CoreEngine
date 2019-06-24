@@ -27,6 +27,7 @@
  */
 package de.coreengine.system.gameObjects;
 
+import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderer.MasterRenderer;
@@ -58,7 +59,10 @@ public class TPCamera extends GameObject{
             Configuration.getValuef("TPC_DEFAULT_COOLDOWN");
     private static final float[] DEFAULT_PITCH_LIMIT =
             Configuration.getValuefa("TPC_DEFAULT_PITCH_LIMIT");
-    
+
+    private static final int MOVE_VERTICAL_KEY =
+            Configuration.getValuei("TPC_MOVE_VERTICAL_KEY");
+
     //Target to look at
     private Vector3f target = new Vector3f();
     
@@ -74,9 +78,10 @@ public class TPCamera extends GameObject{
     //State variables
     private float distance = DEFAULT_DISTANCE, pitch = DEFAULT_PITCH, rotation;
     private float curDistanceSpeed, curPitchSpeed, curRotationSpeed;
+    private Vector3f curMoveSpeed = new Vector3f();
     
     //Speeds
-    private float zoomSpeed = DEFAULT_ZOOM_SPEED, rotateSpeed = DEFAULT_ROTATE_SPEED;
+    private float zoomSpeed = DEFAULT_ZOOM_SPEED, rotateSpeed = DEFAULT_ROTATE_SPEED, moveSpeed = DEFAULT_MOVE_SPEED;
     private float cooldown = DEFAULT_COOLDOWN;
     
     @Override
@@ -97,11 +102,24 @@ public class TPCamera extends GameObject{
         }else{
             curDistanceSpeed *= cooldown;
         }
-        
+
+        //Moving
+        if(Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_MIDDLE)){
+            if(Keyboard.isKeyPressed(MOVE_VERTICAL_KEY)){
+                curMoveSpeed.y = -Mouse.getDy() * FrameTimer.getTslf() * moveSpeed;
+            }else{
+                curMoveSpeed.x = Mouse.getDx() * FrameTimer.getTslf() * moveSpeed;
+                curMoveSpeed.z = Mouse.getDy() * FrameTimer.getTslf() * moveSpeed;
+            }
+        }else{
+            curMoveSpeed.scale(cooldown);
+        }
+
         //Applying changes
         distance += curDistanceSpeed;
         pitch += curPitchSpeed;
         rotation += curRotationSpeed;
+        target.add(curMoveSpeed);
         
         //Clamp distance
         if(distance < distanceLimit[0]) distance = distanceLimit[0];
