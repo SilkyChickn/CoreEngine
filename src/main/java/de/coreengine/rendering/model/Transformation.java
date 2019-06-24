@@ -31,6 +31,8 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
 
 import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
+import java.util.List;
 
 /**Transformation class to store position, rotation and
  * scale and calc the trasnformation matrix
@@ -63,7 +65,10 @@ public class Transformation {
     //Transformation matrix for the transformation with
     //Position, rotation and scale
     private Matrix4f transMat = new Matrix4f();
-    
+
+    //Local transformation matrix without parent transform
+    private Matrix4f localTransMat = new Matrix4f();
+
     //Matrices for the rotations
     private Matrix4f rotxMat = new Matrix4f(), 
             rotyMat = new Matrix4f(), rotzMat = new Matrix4f();
@@ -74,16 +79,36 @@ public class Transformation {
     
     //Transform from jbullet
     private Transform bulletTransform = new Transform();
-    
+
+    //Transformation tree
+    private Transformation parent = null;
+    private List<Transformation> children = new ArrayList<>();
+
     /**Creating new transformation and init matrices
      */
     public Transformation() {
         posMat.setIdentity();
         scaleMat.setIdentity();
         transMat.setIdentity();
+        localTransMat.setIdentity();
         rotPosMat.setIdentity();
     }
-    
+
+    public void addChild(Transformation child){
+        if(child.parent != null){
+            child.parent.removeChild(child);
+        }
+        child.parent = this;
+        children.add(child);
+        child.recalcTransMat();
+    }
+
+    public void removeChild(Transformation child){
+        children.remove(child);
+        child.parent = null;
+        child.recalcTransMat();
+    }
+
     /**@return Actual transformation matrix as array
      */
     public float[] getTransMatArr(){
@@ -322,14 +347,25 @@ public class Transformation {
         rotMat.mul(rotzMat);
         
         //translate and rotate trans mat
-        transMat.set(posMat);
-        transMat.mul(rotMat);
+        localTransMat.set(posMat);
+        localTransMat.mul(rotMat);
         
         //get currentstate into rot pos mat
-        rotPosMat.set(transMat);
+        rotPosMat.set(localTransMat);
         
         //Scale transmat
-        transMat.mul(scaleMat);
+        localTransMat.mul(scaleMat);
+
+        //Align transMat with parent transMat
+        if(this.parent != null) transMat.mul(parent.transMat, localTransMat);
+        else transMat.set(localTransMat);
+
+        //Translate children
+        for(Transformation child: children){
+            child.transMat.mul(transMat, child.localTransMat);
+            child.bulletTransform.set(child.transMat);
+            child.bulletTransform.getOpenGLMatrix(child.transMatArr);
+        }
         
         //Reset vars
         this.recalcRotScale = false;
@@ -343,9 +379,9 @@ public class Transformation {
     /**Transfer translation from posScaleMat into transMat
      */
     private void transferTranslation(){
-        transMat.m03 = (posMat.m03);
-        transMat.m13 = (posMat.m13);
-        transMat.m23 = (posMat.m23);
+        localTransMat.m03 = (posMat.m03);
+        localTransMat.m13 = (posMat.m13);
+        localTransMat.m23 = (posMat.m23);
         
         transMatArr[12] = posMat.m03;
         transMatArr[13] = posMat.m13;
