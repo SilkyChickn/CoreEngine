@@ -56,6 +56,8 @@ public class TPCamera extends GameObject{
             Configuration.getValuef("TPC_DEFAULT_ZOOM_SPEED");
     private static final float DEFAULT_COOLDOWN = 
             Configuration.getValuef("TPC_DEFAULT_COOLDOWN");
+    private static final float[] DEFAULT_PITCH_LIMIT =
+            Configuration.getValuefa("TPC_DEFAULT_PITCH_LIMIT");
     
     //Target to look at
     private Vector3f target = new Vector3f();
@@ -65,7 +67,10 @@ public class TPCamera extends GameObject{
     
     //Limits for the distance
     private float[] distanceLimit = DEFAULT_DISTANCE_LIMIT;
-    
+
+    //Limits for the pitch
+    private float[] pitchLimit = DEFAULT_PITCH_LIMIT;
+
     //State variables
     private float distance = DEFAULT_DISTANCE, pitch = DEFAULT_PITCH, rotation;
     private float curDistanceSpeed, curPitchSpeed, curRotationSpeed;
@@ -101,23 +106,29 @@ public class TPCamera extends GameObject{
         //Clamp distance
         if(distance < distanceLimit[0]) distance = distanceLimit[0];
         if(distance > distanceLimit[1]) distance = distanceLimit[1];
-        
+
+        //Clamp pitch
+        if(pitch < pitchLimit[0]) pitch = pitchLimit[0];
+        if(pitch > pitchLimit[1]) pitch = pitchLimit[1];
+
         //Calculate Positions / Rotations
-        float horizontalDistance = (float) (distance * Math.cos(pitch +180));
-        float verticalDistance = (float) (distance * Math.sin(pitch +180));
-        
-        float xOffset = (float) (horizontalDistance * Math.sin(rotation));
-        float zOffset = (float) (horizontalDistance * Math.cos(rotation));
+        float pitchRadians = (float) Math.toRadians(pitch);
+        float horizontalDistance = (float) (distance * Math.cos(pitchRadians));
+        float verticalDistance = (float) (distance * Math.sin(pitchRadians));
+
+        float rotationRadians = (float) Math.toRadians(rotation);
+        float xOffset = (float) (horizontalDistance * Math.sin(rotationRadians));
+        float zOffset = (float) (horizontalDistance * Math.cos(rotationRadians));
 
         camera.setX(target.x -xOffset);
         camera.setY(target.y +verticalDistance);
         camera.setZ(target.z +zOffset);
         
-        camera.setPitch((float)Math.toDegrees(pitch +180));
-        camera.setYaw((float)Math.toDegrees(rotation));
+        camera.setPitch(pitch);
+        camera.setYaw(rotation);
         
         camera.updateViewMatrix();
-        
+
         super.onUpdate();
     }
     
@@ -126,7 +137,31 @@ public class TPCamera extends GameObject{
     public Camera getCamera() {
         return camera;
     }
-    
+
+    /**Setting distance of the third person camera to the target
+     *
+     * @param distance New distance to target
+     */
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    /**Setting pitch of the third person camera over the target
+     *
+     * @param pitch New pitch
+     */
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
+    }
+
+    /**Setting rotation of the third person camera around the target
+     *
+     * @param rotation New rotation around target
+     */
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
     @Override
     public void onRender() {
         MasterRenderer.setCamera(camera);

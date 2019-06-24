@@ -56,7 +56,7 @@ public class ObjLoader {
      * will be loaded. The other discarted.<br>
      * 
      * @param file Obj file name to load
-     * @param shape Collision shape of the model
+     * @param shape Collision shape of the model (New ConvexHull or TriangleMesh shape for automatic shape generation)
      * @param asResource Load model from resources
      * @return Loaded simple model
      */
