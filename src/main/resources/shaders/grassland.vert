@@ -48,7 +48,7 @@ void main(void){
 	float density = texture(densityMap, posTerrSpaceXZ).r;
 	
 	vec2 wind = 2.0f * texture(windMap, posTerrSpaceXZ * windMapTiling +windOffset).rg -1.0f;
-	wind *= windIntensity * position.y;
+	wind *= windIntensity * position.y * density;
 	
 	vec3 worldPos = position * scale * vec3(1, density, 1) +off +vec3(wind.x, 0, wind.y);
 	posTerrSpaceXZ = (worldPos.xz -vec2(mMatTerr[0][3], mMatTerr[2][3])) / mMatTerr[0][0];

@@ -167,6 +167,20 @@ public class Toolbox {
         return result;
     }
 
+    /**Convert a string into a integer array
+     *
+     * @param str String to convert
+     * @param seperator Seperator of the string
+     * @param len Count of integers in the string
+     * @return Generated int array
+     */
+    public static int[] stringToArrayi(String str, String seperator, int len){
+        String[] data = str.split(seperator);
+        int[] result = new int[data.length];
+        for(int i = 0; i < len; i++) result[i] = Integer.parseInt(data[i]);
+        return result;
+    }
+
     /**Generating a random float between min and max
      *
      * @param min Min value of the float

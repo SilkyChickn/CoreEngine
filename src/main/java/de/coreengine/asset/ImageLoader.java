@@ -221,7 +221,7 @@ public class ImageLoader {
         GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
         
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
-        
+
         return tex;
     }
 }

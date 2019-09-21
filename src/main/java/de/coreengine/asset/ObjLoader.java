@@ -79,7 +79,7 @@ public class ObjLoader {
     
     /**Loading obj file and mtl file, if exist.<br>
      * 
-     * @param file File to load relative to application
+     * @param file File to load relative to application or resource path
      * @param shape Collision shape of the model
      * @param asResource Load model from resources
      * @param meta Metamodel to store meta data in or null to dont store this data
@@ -140,7 +140,7 @@ public class ObjLoader {
      * @param meta Metamodel to store meta data in or null to dont store this data
      * @return Generated model
      */
-    public static Model loadModel(String[] objFile, String[] materialFile, 
+    private static Model loadModel(String[] objFile, String[] materialFile,
             String texLoc, CollisionShape shape, boolean asResource, MetaModel meta){
         
         //prepare meta data
@@ -191,12 +191,12 @@ public class ObjLoader {
             }
         }
         
-        return convertToModel(vertices, texCoords, normals, objects, 
+        return convertToModel(vertices, texCoords, normals, objects,
                 materials, shape, meta, metaMatArr);
     }
-    
+
     /**Converting raw vertex data into model and calculating tangents.<br>
-     * 
+     *
      * @param verticesRaw Raw vertices
      * @param texCoordsRaw Raw texture coordinates
      * @param normalsRaw Raw normals
@@ -208,150 +208,98 @@ public class ObjLoader {
      * @return Converted model
      */
     private static Model convertToModel(List<Float> verticesRaw, List<Float> texCoordsRaw,
-                                        List<Float> normalsRaw, List<List<String>> objects, Material[] materials,
-                                        CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
-        
+                                List<Float> normalsRaw, List<List<String>> objects, Material[] materials,
+                                CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
+
         //Preparing containers
         VertexArrayObject vao       = new VertexArrayObject();
         IndexBuffer[] indexBuffers  = new IndexBuffer[0];
-        
-        List<Float> verticesList = new LinkedList<>(), 
-                texCoordsList = new LinkedList<>(), 
-                normalsList = new LinkedList<>(), 
+
+        List<Float> verticesList = new LinkedList<>(),
+                texCoordsList = new LinkedList<>(),
+                normalsList = new LinkedList<>(),
                 tangentsList = new LinkedList<>();
-        
+
+        List<List<Integer>> indicesList = new LinkedList<>();
         int[][] indices = new int[objects.size()][];
-        
+
+        List<String> alreadyProcessedVertices = new LinkedList<>();
+
         //Iterate through objects
-        int counter = 0, objectCounter = 0;
+        int objectCounter = 0;
         for(List<String> faces: objects){
-            
-            int indicesCounter = 0;
-            indices[objectCounter] = new int[faces.size() * 3];
-            
+
+            indicesList.add(new LinkedList<>());
+
             //Iterate through objects faces
             for(String face: faces){
                 String[] args = face.split(" ");
-                
-                //Data for raw indices for the vertices
-                String[] v0Args = args[1].split("/");
-                String[] v1Args = args[2].split("/");
-                String[] v2Args = args[3].split("/");
-                
-                int[] v0 = new int[3], v1 = new int[3], v2 = new int[3];
-                
-                //Get raw indices
-                v0[0] = Integer.parseInt(v0Args[0]);
-                v0[1] = Integer.parseInt(v0Args[1]);
-                v0[2] = Integer.parseInt(v0Args[2]);
-                
-                v1[0] = Integer.parseInt(v1Args[0]);
-                v1[1] = Integer.parseInt(v1Args[1]);
-                v1[2] = Integer.parseInt(v1Args[2]);
-                
-                v2[0] = Integer.parseInt(v2Args[0]);
-                v2[1] = Integer.parseInt(v2Args[1]);
-                v2[2] = Integer.parseInt(v2Args[2]);
-                
-                //Convert raw indices
-                indices[objectCounter][indicesCounter++] = counter * 3;
-                indices[objectCounter][indicesCounter++] = counter * 3 +1;
-                indices[objectCounter][indicesCounter++] = counter * 3 +2;
-                
-                //Convert raw vertices
-                verticesList.add(verticesRaw.get((v0[0] -1) * 3));
-                verticesList.add(verticesRaw.get((v0[0] -1) * 3 +1));
-                verticesList.add(verticesRaw.get((v0[0] -1) * 3 +2));
-                
-                verticesList.add(verticesRaw.get((v1[0] -1) * 3));
-                verticesList.add(verticesRaw.get((v1[0] -1) * 3 +1));
-                verticesList.add(verticesRaw.get((v1[0] -1) * 3 +2));
-                
-                verticesList.add(verticesRaw.get((v2[0] -1) * 3));
-                verticesList.add(verticesRaw.get((v2[0] -1) * 3 +1));
-                verticesList.add(verticesRaw.get((v2[0] -1) * 3 +2));
-                
-                //Convert raw tex coords
-                texCoordsList.add(texCoordsRaw.get((v0[1] -1) * 2));
-                texCoordsList.add(texCoordsRaw.get((v0[1] -1) * 2 +1));
-                
-                texCoordsList.add(texCoordsRaw.get((v1[1] -1) * 2));
-                texCoordsList.add(texCoordsRaw.get((v1[1] -1) * 2 +1));
-                
-                texCoordsList.add(texCoordsRaw.get((v2[1] -1) * 2));
-                texCoordsList.add(texCoordsRaw.get((v2[1] -1) * 2 +1));
-                
-                //Convert raw normals
-                normalsList.add(normalsRaw.get((v0[2] -1) * 3));
-                normalsList.add(normalsRaw.get((v0[2] -1) * 3 +1));
-                normalsList.add(normalsRaw.get((v0[2] -1) * 3 +2));
-                
-                normalsList.add(normalsRaw.get((v1[2] -1) * 3));
-                normalsList.add(normalsRaw.get((v1[2] -1) * 3 +1));
-                normalsList.add(normalsRaw.get((v1[2] -1) * 3 +2));
-                
-                normalsList.add(normalsRaw.get((v2[2] -1) * 3));
-                normalsList.add(normalsRaw.get((v2[2] -1) * 3 +1));
-                normalsList.add(normalsRaw.get((v2[2] -1) * 3 +2));
-                
-                //Calculate tangent for vertices
+
+                //Process vertices
+                int index0 = processVertex(args[1], verticesRaw, texCoordsRaw, normalsRaw, verticesList, texCoordsList,
+                        normalsList, tangentsList, indicesList.get(objectCounter), alreadyProcessedVertices);
+                int index1 = processVertex(args[2], verticesRaw, texCoordsRaw, normalsRaw, verticesList, texCoordsList,
+                        normalsList, tangentsList, indicesList.get(objectCounter), alreadyProcessedVertices);
+                int index2 = processVertex(args[3], verticesRaw, texCoordsRaw, normalsRaw, verticesList, texCoordsList,
+                        normalsList, tangentsList, indicesList.get(objectCounter), alreadyProcessedVertices);
+
+                //calculate new tangent
                 float[] tangent = calcTangent(
-                        verticesRaw.get((v0[0] -1) * 3), 
-                        verticesRaw.get((v0[0] -1) * 3 +1), 
-                        verticesRaw.get((v0[0] -1) * 3 +2), 
-                        verticesRaw.get((v1[0] -1) * 3), 
-                        verticesRaw.get((v1[0] -1) * 3 +1), 
-                        verticesRaw.get((v1[0] -1) * 3 +2), 
-                        verticesRaw.get((v2[0] -1) * 3), 
-                        verticesRaw.get((v2[0] -1) * 3 +1), 
-                        verticesRaw.get((v2[0] -1) * 3 +2), 
-                        texCoordsRaw.get((v0[1] -1) * 2), 
-                        texCoordsRaw.get((v0[1] -1) * 2 +1), 
-                        texCoordsRaw.get((v1[1] -1) * 2), 
-                        texCoordsRaw.get((v1[1] -1) * 2 +1), 
-                        texCoordsRaw.get((v2[1] -1) * 2), 
-                        texCoordsRaw.get((v2[1] -1) * 2 +1)
+                            verticesList.get(index0 * 3),
+                            verticesList.get(index0 * 3 +1),
+                            verticesList.get(index0 * 3 +2),
+                            verticesList.get(index1 * 3),
+                            verticesList.get(index1 * 3 +1),
+                            verticesList.get(index1 * 3 +2),
+                            verticesList.get(index2 * 3),
+                            verticesList.get(index2 * 3 +1),
+                            verticesList.get(index2 * 3 +2),
+                            texCoordsList.get(index0 * 2),
+                            texCoordsList.get(index0 * 2 +1),
+                            texCoordsList.get(index1 * 2),
+                            texCoordsList.get(index1 * 2 +1),
+                            texCoordsList.get(index2 * 2),
+                            texCoordsList.get(index2 * 2 +1)
                 );
-                
-                //Adding tangets to list
-                tangentsList.add(tangent[0]);
-                tangentsList.add(tangent[1]);
-                tangentsList.add(tangent[2]);
-                
-                tangentsList.add(tangent[0]);
-                tangentsList.add(tangent[1]);
-                tangentsList.add(tangent[2]);
-                
-                tangentsList.add(tangent[0]);
-                tangentsList.add(tangent[1]);
-                tangentsList.add(tangent[2]);
-                
-                counter++;
+
+                //Set new tangent to vertices
+                tangentsList.set(index0 * 3, tangent[0]);
+                tangentsList.set(index0 * 3 +1, tangent[1]);
+                tangentsList.set(index0 * 3 +2, tangent[2]);
+                tangentsList.set(index1 * 3, tangent[0]);
+                tangentsList.set(index1 * 3 +1, tangent[1]);
+                tangentsList.set(index1 * 3 +2, tangent[2]);
+                tangentsList.set(index2 * 3, tangent[0]);
+                tangentsList.set(index2 * 3 +1, tangent[1]);
+                tangentsList.set(index2 * 3 +2, tangent[2]);
             }
-            
-            //Adding index buffer/indices to vao
-            indexBuffers = Toolbox.addElement(indexBuffers, 
-                    vao.addIndexBuffer(indices[objectCounter++]));
+
+            //Adding index buffer/indices to vao and to indices array
+            indices[objectCounter] = Toolbox.toArrayi(indicesList.get(objectCounter));
+            indexBuffers = Toolbox.addElement(indexBuffers,
+                    vao.addIndexBuffer(indices[objectCounter]));
+
+            objectCounter++;
         }
-        
+
         //Convert lists to arrays
         float[] vertices    = Toolbox.toArrayf(verticesList);
         float[] texCoords   = Toolbox.toArrayf(texCoordsList);
         float[] normals     = Toolbox.toArrayf(normalsList);
         float[] tangents    = Toolbox.toArrayf(tangentsList);
-        
+
         //Create collision shape
-        if(shape instanceof ConvexHullShape) 
+        if(shape instanceof ConvexHullShape)
             shape = Physics.createConvexHullShape(vertices);
-        else if(shape instanceof TriangleMeshShape) 
+        else if(shape instanceof TriangleMeshShape)
             shape = Physics.createTriangleMeshShape(vertices, indices);
-        
+
         //Adding data to vao
         vao.addVertexBuffer(vertices, 3, 0);
         vao.addVertexBuffer(texCoords, 2, 1);
         vao.addVertexBuffer(normals, 3, 2);
         vao.addVertexBuffer(tangents, 3, 3);
-        
+
         //Fill up meta model
         if(meta != null){
             meta.setVertices(vertices);
@@ -362,12 +310,72 @@ public class ObjLoader {
             meta.setShape(shape);
             meta.setMaterials(metaMaterials);
         }
-        
+
         return new Model(vao, indexBuffers, materials, shape);
     }
-    
+
+    /**Processing vertex from face data
+     *
+     * @param vertexIndices Vertex indices as string
+     * @param verticesRaw Raw vertex data of the model
+     * @param texCoordsRaw Raw tex coords data of the model
+     * @param normalsRaw Raw normal data of the model
+     * @param verticesList Converted vertex data
+     * @param texCoordsList Converted tex coords data
+     * @param normalsList Converted normals data
+     * @param tangentList Calculated tangents
+     * @param indicesList Generated indices
+     * @param alreadyProcessedVertices List of all vertices, that where already processed
+     * @return Index of the processed vertex
+     */
+    private static int processVertex(String vertexIndices, List<Float> verticesRaw, List<Float> texCoordsRaw,
+                               List<Float> normalsRaw, List<Float> verticesList, List<Float> texCoordsList,
+                               List<Float> normalsList, List<Float> tangentList, List<Integer> indicesList,
+                               List<String> alreadyProcessedVertices){
+
+        int index = alreadyProcessedVertices.indexOf(vertexIndices);
+
+        //Check if similar vertex was already processed
+        if(index == -1) {
+
+            String[] vArgs = vertexIndices.split("/");
+            int[] v = new int[3];
+
+            //Get raw indices
+            v[0] = Integer.parseInt(vArgs[0]);
+            v[1] = Integer.parseInt(vArgs[1]);
+            v[2] = Integer.parseInt(vArgs[2]);
+
+            //Convert raw vertices
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3));
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 1));
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 2));
+
+            //Convert raw tex coords
+            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2));
+            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2 + 1));
+
+            //Convert raw normals
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3));
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 1));
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 2));
+
+            //Add placeholder tangents
+            tangentList.add(0.0f);
+            tangentList.add(0.0f);
+            tangentList.add(0.0f);
+
+            //Convert raw indices
+            alreadyProcessedVertices.add(vertexIndices);
+            index = alreadyProcessedVertices.size() -1;
+        }
+
+        indicesList.add(index);
+        return index;
+    }
+
     /**Calculating tangent for a face
-     * 
+     *
      * @param v0x X coordinate of vertex 0
      * @param v0y Y coordinate of vertex 0
      * @param v0z Z coordinate of vertex 0
@@ -385,25 +393,25 @@ public class ObjLoader {
      * @param v2v V coordinate of vertex 2
      * @return Tangent as float array [x, y, z]
      */
-    private static float[] calcTangent(float v0x, float v0y, float v0z, float v1x, 
-            float v1y, float v1z, float v2x, float v2y, float v2z, float v0u, 
-            float v0v, float v1u, float v1v, float v2u, float v2v){
-        
+    private static float[] calcTangent(float v0x, float v0y, float v0z, float v1x,
+                                       float v1y, float v1z, float v2x, float v2y, float v2z, float v0u,
+                                       float v0v, float v1u, float v1v, float v2u, float v2v){
+
         float[] tangent = new float[3];
-        
+
         float dp1x = v1x -v0x; float dp1y = v1y -v0y; float dp1z = v1z -v0z;
         float dp2x = v2x -v0x; float dp2y = v2y -v0y; float dp2z = v2z -v0z;
-        
+
         float duv1u = v1u -v0u; float duv1v = v1v -v0v;
         float duv2u = v2u -v0u; float duv2v = v2v -v0v;
-        
+
         float r = 1.0f / (duv1u * duv2v - duv1v * duv2u);
         dp1x *= duv2v; dp1y *= duv2v; dp1z *= duv2v;
         dp2x *= duv1v; dp2y *= duv1v; dp2z *= duv1v;
-        
+
         tangent[0] = dp1x -dp2x; tangent[1] = dp1y -dp2y; tangent[2] = dp1z -dp2z;
         tangent[0] *= r; tangent[1] *= r; tangent[2] *= r;
-        
+
         return tangent;
     }
 }
