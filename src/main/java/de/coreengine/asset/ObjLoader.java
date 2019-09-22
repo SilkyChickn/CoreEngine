@@ -208,8 +208,8 @@ public class ObjLoader {
      * @return Converted model
      */
     private static Model convertToModel(List<Float> verticesRaw, List<Float> texCoordsRaw,
-                                List<Float> normalsRaw, List<List<String>> objects, Material[] materials,
-                                CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
+                                        List<Float> normalsRaw, List<List<String>> objects, Material[] materials,
+                                        CollisionShape shape, MetaModel meta, MetaMaterial[] metaMaterials){
 
         //Preparing containers
         VertexArrayObject vao       = new VertexArrayObject();
@@ -244,22 +244,22 @@ public class ObjLoader {
                         normalsList, tangentsList, indicesList.get(objectCounter), alreadyProcessedVertices);
 
                 //calculate new tangent
-                float[] tangent = calcTangent(
-                            verticesList.get(index0 * 3),
-                            verticesList.get(index0 * 3 +1),
-                            verticesList.get(index0 * 3 +2),
-                            verticesList.get(index1 * 3),
-                            verticesList.get(index1 * 3 +1),
-                            verticesList.get(index1 * 3 +2),
-                            verticesList.get(index2 * 3),
-                            verticesList.get(index2 * 3 +1),
-                            verticesList.get(index2 * 3 +2),
-                            texCoordsList.get(index0 * 2),
-                            texCoordsList.get(index0 * 2 +1),
-                            texCoordsList.get(index1 * 2),
-                            texCoordsList.get(index1 * 2 +1),
-                            texCoordsList.get(index2 * 2),
-                            texCoordsList.get(index2 * 2 +1)
+                float[] tangent = Toolbox.calcTangent(
+                        verticesList.get(index0 * 3),
+                        verticesList.get(index0 * 3 +1),
+                        verticesList.get(index0 * 3 +2),
+                        verticesList.get(index1 * 3),
+                        verticesList.get(index1 * 3 +1),
+                        verticesList.get(index1 * 3 +2),
+                        verticesList.get(index2 * 3),
+                        verticesList.get(index2 * 3 +1),
+                        verticesList.get(index2 * 3 +2),
+                        texCoordsList.get(index0 * 2),
+                        texCoordsList.get(index0 * 2 +1),
+                        texCoordsList.get(index1 * 2),
+                        texCoordsList.get(index1 * 2 +1),
+                        texCoordsList.get(index2 * 2),
+                        texCoordsList.get(index2 * 2 +1)
                 );
 
                 //Set new tangent to vertices
@@ -329,9 +329,9 @@ public class ObjLoader {
      * @return Index of the processed vertex
      */
     private static int processVertex(String vertexIndices, List<Float> verticesRaw, List<Float> texCoordsRaw,
-                               List<Float> normalsRaw, List<Float> verticesList, List<Float> texCoordsList,
-                               List<Float> normalsList, List<Float> tangentList, List<Integer> indicesList,
-                               List<String> alreadyProcessedVertices){
+                                     List<Float> normalsRaw, List<Float> verticesList, List<Float> texCoordsList,
+                                     List<Float> normalsList, List<Float> tangentList, List<Integer> indicesList,
+                                     List<String> alreadyProcessedVertices){
 
         int index = alreadyProcessedVertices.indexOf(vertexIndices);
 
@@ -372,46 +372,5 @@ public class ObjLoader {
 
         indicesList.add(index);
         return index;
-    }
-
-    /**Calculating tangent for a face
-     *
-     * @param v0x X coordinate of vertex 0
-     * @param v0y Y coordinate of vertex 0
-     * @param v0z Z coordinate of vertex 0
-     * @param v1x X coordinate of vertex 1
-     * @param v1y Y coordinate of vertex 1
-     * @param v1z Z coordinate of vertex 1
-     * @param v2x X coordinate of vertex 2
-     * @param v2y Y coordinate of vertex 2
-     * @param v2z Z coordinate of vertex 2
-     * @param v0u U coordinate of vertex 0
-     * @param v0v V coordinate of vertex 0
-     * @param v1u U coordinate of vertex 1
-     * @param v1v V coordinate of vertex 1
-     * @param v2u U coordinate of vertex 2
-     * @param v2v V coordinate of vertex 2
-     * @return Tangent as float array [x, y, z]
-     */
-    private static float[] calcTangent(float v0x, float v0y, float v0z, float v1x,
-                                       float v1y, float v1z, float v2x, float v2y, float v2z, float v0u,
-                                       float v0v, float v1u, float v1v, float v2u, float v2v){
-
-        float[] tangent = new float[3];
-
-        float dp1x = v1x -v0x; float dp1y = v1y -v0y; float dp1z = v1z -v0z;
-        float dp2x = v2x -v0x; float dp2y = v2y -v0y; float dp2z = v2z -v0z;
-
-        float duv1u = v1u -v0u; float duv1v = v1v -v0v;
-        float duv2u = v2u -v0u; float duv2v = v2v -v0v;
-
-        float r = 1.0f / (duv1u * duv2v - duv1v * duv2u);
-        dp1x *= duv2v; dp1y *= duv2v; dp1z *= duv2v;
-        dp2x *= duv1v; dp2y *= duv1v; dp2z *= duv1v;
-
-        tangent[0] = dp1x -dp2x; tangent[1] = dp1y -dp2y; tangent[2] = dp1z -dp2z;
-        tangent[0] *= r; tangent[1] *= r; tangent[2] *= r;
-
-        return tangent;
     }
 }

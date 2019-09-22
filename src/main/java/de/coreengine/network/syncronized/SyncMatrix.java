@@ -70,7 +70,7 @@ public class SyncMatrix extends Syncronized{
     
     @Override
     protected void sync(String sync) {
-        matrix.set(Toolbox.stringToArray(sync, "-", 16));
+        matrix.set(Toolbox.stringToArrayf(sync, "-"));
     }
     
     @Override

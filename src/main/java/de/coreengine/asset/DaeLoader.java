@@ -29,6 +29,8 @@
 package de.coreengine.asset;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.ConvexHullShape;
+import com.bulletphysics.collision.shapes.TriangleMeshShape;
 import com.sun.deploy.xml.XMLNode;
 import com.sun.deploy.xml.XMLParser;
 import de.coreengine.asset.meta.MetaMaterial;
@@ -38,6 +40,8 @@ import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Model;
 import de.coreengine.util.Logger;
 import de.coreengine.util.Toolbox;
+import de.coreengine.util.bullet.Physics;
+import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 import javafx.util.Pair;
 import org.lwjgl.opengl.GL11;
@@ -45,7 +49,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import sun.security.provider.certpath.Vertex;
 
+import javax.tools.Tool;
+import javax.vecmath.Vector3f;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -109,6 +116,8 @@ public class DaeLoader {
         HashMap<String, Pair<String, Integer>> images = null;
         HashMap<String, Pair<MetaMaterial, Material>> effects = null;
         HashMap<String, Pair<MetaMaterial, Material>> materials = null;
+        List<Pair<String, IndexBuffer>> indexBuffers;
+        VertexArrayObject geometry = null;
 
         //Iterate through children of the document node
         NodeList nodes = document.getDocumentElement().getChildNodes();
@@ -125,6 +134,8 @@ public class DaeLoader {
                 case "library_effects":     effects = loadEffects(node, images);
                                             break;
                 case "library_materials":   materials = loadMaterials(node, effects);
+                                            break;
+                case "library_geometries":  geometry = loadGeometry(node, indexBuffers);
                                             break;
             }
         }
@@ -269,6 +280,156 @@ public class DaeLoader {
         }
 
         return materials;
+    }
+
+    private static VertexArrayObject loadGeometry(Node library_geometries, List<Pair<String, IndexBuffer>> indexBuffers){
+
+        //Get mesh node for first geometry
+        Node geometry = getSpecificFirstChild(library_geometries, "geometry");
+        Node mesh = getSpecificFirstChild(geometry, "mesh");
+
+        //Mesh data
+        HashMap<String, float[]> meshData = new HashMap<>();
+        List<Pair<String, int[]>> rawIndexBuffers = new LinkedList<>();
+        float[] rawVertices, rawTexCoords, rawNormals;
+        int vertexOffset, texCoordsOffset, normalsOffset;
+
+        //Iterate mesh's children
+        for(int i = 0; i < mesh.getChildNodes().getLength(); i++){
+            Node node = mesh.getChildNodes().item(i);
+
+            switch (node.getNodeName()) {
+                case "source":      String id = node.getAttributes().getNamedItem("id").getNodeValue();
+                                    Node array = getSpecificFirstChild(node, "float_array");
+                                    meshData.put(id, Toolbox.stringToArrayf(array.getTextContent(), " "));
+
+                case "vertices":    String newId = node.getAttributes().getNamedItem("id").getNodeValue();
+                                    Node input = getSpecificFirstChild(node, "input");
+                                    String oldId = input.getAttributes().getNamedItem("source").getNodeValue().substring(1);
+                                    meshData.put(newId, meshData.get(oldId));
+
+                case "triangles":   for(int j = 0; j < node.getChildNodes().getLength(); j++){
+                                        Node child = node.getChildNodes().item(j);
+
+                                        switch(child.getNodeName()) {
+                                            case "input":   switch(child.getAttributes().getNamedItem("semantic").getNodeValue()){
+                                                                case "VERTEX":  vertexOffset =
+                                                                                Integer.parseInt(child.getAttributes().
+                                                                                getNamedItem("offset").getNodeValue());
+                                                                                rawVertices =
+                                                                                meshData.get(child.getAttributes().
+                                                                                getNamedItem("source").getNodeValue().
+                                                                                substring(1));
+                                                                case "NORMAL":  normalsOffset =
+                                                                                Integer.parseInt(child.getAttributes().
+                                                                                getNamedItem("offset").getNodeValue());
+                                                                                rawNormals =
+                                                                                meshData.get(child.getAttributes().
+                                                                                getNamedItem("source").getNodeValue().
+                                                                                substring(1));
+                                                                case "TEXCOORD":texCoordsOffset =
+                                                                                Integer.parseInt(child.getAttributes().
+                                                                                getNamedItem("offset").getNodeValue());
+                                                                                rawTexCoords =
+                                                                                meshData.get(child.getAttributes().
+                                                                                getNamedItem("source").getNodeValue().
+                                                                                substring(1));
+                                                            }
+
+                                            case "p":       int[] rawIndices =
+                                                            Toolbox.stringToArrayi(child.getTextContent(), " ");
+                                                            rawIndexBuffers.add(new Pair<>(
+                                                            node.getAttributes().getNamedItem("material").
+                                                            getNodeValue(), rawIndices));
+                                        }
+                                    }
+            }
+        }
+
+        //Convert raw data to model
+        //TODO Convert Model
+
+        return vao;
+    }
+
+    private static VertexArrayObject convertMeshData(float[] verticesRaw, float[] texCoordsRaw, float[] normalsRaw,
+                                                    List<Pair<String, int[]>> indexBuffersRaw, int vertexOffset,
+                                                    int texCoordsOffset, int normalsOffset){
+        VertexArrayObject vao = new VertexArrayObject();
+
+        //New vertex data
+        List<Float> vertices = new LinkedList<>(), normals = new LinkedList<>(), texCoords = new LinkedList<>();
+
+        //Iterate through objects
+        for(Pair<String, int[]> object: indexBuffersRaw){
+
+            //Iterate through vertices
+            for(int i = 0; i < object.getValue().length; i += 3){
+
+            }
+        }
+
+        return vao;
+    }
+
+    /**Processing vertex from face data
+     *
+     * @param vertexIndices Vertex indices as string
+     * @param verticesRaw Raw vertex data of the model
+     * @param texCoordsRaw Raw tex coords data of the model
+     * @param normalsRaw Raw normal data of the model
+     * @param verticesList Converted vertex data
+     * @param texCoordsList Converted tex coords data
+     * @param normalsList Converted normals data
+     * @param tangentList Calculated tangents
+     * @param indicesList Generated indices
+     * @param alreadyProcessedVertices List of all vertices, that where already processed
+     * @return Index of the processed vertex
+     */
+    private static int processVertex(String vertexIndices, float[] verticesRaw, float[] texCoordsRaw,
+                                     float[] normalsRaw, List<Float> verticesList, List<Float> texCoordsList,
+                                     List<Float> normalsList, List<Float> tangentList, List<Integer> indicesList,
+                                     List<String> alreadyProcessedVertices){
+
+        int index = alreadyProcessedVertices.indexOf(vertexIndices);
+
+        //Check if similar vertex was already processed
+        if(index == -1) {
+
+            String[] vArgs = vertexIndices.split("/");
+            int[] v = new int[3];
+
+            //Get raw indices
+            v[0] = Integer.parseInt(vArgs[0]);
+            v[1] = Integer.parseInt(vArgs[1]);
+            v[2] = Integer.parseInt(vArgs[2]);
+
+            //Convert raw vertices
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3));
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 1));
+            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 2));
+
+            //Convert raw tex coords
+            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2));
+            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2 + 1));
+
+            //Convert raw normals
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3));
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 1));
+            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 2));
+
+            //Add placeholder tangents
+            tangentList.add(0.0f);
+            tangentList.add(0.0f);
+            tangentList.add(0.0f);
+
+            //Convert raw indices
+            alreadyProcessedVertices.add(vertexIndices);
+            index = alreadyProcessedVertices.size() -1;
+        }
+
+        indicesList.add(index);
+        return index;
     }
 
     private static Color getColorfromText(String text){

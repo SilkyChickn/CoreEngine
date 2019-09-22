@@ -157,13 +157,12 @@ public class Toolbox {
      * 
      * @param str String to convert
      * @param seperator Seperator of the string
-     * @param len Count of floats in the string
      * @return Generated float array
      */
-    public static float[] stringToArray(String str, String seperator, int len){
+    public static float[] stringToArrayf(String str, String seperator){
         String[] data = str.split(seperator);
         float[] result = new float[data.length];
-        for(int i = 0; i < len; i++) result[i] = Float.parseFloat(data[i]);
+        for(int i = 0; i < data.length; i++) result[i] = Float.parseFloat(data[i]);
         return result;
     }
 
@@ -171,13 +170,12 @@ public class Toolbox {
      *
      * @param str String to convert
      * @param seperator Seperator of the string
-     * @param len Count of integers in the string
      * @return Generated int array
      */
-    public static int[] stringToArrayi(String str, String seperator, int len){
+    public static int[] stringToArrayi(String str, String seperator){
         String[] data = str.split(seperator);
         int[] result = new int[data.length];
-        for(int i = 0; i < len; i++) result[i] = Integer.parseInt(data[i]);
+        for(int i = 0; i < data.length; i++) result[i] = Integer.parseInt(data[i]);
         return result;
     }
 
@@ -247,6 +245,47 @@ public class Toolbox {
             if(f > max) max = f;
         }
         return max;
+    }
+
+    /**Calculating tangent for a triangle
+     *
+     * @param v0x X coordinate of vertex 0
+     * @param v0y Y coordinate of vertex 0
+     * @param v0z Z coordinate of vertex 0
+     * @param v1x X coordinate of vertex 1
+     * @param v1y Y coordinate of vertex 1
+     * @param v1z Z coordinate of vertex 1
+     * @param v2x X coordinate of vertex 2
+     * @param v2y Y coordinate of vertex 2
+     * @param v2z Z coordinate of vertex 2
+     * @param v0u U coordinate of vertex 0
+     * @param v0v V coordinate of vertex 0
+     * @param v1u U coordinate of vertex 1
+     * @param v1v V coordinate of vertex 1
+     * @param v2u U coordinate of vertex 2
+     * @param v2v V coordinate of vertex 2
+     * @return Tangent as float array [x, y, z]
+     */
+    private static float[] calcTangent(float v0x, float v0y, float v0z, float v1x,
+                                       float v1y, float v1z, float v2x, float v2y, float v2z, float v0u,
+                                       float v0v, float v1u, float v1v, float v2u, float v2v){
+
+        float[] tangent = new float[3];
+
+        float dp1x = v1x -v0x; float dp1y = v1y -v0y; float dp1z = v1z -v0z;
+        float dp2x = v2x -v0x; float dp2y = v2y -v0y; float dp2z = v2z -v0z;
+
+        float duv1u = v1u -v0u; float duv1v = v1v -v0v;
+        float duv2u = v2u -v0u; float duv2v = v2v -v0v;
+
+        float r = 1.0f / (duv1u * duv2v - duv1v * duv2u);
+        dp1x *= duv2v; dp1y *= duv2v; dp1z *= duv2v;
+        dp2x *= duv1v; dp2y *= duv1v; dp2z *= duv1v;
+
+        tangent[0] = dp1x -dp2x; tangent[1] = dp1y -dp2y; tangent[2] = dp1z -dp2z;
+        tangent[0] *= r; tangent[1] *= r; tangent[2] *= r;
+
+        return tangent;
     }
 }
 

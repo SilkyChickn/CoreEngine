@@ -65,7 +65,7 @@ public class CollisionShapeParser {
                 CollisionShape child = toShape(args[i]);
                 Transform transform = new Transform();
                 transform.setFromOpenGLMatrix(
-                        Toolbox.stringToArray(args[i+1], "-", 16));
+                        Toolbox.stringToArrayf(args[i+1], "-"));
                 assert child != null;
                 shape.addChildShape(transform, child);
             }

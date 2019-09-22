@@ -317,7 +317,7 @@ public class SyncTransformation extends Syncronized{
         val.setScaleY(Float.parseFloat(data[7]));
         val.setScaleZ(Float.parseFloat(data[8]));
         
-        val.getTransMat().set(Toolbox.stringToArray(data[9], "-", 16));
+        val.getTransMat().set(Toolbox.stringToArrayf(data[9], "-"));
     }
     
     @Override
