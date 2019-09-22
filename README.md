@@ -5,7 +5,7 @@
 [![vecmath][vecmath-img]][vecmath-url]
 [![license][license-img]](LICENSE)
 
-CoreEngine is a LightWeight Java Game Library (LWJGL) framework. Its a simple to use OpenGL game engine with several features.
+CoreEngine is a LightWeight Java Game Library (LWJGL) framework. Its a simple to use OpenGL game engine with several features. You can use this engine to create your own games (see [license](LICENSE)), but it's mostly a support, for people who want to write their own game engine. I would be glad, if someone gets inspired by my implementations.
 
 ## Getting Started
 
