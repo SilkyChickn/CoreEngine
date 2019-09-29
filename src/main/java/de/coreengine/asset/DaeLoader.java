@@ -31,8 +31,6 @@ package de.coreengine.asset;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.TriangleMeshShape;
-import com.sun.deploy.xml.XMLNode;
-import com.sun.deploy.xml.XMLParser;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.asset.meta.MetaModel;
 import de.coreengine.rendering.model.Color;
@@ -49,10 +47,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import sun.security.provider.certpath.Vertex;
 
-import javax.tools.Tool;
-import javax.vecmath.Vector3f;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -109,6 +104,15 @@ public class DaeLoader {
         }
     }
 
+    /**Loading dae document and material, if exist.<br>
+     *
+     * @param document Document of the dae data
+     * @param path Path of the images
+     * @param shape Collision shape of the model
+     * @param asResource Load images from resources
+     * @param metaModel Metamodel to store meta data in or null to dont store this data
+     * @return Loaded model
+     */
     public static Model loadModel(Document document, String path, CollisionShape shape,
                                   boolean asResource, MetaModel metaModel){
 
@@ -116,8 +120,9 @@ public class DaeLoader {
         HashMap<String, Pair<String, Integer>> images = null;
         HashMap<String, Pair<MetaMaterial, Material>> effects = null;
         HashMap<String, Pair<MetaMaterial, Material>> materials = null;
-        List<Pair<String, IndexBuffer>> indexBuffers;
+        List<Pair<String, IndexBuffer>> indexBuffers = new ArrayList<>();
         VertexArrayObject geometry = null;
+        Model model = null;
 
         //Iterate through children of the document node
         NodeList nodes = document.getDocumentElement().getChildNodes();
@@ -128,21 +133,31 @@ public class DaeLoader {
 
             //Switch node
             switch (node.getNodeName()) {
-                case "#text":               continue;
-                case "library_images":      images = loadImages(node, asResource, path);
-                                            break;
-                case "library_effects":     effects = loadEffects(node, images);
-                                            break;
-                case "library_materials":   materials = loadMaterials(node, effects);
-                                            break;
-                case "library_geometries":  geometry = loadGeometry(node, indexBuffers);
-                                            break;
+                case "#text":                   continue;
+                case "library_images":          images = loadImages(node, asResource, path);
+                                                break;
+                case "library_effects":         effects = loadEffects(node, images);
+                                                break;
+                case "library_materials":       materials = loadMaterials(node, effects);
+                                                break;
+                case "library_geometries":      geometry = loadGeometry(node, indexBuffers, shape, metaModel);
+                                                break;
+                case "library_visual_scenes":   model = loadVisualScene(node, materials, geometry, indexBuffers,
+                                                            shape, metaModel);
+                                                break;
             }
         }
 
-        return null;
+        return model;
     }
 
+    /**Loading images from dae images node
+     *
+     * @param library_images Dae images node
+     * @param asResource Load images from resources?
+     * @param path Path of the images
+     * @return Loaded images
+     */
     private static HashMap<String, Pair<String, Integer>> loadImages(Node library_images, boolean asResource, String path){
         HashMap<String, Pair<String, Integer>> images = new HashMap<>();
 
@@ -171,6 +186,12 @@ public class DaeLoader {
         return images;
     }
 
+    /**Loading effect from dae effects node
+     *
+     * @param library_effects Dae effect node
+     * @param images Loaded images
+     * @return Loaded effects
+     */
     private static HashMap<String, Pair<MetaMaterial, Material>> loadEffects (
             Node library_effects, HashMap<String, Pair<String, Integer>> images){
         HashMap<String, Pair<MetaMaterial, Material>> effects = new HashMap<>();
@@ -256,6 +277,12 @@ public class DaeLoader {
         return effects;
     }
 
+    /**Loading materials from dae material node
+     *
+     * @param library_materials Dae materials node
+     * @param effects Loaded effects
+     * @return Loaded materials
+     */
     private static HashMap<String, Pair<MetaMaterial, Material>> loadMaterials (
             Node library_materials, HashMap<String, Pair<MetaMaterial, Material>> effects){
         HashMap<String, Pair<MetaMaterial, Material>> materials = new HashMap<>();
@@ -282,7 +309,16 @@ public class DaeLoader {
         return materials;
     }
 
-    private static VertexArrayObject loadGeometry(Node library_geometries, List<Pair<String, IndexBuffer>> indexBuffers){
+    /**Loading geometry from dae geometry node
+     *
+     * @param library_geometries Geometry node
+     * @param indexBuffers List to store index buffers in, tagged by material
+     * @param shape Shape to store collision data in
+     * @param meta Meta model to store meta data in (or null)
+     * @return Generated vao
+     */
+    private static VertexArrayObject loadGeometry(Node library_geometries, List<Pair<String, IndexBuffer>> indexBuffers,
+                                                  CollisionShape shape, MetaModel meta){
 
         //Get mesh node for first geometry
         Node geometry = getSpecificFirstChild(library_geometries, "geometry");
@@ -291,8 +327,8 @@ public class DaeLoader {
         //Mesh data
         HashMap<String, float[]> meshData = new HashMap<>();
         List<Pair<String, int[]>> rawIndexBuffers = new LinkedList<>();
-        float[] rawVertices, rawTexCoords, rawNormals;
-        int vertexOffset, texCoordsOffset, normalsOffset;
+        float[] rawVertices = null, rawTexCoords = null, rawNormals = null;
+        int vertexOffset = 0, texCoordsOffset = 0, normalsOffset = 0;
 
         //Iterate mesh's children
         for(int i = 0; i < mesh.getChildNodes().getLength(); i++){
@@ -302,11 +338,13 @@ public class DaeLoader {
                 case "source":      String id = node.getAttributes().getNamedItem("id").getNodeValue();
                                     Node array = getSpecificFirstChild(node, "float_array");
                                     meshData.put(id, Toolbox.stringToArrayf(array.getTextContent(), " "));
+                                    break;
 
                 case "vertices":    String newId = node.getAttributes().getNamedItem("id").getNodeValue();
                                     Node input = getSpecificFirstChild(node, "input");
                                     String oldId = input.getAttributes().getNamedItem("source").getNodeValue().substring(1);
                                     meshData.put(newId, meshData.get(oldId));
+                                    break;
 
                 case "triangles":   for(int j = 0; j < node.getChildNodes().getLength(); j++){
                                         Node child = node.getChildNodes().item(j);
@@ -320,6 +358,8 @@ public class DaeLoader {
                                                                                 meshData.get(child.getAttributes().
                                                                                 getNamedItem("source").getNodeValue().
                                                                                 substring(1));
+                                                                                break;
+
                                                                 case "NORMAL":  normalsOffset =
                                                                                 Integer.parseInt(child.getAttributes().
                                                                                 getNamedItem("offset").getNodeValue());
@@ -327,6 +367,8 @@ public class DaeLoader {
                                                                                 meshData.get(child.getAttributes().
                                                                                 getNamedItem("source").getNodeValue().
                                                                                 substring(1));
+                                                                                break;
+
                                                                 case "TEXCOORD":texCoordsOffset =
                                                                                 Integer.parseInt(child.getAttributes().
                                                                                 getNamedItem("offset").getNodeValue());
@@ -334,47 +376,231 @@ public class DaeLoader {
                                                                                 meshData.get(child.getAttributes().
                                                                                 getNamedItem("source").getNodeValue().
                                                                                 substring(1));
+                                                                                break;
                                                             }
+                                                            break;
 
                                             case "p":       int[] rawIndices =
                                                             Toolbox.stringToArrayi(child.getTextContent(), " ");
                                                             rawIndexBuffers.add(new Pair<>(
                                                             node.getAttributes().getNamedItem("material").
                                                             getNodeValue(), rawIndices));
+                                                            break;
                                         }
                                     }
+                                    break;
             }
         }
 
         //Convert raw data to model
-        //TODO Convert Model
+        VertexArrayObject result = convertMeshData(rawVertices, rawTexCoords, rawNormals, rawIndexBuffers,
+                vertexOffset, texCoordsOffset, normalsOffset, shape, meta, indexBuffers);
 
-        return vao;
+        return result;
     }
 
-    private static VertexArrayObject convertMeshData(float[] verticesRaw, float[] texCoordsRaw, float[] normalsRaw,
-                                                    List<Pair<String, int[]>> indexBuffersRaw, int vertexOffset,
-                                                    int texCoordsOffset, int normalsOffset){
-        VertexArrayObject vao = new VertexArrayObject();
+    /**Loading visual scene from dae node
+     *
+     * @param library_visual_scenes Dae node
+     * @param materials Loaded materials
+     * @param geometry Loaded geometry
+     * @param indexBuffers Loaded index buffers
+     * @param shape Loaded collision shape
+     * @param metaModel Loaded meta data
+     * @return Final model
+     */
+    private static Model loadVisualScene(Node library_visual_scenes, HashMap<String, Pair<MetaMaterial, Material>> materials,
+                                         VertexArrayObject geometry, List<Pair<String, IndexBuffer>> indexBuffers,
+                                         CollisionShape shape, MetaModel metaModel){
 
-        //New vertex data
-        List<Float> vertices = new LinkedList<>(), normals = new LinkedList<>(), texCoords = new LinkedList<>();
+        //Get material bindings node
+        Node visual_scene = getSpecificFirstChild(library_visual_scenes, "visual_scene");
+        Node node = getSpecificFirstChild(visual_scene, "node");
+        Node instance_geometry = getSpecificFirstChild(node, "instance_geometry");
+        Node bind_material = getSpecificFirstChild(instance_geometry, "bind_material");
+        Node technique_common = getSpecificFirstChild(bind_material, "technique_common");
 
-        //Iterate through objects
-        for(Pair<String, int[]> object: indexBuffersRaw){
+        //Final material map
+        HashMap<String, Pair<MetaMaterial, Material>> finalMaterialMap = new HashMap<>();
 
-            //Iterate through vertices
-            for(int i = 0; i < object.getValue().length; i += 3){
+        //Iterate through material bindings
+        for(int i = 0; i < technique_common.getChildNodes().getLength(); i++){
+            Node binding = technique_common.getChildNodes().item(i);
 
+            //Check if child is a material binding
+            if(binding.getNodeName().equals("instance_material")){
+
+                //Get data from node
+                String targetMaterial = binding.getAttributes().getNamedItem("target").getNodeValue().substring(1);
+                String symbolMaterial = binding.getAttributes().getNamedItem("symbol").getNodeValue();
+
+                //Put into final map
+                finalMaterialMap.put(symbolMaterial, materials.get(targetMaterial));
             }
         }
 
-        return vao;
+        //Create final data structures
+        IndexBuffer[] indexBuffersFinal = new IndexBuffer[indexBuffers.size()];
+        Material[] materialsFinal = new Material[indexBuffers.size()];
+        MetaMaterial[] metaMaterialsFinal = new MetaMaterial[indexBuffers.size()];
+
+        //Order materials and index buffers
+        for(int i = 0; i < indexBuffers.size(); i++){
+            indexBuffersFinal[i] = indexBuffers.get(i).getValue();
+
+            //check if material for this mesh exist
+            String material = indexBuffers.get(i).getKey();
+            if(finalMaterialMap.containsKey(material)){
+
+                materialsFinal[i] = finalMaterialMap.get(material).getValue();
+                metaMaterialsFinal[i] = finalMaterialMap.get(material).getKey();
+            }
+        }
+
+        //Fill meta model if exist
+        if(metaModel != null)
+            metaModel.setMaterials(metaMaterialsFinal);
+
+        return new Model(geometry, indexBuffersFinal, materialsFinal, shape);
     }
 
-    /**Processing vertex from face data
+    /**Converting raw dae model data into core engine / opengl format
      *
-     * @param vertexIndices Vertex indices as string
+     * @param verticesRaw Raw dae vertices
+     * @param texCoordsRaw Raw dae texture coordinates
+     * @param normalsRaw Raw dae normals
+     * @param indexBuffersRaw Raw dae index buffers
+     * @param vertexOffset Offset of the vertex ids in the raw dae indices
+     * @param texCoordsOffset Offset of the tex coords ids in the raw dae indices
+     * @param normalsOffset Offset of the normal ids in the raw dae indices
+     * @param shape Collision shape to write in data
+     * @param meta Meta model to write in meta data
+     * @param indexBuffers List to return index buffers in (tagged by material name)
+     * @return Generated vao
+     */
+    private static VertexArrayObject convertMeshData(float[] verticesRaw, float[] texCoordsRaw, float[] normalsRaw,
+                                                    List<Pair<String, int[]>> indexBuffersRaw, int vertexOffset,
+                                                    int texCoordsOffset, int normalsOffset, CollisionShape shape,
+                                                    MetaModel meta, List<Pair<String, IndexBuffer>> indexBuffers){
+
+        //Create result
+       VertexArrayObject result = new VertexArrayObject();
+
+        //New vertex data
+        List<Float> vertices = new LinkedList<>(), normals = new LinkedList<>(), texCoords = new LinkedList<>(),
+            tangents = new LinkedList<>();
+        int[][] indices = new int[indexBuffersRaw.size()][];
+
+        //List with all already processed vertices
+        List<Vertex> alreadyProcessedVertices = new LinkedList<>();
+
+        //Iterate through objects
+        int counter = 0;
+        for(Pair<String, int[]> object: indexBuffersRaw){
+
+            //New converted index list
+            List<Integer> indicesList = new LinkedList<>();
+
+            //Iterate through vertices
+            for(int i = 0; i < object.getValue().length; i += 9){
+
+                //Create current vertices
+                Vertex vertex0 = new Vertex();
+                vertex0.positionId = object.getValue()[i +vertexOffset];
+                vertex0.texCoordId = object.getValue()[i +texCoordsOffset];
+                vertex0.normalId = object.getValue()[i +normalsOffset];
+
+                Vertex vertex1 = new Vertex();
+                vertex1.positionId = object.getValue()[i +vertexOffset +3];
+                vertex1.texCoordId = object.getValue()[i +texCoordsOffset +3];
+                vertex1.normalId = object.getValue()[i +normalsOffset +3];
+
+                Vertex vertex2 = new Vertex();
+                vertex2.positionId = object.getValue()[i +vertexOffset +6];
+                vertex2.texCoordId = object.getValue()[i +texCoordsOffset +6];
+                vertex2.normalId = object.getValue()[i +normalsOffset +6];
+
+                //Process vertices
+                int index0 = processVertex(vertex0, verticesRaw, texCoordsRaw, normalsRaw, vertices, texCoords,
+                        normals, tangents, indicesList, alreadyProcessedVertices);
+                int index1 = processVertex(vertex1, verticesRaw, texCoordsRaw, normalsRaw, vertices, texCoords,
+                        normals, tangents, indicesList, alreadyProcessedVertices);
+                int index2 = processVertex(vertex2, verticesRaw, texCoordsRaw, normalsRaw, vertices, texCoords,
+                        normals, tangents, indicesList, alreadyProcessedVertices);
+
+                //Calculate tangent
+                float[] tangent = Toolbox.calcTangent(
+                        vertices.get(index0 * 3),
+                        vertices.get(index0 * 3 +1),
+                        vertices.get(index0 * 3 +2),
+                        vertices.get(index1 * 3),
+                        vertices.get(index1 * 3 +1),
+                        vertices.get(index1 * 3 +2),
+                        vertices.get(index2 * 3),
+                        vertices.get(index2 * 3 +1),
+                        vertices.get(index2 * 3 +2),
+                        texCoords.get(index0 * 2),
+                        texCoords.get(index0 * 2 +1),
+                        texCoords.get(index1 * 2),
+                        texCoords.get(index1 * 2 +1),
+                        texCoords.get(index2 * 2),
+                        texCoords.get(index2 * 2 +1)
+                );
+
+                //Set new tangent to vertices
+                tangents.set(index0 * 3, tangent[0]);
+                tangents.set(index0 * 3 +1, tangent[1]);
+                tangents.set(index0 * 3 +2, tangent[2]);
+                tangents.set(index1 * 3, tangent[0]);
+                tangents.set(index1 * 3 +1, tangent[1]);
+                tangents.set(index1 * 3 +2, tangent[2]);
+                tangents.set(index2 * 3, tangent[0]);
+                tangents.set(index2 * 3 +1, tangent[1]);
+                tangents.set(index2 * 3 +2, tangent[2]);
+            }
+
+            //Add indices to vao
+            indices[counter] = Toolbox.toArrayi(indicesList);
+            IndexBuffer indexBuffer = result.addIndexBuffer(indices[counter]);
+            indexBuffers.add(new Pair<>(object.getKey(), indexBuffer));
+
+            counter++;
+        }
+
+        //Convert lists to arrays
+        float[] v   = Toolbox.toArrayf(vertices);
+        float[] tc  = Toolbox.toArrayf(texCoords);
+        float[] n   = Toolbox.toArrayf(normals);
+        float[] t   = Toolbox.toArrayf(tangents);
+
+        //Create collision shape
+        if(shape instanceof ConvexHullShape)
+            shape = Physics.createConvexHullShape(v);
+        else if(shape instanceof TriangleMeshShape)
+            shape = Physics.createTriangleMeshShape(v, indices);
+
+        //Adding data to vao
+        result.addVertexBuffer(v, 3, 0);
+        result.addVertexBuffer(tc, 2, 1);
+        result.addVertexBuffer(n, 3, 2);
+        result.addVertexBuffer(t, 3, 3);
+
+        //Fill up meta model
+        if(meta != null){
+            meta.setVertices(v);
+            meta.setTexCoords(tc);
+            meta.setNormals(n);
+            meta.setTangents(t);
+            meta.setIndices(indices);
+            meta.setShape(shape);
+        }
+
+        return result;
+    }
+
+    /**Processing vertex from vertex data
+     *
+     * @param vertex Raw vertex indices
      * @param verticesRaw Raw vertex data of the model
      * @param texCoordsRaw Raw tex coords data of the model
      * @param normalsRaw Raw normal data of the model
@@ -386,37 +612,29 @@ public class DaeLoader {
      * @param alreadyProcessedVertices List of all vertices, that where already processed
      * @return Index of the processed vertex
      */
-    private static int processVertex(String vertexIndices, float[] verticesRaw, float[] texCoordsRaw,
+    private static int processVertex(Vertex vertex, float[] verticesRaw, float[] texCoordsRaw,
                                      float[] normalsRaw, List<Float> verticesList, List<Float> texCoordsList,
                                      List<Float> normalsList, List<Float> tangentList, List<Integer> indicesList,
-                                     List<String> alreadyProcessedVertices){
+                                     List<Vertex> alreadyProcessedVertices){
 
-        int index = alreadyProcessedVertices.indexOf(vertexIndices);
+        int index = alreadyProcessedVertices.indexOf(vertex);
 
         //Check if similar vertex was already processed
         if(index == -1) {
 
-            String[] vArgs = vertexIndices.split("/");
-            int[] v = new int[3];
-
-            //Get raw indices
-            v[0] = Integer.parseInt(vArgs[0]);
-            v[1] = Integer.parseInt(vArgs[1]);
-            v[2] = Integer.parseInt(vArgs[2]);
-
             //Convert raw vertices
-            verticesList.add(verticesRaw.get((v[0] - 1) * 3));
-            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 1));
-            verticesList.add(verticesRaw.get((v[0] - 1) * 3 + 2));
+            verticesList.add(verticesRaw[(vertex.positionId) * 3]);
+            verticesList.add(verticesRaw[(vertex.positionId) * 3 + 1]);
+            verticesList.add(verticesRaw[(vertex.positionId) * 3 + 2]);
 
             //Convert raw tex coords
-            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2));
-            texCoordsList.add(texCoordsRaw.get((v[1] - 1) * 2 + 1));
+            texCoordsList.add(texCoordsRaw[(vertex.texCoordId) * 2]);
+            texCoordsList.add(texCoordsRaw[(vertex.texCoordId) * 2 + 1]);
 
             //Convert raw normals
-            normalsList.add(normalsRaw.get((v[2] - 1) * 3));
-            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 1));
-            normalsList.add(normalsRaw.get((v[2] - 1) * 3 + 2));
+            normalsList.add(normalsRaw[(vertex.normalId) * 3]);
+            normalsList.add(normalsRaw[(vertex.normalId) * 3 + 1]);
+            normalsList.add(normalsRaw[(vertex.normalId) * 3 + 2]);
 
             //Add placeholder tangents
             tangentList.add(0.0f);
@@ -424,7 +642,7 @@ public class DaeLoader {
             tangentList.add(0.0f);
 
             //Convert raw indices
-            alreadyProcessedVertices.add(vertexIndices);
+            alreadyProcessedVertices.add(vertex);
             index = alreadyProcessedVertices.size() -1;
         }
 
@@ -432,6 +650,11 @@ public class DaeLoader {
         return index;
     }
 
+    /**Converting a color from text representation into a Color object
+     *
+     * @param text Color as text
+     * @return Converted Color object
+     */
     private static Color getColorfromText(String text){
         String[] values = text.split(" ");
 
@@ -443,6 +666,12 @@ public class DaeLoader {
         return color;
     }
 
+    /**Getting first child of a node, that has a specific name
+     *
+     * @param parent Parent to get child from
+     * @param tag Name of the child
+     * @return First child with this name
+     */
     private static Node getSpecificFirstChild(Node parent, String tag){
         for(int i = 0; i < parent.getChildNodes().getLength(); i++){
             if(parent.getChildNodes().item(i).getNodeName().equals(tag)){
@@ -450,5 +679,22 @@ public class DaeLoader {
             }
         }
         return null;
+    }
+
+    /**Simple data class, that stores vertex data for comparison
+     */
+    private static class Vertex {
+        int positionId, texCoordId, normalId;
+
+        @Override
+        public boolean equals(Object obj) {
+
+            if(!(obj instanceof Vertex))
+                return false;
+
+            return normalId == ((Vertex) obj).normalId &&
+                    positionId == ((Vertex) obj).positionId &&
+                    texCoordId == ((Vertex) obj).texCoordId;
+        }
     }
 }

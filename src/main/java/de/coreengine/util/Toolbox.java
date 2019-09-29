@@ -266,7 +266,7 @@ public class Toolbox {
      * @param v2v V coordinate of vertex 2
      * @return Tangent as float array [x, y, z]
      */
-    private static float[] calcTangent(float v0x, float v0y, float v0z, float v1x,
+    public static float[] calcTangent(float v0x, float v0y, float v0z, float v1x,
                                        float v1y, float v1z, float v2x, float v2y, float v2z, float v0u,
                                        float v0v, float v1u, float v1v, float v2u, float v2v){
 
