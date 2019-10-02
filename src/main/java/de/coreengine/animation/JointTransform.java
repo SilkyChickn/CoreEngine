@@ -26,29 +26,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.rendering.model;
+package de.coreengine.animation;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import de.coreengine.animation.Joint;
-import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.util.gl.VertexArrayObject;
+import com.bulletphysics.linearmath.QuaternionUtil;
 
-/**Class that represent a animated model, with multiple materials and a skeleton.
- *
- * @author Darius Dinger
- */
-public class AnimatedModel extends Model {
+import javax.vecmath.Quat4f;
 
-    //Skeleton of the model
-    private Joint skeleton;
+public class JointTransform {
 
-    public AnimatedModel(VertexArrayObject vao, IndexBuffer[] indexBuffers, CollisionShape shape, Joint skeleton) {
-        super(vao, indexBuffers, shape);
-    }
+    Quat4f test = new Quat4f();
 
-    /**@return Root joint of the models skeleton
-     */
-    public Joint getSkeleton() {
-        return skeleton;
+    public JointTransform(){
+        test.
     }
 }

@@ -26,29 +26,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.rendering.model;
+package de.coreengine.animation;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import de.coreengine.animation.Joint;
-import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.util.gl.VertexArrayObject;
+import java.util.HashMap;
+import java.util.List;
 
-/**Class that represent a animated model, with multiple materials and a skeleton.
- *
- * @author Darius Dinger
+/**Represents a animation that can be played by an animated model
  */
-public class AnimatedModel extends Model {
+public class Animation {
 
-    //Skeleton of the model
-    private Joint skeleton;
+    //List of all keyframes per joint by joints name
+    private HashMap<String, List<KeyFrame>> keyFrames = new HashMap<>();
 
-    public AnimatedModel(VertexArrayObject vao, IndexBuffer[] indexBuffers, CollisionShape shape, Joint skeleton) {
-        super(vao, indexBuffers, shape);
-    }
+    //Current time of the animation
+    private float currentTime = 0;
 
-    /**@return Root joint of the models skeleton
-     */
-    public Joint getSkeleton() {
-        return skeleton;
-    }
+
 }

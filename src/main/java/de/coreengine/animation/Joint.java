@@ -26,17 +26,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.rendering.model;
+package de.coreengine.animation;
 
+import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Joint {
 
-    //Index of the joint
+    //Index of the joint in the skeleton
     private int index;
 
     //Children joints of this joint
     private List<Joint> children = new ArrayList<>();
 
+    //Inverse matrix of joints default position
+    private Matrix4f inverseBindMatrix;
+
+    /**Creating new joint
+     *
+     * @param index Index of the joint in the skeleton
+     * @param inverseBindMatrix Inverse matrix of joints default position
+     */
+    public Joint(int index, Matrix4f inverseBindMatrix){
+        this.index = index;
+        this.inverseBindMatrix = inverseBindMatrix;
+    }
+
+    /**Adding new child to the joint
+     *
+     * @param child Child to add
+     */
+    public void addChild(Joint child){
+        children.add(child);
+    }
 }

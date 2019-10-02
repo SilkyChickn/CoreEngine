@@ -26,29 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.rendering.model;
+package de.coreengine.animation;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import de.coreengine.animation.Joint;
-import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.util.gl.VertexArrayObject;
-
-/**Class that represent a animated model, with multiple materials and a skeleton.
- *
- * @author Darius Dinger
- */
-public class AnimatedModel extends Model {
-
-    //Skeleton of the model
-    private Joint skeleton;
-
-    public AnimatedModel(VertexArrayObject vao, IndexBuffer[] indexBuffers, CollisionShape shape, Joint skeleton) {
-        super(vao, indexBuffers, shape);
-    }
-
-    /**@return Root joint of the models skeleton
-     */
-    public Joint getSkeleton() {
-        return skeleton;
-    }
+public class KeyFrame {
 }
