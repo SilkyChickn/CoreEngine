@@ -25,29 +25,31 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.coreengine.system.gameObjects;
 
-import de.coreengine.rendering.renderable.Entity;
-import de.coreengine.rendering.renderer.MasterRenderer;
-import de.coreengine.system.GameObject;
+package de.coreengine.rendering.renderable;
 
-/**Game object of a simple entity, that does nothing
+import de.coreengine.animation.Joint;
+
+/**Class that represents an animated entity in the world
  *
  * @author Darius Dinger
  */
-public class SimpleEntity extends GameObject{
-    
-    private Entity entity = new Entity();
-    
-    /**@return Read/writeable entity
+public class AnimatedEntity extends Entity{
+
+    //Root joint of the models skeleton
+    private Joint skeleton = null;
+
+    /**Setting the skeleton of the animated model (must fit to the models vao)
+     *
+     * @param skeleton Root joint of the models skeleton
      */
-    public Entity getEntity() {
-        return entity;
+    public void setSkeleton(Joint skeleton) {
+        this.skeleton = skeleton;
     }
-    
-    @Override
-    public void onRender() {
-        MasterRenderer.renderEntity(entity);
-        super.onRender();
+
+    /**@return Root joint of the models skeleton
+     */
+    public Joint getSkeleton() {
+        return skeleton;
     }
 }

@@ -75,6 +75,7 @@ public class MasterRenderer {
     private static final LensFlareRenderer LENS_FLARE_RENDERER = new LensFlareRenderer();
     private static final SkyboxRenderer SKYBOX_RENDERER = new SkyboxRenderer();
     private static final EntityRenderer ENTITY_RENDERER = new EntityRenderer();
+    private static final AnimatedEntityRenderer ANIMATED_ENTITY_RENDERER = new AnimatedEntityRenderer();
     private static final FontRenderer FONT_RENDERER = new FontRenderer();
     private static final ParticleRenderer PARTICLE_RENDERER = new ParticleRenderer();
     private static final ShadowMapRenderer SHADOW_MAP_RENDERER = new ShadowMapRenderer();
@@ -89,6 +90,7 @@ public class MasterRenderer {
     
     //Lists/maps that contains the stuff to render in the next frame
     private static final List<Entity> ENTITIES = new LinkedList<>();
+    private static final List<AnimatedEntity> ANIMATED_ENTITIES = new LinkedList<>();
     private static final HashMap<Integer, List<Particle>> PARTICLES = new HashMap<>();
     private static final List<Terrain> TERRAINS = new LinkedList<>();
     private static final List<Water> WATERS = new LinkedList<>();
@@ -177,10 +179,11 @@ public class MasterRenderer {
             
             w.getReflectionFbo().bind(GL30.GL_COLOR_ATTACHMENT0);
             clear();
-            TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane()); 
+            TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane());
             ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
+            ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
             w.getReflectionFbo().unbind();
-            
+
             w.getClipPlane().y = (-1);
             w.getClipPlane().w = (clipDistance +0.15f);
             camera.setY(camera.getPosition().y +camMoveDistance);
@@ -192,6 +195,7 @@ public class MasterRenderer {
             clear();
             TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane()); 
             ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
+            ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
             w.getRefractionFbo().unbind();
             w.getClipPlane().w = (clipDistance);
         });
@@ -233,6 +237,10 @@ public class MasterRenderer {
             //Rendering entities
             ENTITY_RENDERER.render(ENTITIES, camera, CLIP_PLANE_RENDER_ALL);
             ENTITIES.clear();
+
+            //Rendering animated entities
+            ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, CLIP_PLANE_RENDER_ALL);
+            ANIMATED_ENTITIES.clear();
 
             //Rendering particles
             PARTICLE_RENDERER.render(PARTICLES, camera);
@@ -453,7 +461,16 @@ public class MasterRenderer {
     public static void renderEntity(Entity entity){
         ENTITIES.add(entity);
     }
-    
+
+    /**Adding a new animated entity to the animated entity renderlist. So it will be rendered in
+     * the next frame.
+     *
+     * @param entity Entity to add
+     */
+    public static void renderAnimatedEntity(AnimatedEntity entity){
+        ANIMATED_ENTITIES.add(entity);
+    }
+
     /**Adding a new water to the water renderlist. So it will be rendered in
      * the next frame.
      * 

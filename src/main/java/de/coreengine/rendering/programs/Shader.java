@@ -247,7 +247,7 @@ public abstract class Shader {
     protected final void setUniformArray3f(int location, float[] floats){
         GL20.glUniform3fv(location, floats);
     }
-    
+
     /**Loading a vec2 array into a uniform variable
      * 
      * @param location Location of the uniform variable

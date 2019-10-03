@@ -25,30 +25,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package de.coreengine.system.gameObjects;
 
-package de.coreengine.rendering.model;
+import de.coreengine.rendering.renderable.Entity;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.system.GameObject;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import de.coreengine.animation.Joint;
-import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.util.gl.VertexArrayObject;
-
-/**Class that represent a animated model, with multiple materials and a skeleton.
+/**Game object of a simple entity, that does nothing
  *
  * @author Darius Dinger
  */
-public class AnimatedModel extends Model {
-
-    //Skeleton of the model
-    private Joint skeleton;
-
-    public AnimatedModel(VertexArrayObject vao, IndexBuffer[] indexBuffers, CollisionShape shape, Joint skeleton) {
-        super(vao, indexBuffers, shape);
-    }
-
-    /**@return Root joint of the models skeleton
+public class Simple extends GameObject{
+    
+    private Entity entity = new Entity();
+    
+    /**@return Read/writeable entity
      */
-    public Joint getSkeleton() {
-        return skeleton;
+    public Entity getEntity() {
+        return entity;
+    }
+    
+    @Override
+    public void onRender() {
+        MasterRenderer.renderEntity(entity);
+        super.onRender();
     }
 }

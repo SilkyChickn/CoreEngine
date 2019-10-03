@@ -350,7 +350,7 @@ public class Transformation {
         localTransMat.set(posMat);
         localTransMat.mul(rotMat);
         
-        //get currentstate into rot pos mat
+        //get current state into rot pos mat
         rotPosMat.set(localTransMat);
         
         //Scale transmat

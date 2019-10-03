@@ -53,7 +53,7 @@ public class VertexArrayObject {
      * 
      * @param values Values to fill into the buffer
      * @param dimension Dimension of the values
-     * @param row Row to stre the buffer in the vao
+     * @param row Row to store the buffer in the vao
      */
     public void addVertexBuffer(float[] values, int dimension, int row){
         
@@ -76,7 +76,35 @@ public class VertexArrayObject {
         MemoryDumper.addVbo(vbo);
         attribs = Toolbox.addElement(attribs, row);
     }
-    
+
+    /**Adding new VertexBufferObject (VBO) to the VAO
+     *
+     * @param values Values to fill into the buffer
+     * @param dimension Dimension of the values
+     * @param row Row to store the buffer in the vao
+     */
+    public void addVertexBuffer(int[] values, int dimension, int row){
+
+        //Bind VAO
+        bind();
+
+        //Generate vertex buffer
+        int vbo = GL15.glGenBuffers();
+
+        //Fill and seperate data in buffer
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, values, GL15.GL_STATIC_DRAW);
+        GL20.glVertexAttribPointer(row, dimension, GL11.GL_INT, false, 0, 0);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+        //Unbind VAO
+        unbind();
+
+        //Add new buffer to buffers and row to attributes
+        MemoryDumper.addVbo(vbo);
+        attribs = Toolbox.addElement(attribs, row);
+    }
+
     /**Creates new IndexBuffer and adding it to the vao
      * 
      * @param indices Indices for the new index buffer

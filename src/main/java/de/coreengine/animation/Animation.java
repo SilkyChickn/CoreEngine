@@ -28,18 +28,39 @@
 
 package de.coreengine.animation;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**Represents a animation that can be played by an animated model
  */
 public class Animation {
 
+    //Length of the animation (last keyframe)
+    private float length;
+
     //List of all keyframes per joint by joints name
-    private HashMap<String, List<KeyFrame>> keyFrames = new HashMap<>();
+    private List<List<KeyFrame>> keyFrames;
 
-    //Current time of the animation
-    private float currentTime = 0;
+    /**Creating animation and init values
+     *
+     * @param length Length of the animation in millis
+     * @param keyFrames List of all keyframes per joint
+     */
+    public Animation(float length, List<List<KeyFrame>> keyFrames) {
+        this.length = length;
+        this.keyFrames = keyFrames;
+    }
 
+    /**@return Length of the animation in millis
+     */
+    public float getLength() {
+        return length;
+    }
 
+    /**This returns a list of all joints represented as a list of keyframes for this joint
+     *
+     * @return List of all keyframes per joint
+     */
+    public List<List<KeyFrame>> getKeyFrames() {
+        return keyFrames;
+    }
 }
