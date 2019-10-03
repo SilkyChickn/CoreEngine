@@ -29,6 +29,7 @@
 package de.coreengine.animation;
 
 import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class Joint {
     public Joint(int index, Matrix4f inverseBindMatrix){
         this.index = index;
         this.inverseBindMatrix = inverseBindMatrix;
-        this.localPose.invert(localPose);
+        this.localPose.invert(inverseBindMatrix);
         calcAnimatedTransform();
     }
 

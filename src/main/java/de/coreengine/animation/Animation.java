@@ -42,12 +42,18 @@ public class Animation {
 
     /**Creating animation and init values
      *
-     * @param length Length of the animation in millis
      * @param keyFrames List of all keyframes per joint
      */
-    public Animation(float length, List<List<KeyFrame>> keyFrames) {
-        this.length = length;
+    public Animation(List<List<KeyFrame>> keyFrames) {
         this.keyFrames = keyFrames;
+
+        //Get last keyframe timestamp as animation length
+        length = 0.0f;
+        for(List<KeyFrame> kf: keyFrames){
+            for(KeyFrame k: kf){
+                if(k.getTimestamp() > length) length = k.getTimestamp();
+            }
+        }
     }
 
     /**@return Length of the animation in millis

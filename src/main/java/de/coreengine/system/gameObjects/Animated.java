@@ -50,7 +50,7 @@ public class Animated extends GameObject {
     private boolean loop = true;
 
     //Is the animation paused
-    private boolean pause = false;
+    private boolean pause = true;
 
     /**Play / resume the animation
      */
@@ -101,6 +101,8 @@ public class Animated extends GameObject {
 
         //Animate skeleton of the entity
         reposeSkeleton();
+
+        System.out.println(currentTime);
 
         super.onUpdate();
     }

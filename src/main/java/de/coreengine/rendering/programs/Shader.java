@@ -35,6 +35,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
+import javax.vecmath.Matrix4f;
+
 /**Class that represents an opengl shader program
  *
  * @author Darius Dinger

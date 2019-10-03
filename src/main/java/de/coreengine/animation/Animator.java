@@ -121,7 +121,7 @@ public class Animator {
 
             //Calculate percentage progression between the two keyframes
             float diffrence = keyFrames.getValue().getTimestamp() -keyFrames.getKey().getTimestamp();
-            float progression = 1.0f * diffrence / time;
+            float progression = 1.0f * (time -keyFrames.getKey().getTimestamp()) / diffrence;
 
             //Calculate interpolated rotation
             Quat4f interpolatedQuaternion = new Quat4f();
@@ -160,6 +160,8 @@ public class Animator {
                 //Check if next keyframe is first, so previous doesnt exist
                 if(i == 0) previous = null;
                 else previous = keyFrames.get(i -1);
+
+                break;
             }
         }
 

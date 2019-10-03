@@ -94,7 +94,7 @@ public class VertexArrayObject {
         //Fill and seperate data in buffer
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, values, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(row, dimension, GL11.GL_INT, false, 0, 0);
+        GL30.glVertexAttribIPointer(row, dimension, GL11.GL_INT, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         //Unbind VAO

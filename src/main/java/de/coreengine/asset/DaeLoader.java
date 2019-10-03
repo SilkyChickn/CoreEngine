@@ -382,9 +382,13 @@ public class DaeLoader {
 
                                             case "p":       int[] rawIndices =
                                                             Toolbox.stringToArrayi(child.getTextContent(), " ");
-                                                            rawIndexBuffers.add(new Pair<>(
-                                                            node.getAttributes().getNamedItem("material").
-                                                            getNodeValue(), rawIndices));
+                                                            if(node.getAttributes().getNamedItem("material") != null){
+                                                                rawIndexBuffers.add(new Pair<>(
+                                                                node.getAttributes().getNamedItem("material").
+                                                                getNodeValue(), rawIndices));
+                                                            }else{
+                                                                rawIndexBuffers.add(new Pair<>(null, rawIndices));
+                                                            }
                                                             break;
                                         }
                                     }
@@ -416,7 +420,7 @@ public class DaeLoader {
         //Get material bindings node
         Node visual_scene = getSpecificFirstChild(library_visual_scenes, "visual_scene");
         Node node = getSpecificFirstChild(visual_scene, "node");
-        Node instance_geometry = getSpecificFirstChild(node, "instance_geometry");
+        Node instance_geometry = getSpecificFirstChild(node, "instance_controller");
         Node bind_material = getSpecificFirstChild(instance_geometry, "bind_material");
         Node technique_common = getSpecificFirstChild(bind_material, "technique_common");
 

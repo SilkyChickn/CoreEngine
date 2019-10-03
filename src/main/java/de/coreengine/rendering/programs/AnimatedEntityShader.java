@@ -145,8 +145,8 @@ public class AnimatedEntityShader extends Shader{
             //Fill up matrix
             for(int r = 0; r < 4; r++){
                 for(int c = 0; c < 4; c++){
-                    float val = joint.getAnimatedTransform().getElement(r, c);
-                    matrices[joint.getIndex() * 16 + r * 4 +c] = val;
+                    float val = joint.getAnimatedTransform().getElement(c, r);
+                    matrices[(joint.getIndex() * 16) + (r * 4) + c] = val;
                 }
             }
         }
