@@ -93,8 +93,9 @@ public class Animator {
 
         //Get interpolated matrix between the two keyframes, mul with parent matrix and set as joints local matrix
         Matrix4f interpolatedMatrix = getInterpolatedMatrix(relevant, time);
-        interpolatedMatrix.mul(parentMatrix);
-        child.setLocalPose(interpolatedMatrix);
+        Matrix4f localPose = new Matrix4f(parentMatrix);
+        localPose.mul(interpolatedMatrix);
+        child.setLocalPose(localPose);
 
         //Animate all children
         for(Joint c: child.getChildren()) applyAnimation(c, interpolatedMatrix, animation, time);
