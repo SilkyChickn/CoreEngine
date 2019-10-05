@@ -27,7 +27,6 @@
  */
 package de.coreengine.rendering.renderable;
 
-import de.coreengine.rendering.model.Model;
 import de.coreengine.rendering.model.Transformation;
 
 /**Class that represents an entity in the world
@@ -40,11 +39,11 @@ public class Entity {
     private Transformation transform = new Transformation();
     
     //Model of the entity
-    private Model model = null;
+    private String model = null;
     
     /**@param model New model of the entity
      */
-    public void setModel(Model model) {
+    public void setModel(String model) {
         this.model = model;
     }
     
@@ -56,7 +55,7 @@ public class Entity {
     
     /**@return Model of the entity
      */
-    public Model getModel() {
+    public String getModel() {
         return model;
     }
 }

@@ -67,31 +67,31 @@ public class MaterialParser {
                     }
                 case "c_map":
                     result.diffuseMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "n_map":
                     result.normalMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "ao_map":
                     result.ambientOcclusionMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "a_map":
                     result.alphaMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "g_map":
                     result.glowMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "d_map":
                     result.displacementMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "s_map":
                     result.specularMap = args[i+1];
-                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
+                    TextureLoader.loadTextureFile(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "r_map":
                     result.reflectionMap = args[i+1];

@@ -85,8 +85,8 @@ public class NumericUpDown extends GameObject{
         filter.add(".");
         textField.setFilter(filter);
 
-        TextureLoader.loadTextureFileGl("res/up.png", true, GL11.GL_LINEAR, true);
-        TextureLoader.loadTextureFileGl("res/down.png", true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFile("res/up.png", true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFile("res/down.png", true, GL11.GL_LINEAR, true);
     }
     
     @Override

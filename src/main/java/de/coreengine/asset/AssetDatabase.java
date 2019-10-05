@@ -34,6 +34,8 @@ import de.coreengine.rendering.model.Model;
 
 import java.util.HashMap;
 
+/**Class to store loaded assets
+ */
 public class AssetDatabase {
 
     //Databases

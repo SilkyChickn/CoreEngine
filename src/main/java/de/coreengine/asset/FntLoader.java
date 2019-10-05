@@ -110,7 +110,7 @@ public class FntLoader {
                         for(String arg: args){
                             if(arg.startsWith("file=")){
                                 textureAtlas = path + arg.split("=")[1].replace("\"", "");
-                                TextureLoader.loadTextureFileGl(textureAtlas, false, GL11.GL_LINEAR, asResource);
+                                TextureLoader.loadTextureFile(textureAtlas, false, GL11.GL_LINEAR, asResource);
                             }
                         }
                         

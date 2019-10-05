@@ -29,6 +29,7 @@
 package de.coreengine.rendering.renderable;
 
 import de.coreengine.animation.Joint;
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.rendering.model.AnimatedModel;
 import de.coreengine.rendering.model.Transformation;
 
@@ -42,16 +43,16 @@ public class AnimatedEntity {
     private Transformation transform = new Transformation();
 
     //Model of the entity
-    private AnimatedModel model = null;
+    private String model = null;
 
     //Root joint of the models skeleton
     private Joint skeleton = null;
 
     /**@param model New model of the entity
      */
-    public void setModel(AnimatedModel model) {
+    public void setModel(String model) {
         this.model = model;
-        this.skeleton = model.getNewSkeletonInstance();
+        this.skeleton = AssetDatabase.getAnimatedModel(model).getNewSkeletonInstance();
     }
 
     /**@return Read/writeable transformation of the entity
@@ -62,7 +63,7 @@ public class AnimatedEntity {
 
     /**@return Model of the entity
      */
-    public AnimatedModel getModel() {
+    public String getModel() {
         return model;
     }
 

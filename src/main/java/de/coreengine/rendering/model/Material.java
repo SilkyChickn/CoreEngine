@@ -121,8 +121,8 @@ public class Material {
     static {
 
         //Load default textures
-        TextureLoader.loadTextureFileGl(TEXTURE_WHITE, true, GL11.GL_LINEAR, true);
-        TextureLoader.loadTextureFileGl(TEXTURE_BLANK, true, GL11.GL_LINEAR, true);
-        TextureLoader.loadTextureFileGl(DEFAULT_NORMAL_MAP, true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFile(TEXTURE_WHITE, true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFile(TEXTURE_BLANK, true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFile(DEFAULT_NORMAL_MAP, true, GL11.GL_LINEAR, true);
     }
 }

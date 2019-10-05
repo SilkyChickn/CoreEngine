@@ -44,6 +44,7 @@ import java.nio.IntBuffer;
 /**Class for loading Textures from drive<br>
  *<br>
  * Supported Formats:<br>
+ * <br>
  * JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib<br>
  * PNG 1/2/4/8/16-bit-per-channel<br>
  * TGA (not sure what subset, if a subset)<br>
@@ -67,8 +68,8 @@ public class TextureLoader {
      * @param asResource Loading MetaTexture from resources
      * @return MetaTexture object
      */
-    public static MetaTexture loadTextureFile(String textureFile, boolean mipmap,
-                                              int filtering, boolean asResource) {
+    public static MetaTexture loadTextureFileMeta(String textureFile, boolean mipmap,
+                                                  int filtering, boolean asResource) {
 
         //Define window icon variables
         ByteBuffer textureData = null;
@@ -149,9 +150,9 @@ public class TextureLoader {
      * @param filtering Wich filtering mathod (GL_NEARES, GL_LINEAR, ...)
      * @param asResource Loading MetaTexture from resources
      */
-    public static void loadTextureFileGl(String textureFile, boolean mipmap, int filtering, boolean asResource){
+    public static void loadTextureFile(String textureFile, boolean mipmap, int filtering, boolean asResource){
         if(AssetDatabase.textures.containsKey(textureFile)) return;
-        loadTextureFile(textureFile, mipmap, filtering, asResource);
+        loadTextureFileMeta(textureFile, mipmap, filtering, asResource);
     }
     
     /**Loading cube map texture from abstract path and extension and storing into asset database. The cube map
@@ -186,12 +187,12 @@ public class TextureLoader {
         if(AssetDatabase.textures.containsKey(key)) return;
 
         //Loading cube map Textures
-        MetaTexture imgL = loadTextureFile(left, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgR = loadTextureFile(right, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgT = loadTextureFile(top, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgB = loadTextureFile(bottom, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgF = loadTextureFile(front, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgBa = loadTextureFile(back, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgL = loadTextureFileMeta(left, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgR = loadTextureFileMeta(right, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgT = loadTextureFileMeta(top, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgB = loadTextureFileMeta(bottom, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgF = loadTextureFileMeta(front, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgBa = loadTextureFileMeta(back, false, GL11.GL_LINEAR, asResource);
         
         //Gen and bind cube map texture
         int tex = GL11.glGenTextures();

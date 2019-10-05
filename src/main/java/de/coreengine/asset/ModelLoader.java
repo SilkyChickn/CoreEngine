@@ -28,11 +28,24 @@
 
 package de.coreengine.asset;
 
+import de.coreengine.asset.meta.MetaMaterial;
+import de.coreengine.asset.meta.MetaMesh;
 import de.coreengine.asset.meta.MetaModel;
+import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.model.Mesh;
+import de.coreengine.util.Logger;
+import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMaterialProperty;
+import org.lwjgl.assimp.AIScene;
+
+import java.util.List;
+
+import static org.lwjgl.assimp.Assimp.*;
 
 /**Class for loading model files<br>
  * <br>
  * Supported Formats:<br>
+ * <br>
  * COMMON INTERCHANGE FORMATS (An asterisk indicates limited support)<br>
  * Autodesk ( .fbx )<br>
  * Collada ( .dae )<br>
@@ -93,13 +106,51 @@ import de.coreengine.asset.meta.MetaModel;
  */
 public class ModelLoader {
 
-    /**Loading
+    /**Loading a model from a file into asset database
      *
-     * @param file
-     * @param asResource
-     * @return
+     * @param file Model file to load
+     * @param asResource Load model from resources
      */
-    public static MetaModel loadModelFile(String file, boolean asResource){
-        return null;
+    public static void loadModelFile(String file, boolean asResource){
+        if(AssetDatabase.models.containsKey(file)) return;
+        loadModelFileMeta(file, asResource);
     }
+
+    /**Loading a model from a file into asset database and storing data into meta model
+     *
+     * @param file Model file to load
+     * @param asResource Load model from resources
+     * @return Meta model with raw model data
+     */
+    public static MetaModel loadModelFileMeta(String file, boolean asResource){
+
+        //Load and parse model
+        int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_JoinIdenticalVertices;
+        AIScene aiScene = aiImportFile(file, flags);
+        if(aiScene == null){
+            Logger.warn("Error by loading model", "The model file " + file + " could not be loaded! " +
+                    "Returning null!");
+            return null;
+        }
+
+        //Data
+        MetaMaterial[] metaMaterials;
+        MetaMesh[] metaMeshes = null;
+        Material[] materials;
+        Mesh[] meshes;
+
+        //Get materials
+        int matCount = aiScene.mNumMaterials();
+        for(int i = 0; i < matCount; i++){
+            AIMaterial material = AIMaterial.create(aiScene.mMeshes().get(i));
+        }
+
+        //Create meta model
+        MetaModel metaModel = new MetaModel();
+        metaModel.setMeshes(metaMeshes);
+
+        return metaModel;
+    }
+
+    private void createMaterial()
 }

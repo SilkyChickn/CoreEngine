@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
 import de.coreengine.framework.Window;
@@ -460,7 +461,7 @@ public class MasterRenderer {
      * @param entity Entity to add
      */
     public static void renderEntity(Entity entity){
-        for(Mesh mesh: entity.getModel().getMeshes()){
+        for(Mesh mesh: AssetDatabase.getModel(entity.getModel()).getMeshes()){
 
             //Get batch for this mesh, if null -> create, then add entity to batch
             List<Entity> batch = ENTITIES.computeIfAbsent(mesh, k -> new ArrayList<>());
@@ -474,7 +475,7 @@ public class MasterRenderer {
      * @param entity Entity to add
      */
     public static void renderAnimatedEntity(AnimatedEntity entity){
-        for(Mesh mesh: entity.getModel().getMeshes()){
+        for(Mesh mesh: AssetDatabase.getAnimatedModel(entity.getModel()).getMeshes()){
 
             //Get batch for this mesh, if null -> create, then add entity to batch
             List<AnimatedEntity> batch = ANIMATED_ENTITIES.computeIfAbsent(mesh, k -> new ArrayList<>());
