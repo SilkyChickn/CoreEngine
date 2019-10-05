@@ -72,7 +72,7 @@ public class EntityShader extends Shader{
         tilingLoc = getUniformLocation("tiling");
         camPosLoc = getUniformLocation("camPos");
         displacementFactorLoc = getUniformLocation("displacementFactor");
-        reflectivityLoc = getUniformLocation("reflectivity");
+        reflectivityLoc = getUniformLocation("shininess");
         shineDamperLoc = getUniformLocation("shineDamper");
         diffuseColorLoc = getUniformLocation("diffuseColor");
         pickingColorLoc = getUniformLocation("pickingColor");
@@ -119,7 +119,7 @@ public class EntityShader extends Shader{
         setUniform(tilingLoc, mat.tiling);
         setUniform(diffuseColorLoc, mat.diffuseColor);
         setUniform(displacementFactorLoc, mat.displacementFactor);
-        setUniform(reflectivityLoc, mat.reflectivity);
+        setUniform(reflectivityLoc, mat.shininess);
         setUniform(shineDamperLoc, mat.shineDamping);
         setUniform(glowColorLoc, mat.glowColor);
 

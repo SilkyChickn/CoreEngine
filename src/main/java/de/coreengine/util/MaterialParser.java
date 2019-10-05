@@ -104,7 +104,7 @@ public class MaterialParser {
                     result.tiling = Float.parseFloat(args[i+1]);
                     break;
                 case "r":
-                    result.reflectivity = Float.parseFloat(args[i+1]);
+                    result.shininess = Float.parseFloat(args[i+1]);
                     break;
                 case "sd":
                     result.shineDamping = Float.parseFloat(args[i+1]);
@@ -139,7 +139,7 @@ public class MaterialParser {
         if(mat.glowMap != null) result += " g_map " + mat.glowMap;
         if(mat.displacementFactor != null) result += " df " + mat.displacementFactor;
         if(mat.tiling != null) result += " t " + mat.tiling;
-        if(mat.reflectivity != null) result += " r " + mat.reflectivity;
+        if(mat.shininess != null) result += " r " + mat.shininess;
         if(mat.shineDamping != null) result += " sd " + mat.shineDamping;
         
         return result.replaceFirst(" ", "");

@@ -80,14 +80,13 @@ public class Physics {
      * @param indices Indices that connect the vertices
      * @return Created triangle mesh shaped rigid body
      */
-    public static BvhTriangleMeshShape createTriangleMeshShape(float[] vertices, 
-            int[][] indices){
+    public static BvhTriangleMeshShape createTriangleMeshShape(float[] vertices, int[][] indices){
         
         //Create index vertex array
         TriangleIndexVertexArray tiva = new TriangleIndexVertexArray();
-        
+
         for(int[] i: indices){
-            
+
             IndexedMesh mesh = new IndexedMesh();
             mesh.numTriangles = i.length / 3;
             mesh.triangleIndexBase = ByteBuffer.allocateDirect(i.length * 4).order(ByteOrder.nativeOrder());
@@ -103,7 +102,33 @@ public class Physics {
         //Create shape
         return new BvhTriangleMeshShape(tiva, true);
     }
-    
+
+    /**Creates a collision shape for a triangle mesh shape. Only for static objects!
+     *
+     * @param vertices 3D vertices of the body
+     * @param indices Indices that connect the vertices
+     * @return Created triangle mesh shaped rigid body
+     */
+    public static BvhTriangleMeshShape createTriangleMeshShape(float[] vertices, int[] indices){
+
+        //Create index vertex array
+        TriangleIndexVertexArray tiva = new TriangleIndexVertexArray();
+
+        IndexedMesh mesh = new IndexedMesh();
+        mesh.numTriangles = indices.length / 3;
+        mesh.triangleIndexBase = ByteBuffer.allocateDirect(indices.length * 4).order(ByteOrder.nativeOrder());
+        mesh.triangleIndexBase.asIntBuffer().put(indices);
+        mesh.triangleIndexStride = 3 * 4;
+        mesh.numVertices = vertices.length / 3;
+        mesh.vertexBase = ByteBuffer.allocateDirect(vertices.length * 4).order(ByteOrder.nativeOrder());
+        mesh.vertexBase.asFloatBuffer().put(vertices);
+        mesh.vertexStride = 3 * 4;
+        tiva.addIndexedMesh(mesh);
+
+        //Create shape
+        return new BvhTriangleMeshShape(tiva, true);
+    }
+
     /**Creating a convex hull shape from vertices. 
      * Also posible for dynamic objects.
      * 

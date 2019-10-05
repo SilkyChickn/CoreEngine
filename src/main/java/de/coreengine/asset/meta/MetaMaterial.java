@@ -41,7 +41,7 @@ public class MetaMaterial {
     public String diffuseMap = null, normalMap = null, specularMap = null, 
             displacementMap = null, ambientOcclusionMap = null, alphaMap = null, 
             reflectionMap = null, glowMap = null;
-    public Float displacementFactor = null, tiling = null, reflectivity = null, 
+    public Float displacementFactor = null, tiling = null, shininess = null,
             shineDamping = null;
     
 }

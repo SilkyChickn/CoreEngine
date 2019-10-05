@@ -18,7 +18,7 @@ uniform sampler2D aoMap;
 uniform sampler2D glowMap;
 
 uniform float displacementFactor;
-uniform float reflectivity;
+uniform float shininess;
 uniform float shineDamper;
 
 uniform vec3 diffuseColor;
@@ -46,7 +46,7 @@ vec4 getNormal(vec2 texCoords, mat3 tbnMat){
 
 vec2 getSpecular(vec2 texCoords){
     float specMapFac = texture(specularMap, texCoords).r;
-    return vec2(specMapFac * reflectivity, shineDamper);
+    return vec2(specMapFac * shininess, shineDamper);
 }
 
 float getAo(vec2 texCoords){

@@ -34,6 +34,7 @@ import de.coreengine.rendering.renderable.terrain.TerrainTexturePack;
 import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL32;
 import org.lwjgl.opengl.GL40;
 
 import javax.vecmath.Matrix4f;
@@ -69,8 +70,8 @@ public class TerrainShader extends Shader{
         addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "terrain.tes", true), 
                 GL40.GL_TESS_EVALUATION_SHADER, "Terrain Tesselation Evaluation Shader");
         addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "terrain.geo", true), 
-                GL40.GL_GEOMETRY_SHADER, "Terrain Geometry Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "terrain.frag", true), 
+                GL32.GL_GEOMETRY_SHADER, "Terrain Geometry Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "terrain.frag", true),
                 GL20.GL_FRAGMENT_SHADER, "Terrain Fragment Shader");
     }
     
@@ -181,10 +182,10 @@ public class TerrainShader extends Shader{
         setUniform(displacementGLoc, pack.getGreenMaterial().displacementFactor);
         setUniform(displacementBLoc, pack.getBlueMaterial().displacementFactor);
         
-        setUniform(specularLoc, pack.getMaterial().reflectivity, pack.getMaterial().shineDamping);
-        setUniform(specularRLoc, pack.getRedMaterial().reflectivity, pack.getRedMaterial().shineDamping);
-        setUniform(specularGLoc, pack.getGreenMaterial().reflectivity, pack.getGreenMaterial().shineDamping);
-        setUniform(specularBLoc, pack.getBlueMaterial().reflectivity, pack.getBlueMaterial().shineDamping);
+        setUniform(specularLoc, pack.getMaterial().shininess, pack.getMaterial().shineDamping);
+        setUniform(specularRLoc, pack.getRedMaterial().shininess, pack.getRedMaterial().shineDamping);
+        setUniform(specularGLoc, pack.getGreenMaterial().shininess, pack.getGreenMaterial().shineDamping);
+        setUniform(specularBLoc, pack.getBlueMaterial().shininess, pack.getBlueMaterial().shineDamping);
         
         bindTexture(AssetDatabase.getTexture(pack.getMaterial().diffuseMap), diffuseUnit, GL11.GL_TEXTURE_2D);
         bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().diffuseMap), diffuseRUnit, GL11.GL_TEXTURE_2D);

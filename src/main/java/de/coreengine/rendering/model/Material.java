@@ -107,11 +107,11 @@ public class Material {
     public float tiling = 
             Configuration.getValuef("MATERIAL_DEFAULT_TEXTURE_TILING");
     
-    /**The reflectivity describes the intensity of the reflecion for enviroment
+    /**The shininess describes the intensity of the reflecion for enviroment
     /* reflection and specular lighting
      */
-    public float reflectivity = 
-            Configuration.getValuef("MATERIAL_DEFAULT_REFLECTIVITY");
+    public float shininess =
+            Configuration.getValuef("MATERIAL_DEFAULT_SHININESS");
     
     /**The shine damping describes the damping for specular lighting
      */

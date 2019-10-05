@@ -58,7 +58,7 @@
     <properties>
 
             <!-- LWJGL Version -->
-            <lwjgl.version>3.2.2</lwjgl.version>
+            <lwjgl.version>3.2.3</lwjgl.version>
 
             <!-- Platform to get natives for -->
             <lwjgl.natives>natives-windows</lwjgl.natives>
