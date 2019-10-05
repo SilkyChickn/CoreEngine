@@ -1,6 +1,7 @@
 de.coreengine.animation
 de.coreengine.asset
 de.coreengine.asset.meta
+de.coreengine.asset.modelLoader
 de.coreengine.framework
 de.coreengine.network
 de.coreengine.network.events
