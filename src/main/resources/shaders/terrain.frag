@@ -59,7 +59,7 @@ const float disp_offset = 0.0f;
 
 vec4 getFinalDiffuse(vec2 tiledTexCoords[4], vec4 blendingFactors){
 	
-    //Get Single Texture Colors
+    //Get Single MetaTexture Colors
     vec4 diffuse_color_0 = texture(diffuseTexture , tiledTexCoords[3]) * vec4(diffuse , 1.0) * blendingFactors.a;
     vec4 diffuse_color_1 = texture(diffuseRTexture, tiledTexCoords[0]) * vec4(diffuseR, 1.0) * blendingFactors.r;
     vec4 diffuse_color_2 = texture(diffuseGTexture, tiledTexCoords[1]) * vec4(diffuseG, 1.0) * blendingFactors.g;

@@ -65,10 +65,10 @@ public class Water {
     private float tiling = 1.0f;
     
     //Map for the distortion calculations
-    private int dudvMap = Material.TEXTURE_BLACK;
+    private String dudvMap = Material.TEXTURE_BLACK;
     
     //Map for the water normals
-    private int normalMap = Material.DEFAULT_NORMAL_MAP;
+    private String normalMap = Material.DEFAULT_NORMAL_MAP;
     
     //Offset of the dudv/normal map
     private float offset = 0.0f;
@@ -125,13 +125,13 @@ public class Water {
     
     /**@return Waters dudv map for distortion
      */
-    public int getDudvMap() {
+    public String getDudvMap() {
         return dudvMap;
     }
     
     /**@return Waters normal map
      */
-    public int getNormalMap() {
+    public String getNormalMap() {
         return normalMap;
     }
     
@@ -185,13 +185,13 @@ public class Water {
     
     /**@param dudvMap New dudv map of the water
      */
-    public void setDudvMap(int dudvMap) {
+    public void setDudvMap(String dudvMap) {
         this.dudvMap = dudvMap;
     }
     
     /**@param normalMap New normal map of the water
      */
-    public void setNormalMap(int normalMap) {
+    public void setNormalMap(String normalMap) {
         this.normalMap = normalMap;
     }
     

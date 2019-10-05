@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.renderable.gui.GUIPane;
@@ -81,7 +82,7 @@ public class GUIShader extends Shader{
         setUniform(pickColorLoc, gui.getPickColor());
         
         if(gui.getTexture() != Material.TEXTURE_BLACK){
-            bindTexture(gui.getTexture(), colorTextureUnit, GL11.GL_TEXTURE_2D);
+            bindTexture(AssetDatabase.getTexture(gui.getTexture()), colorTextureUnit, GL11.GL_TEXTURE_2D);
             setUniform(textureSetLoc, true);
         }else setUniform(textureSetLoc, false);
         

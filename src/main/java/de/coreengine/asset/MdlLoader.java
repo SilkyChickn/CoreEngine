@@ -32,6 +32,7 @@ import com.bulletphysics.collision.shapes.ConvexHullShape;
 import com.bulletphysics.collision.shapes.TriangleMeshShape;
 import de.coreengine.asset.meta.MetaModel;
 import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.Model;
 import de.coreengine.util.Logger;
 import de.coreengine.util.MaterialParser;
@@ -49,14 +50,14 @@ import java.io.IOException;
  */
 public class MdlLoader {
     
-    /**Loading a model for a mdl file
+    /**Loading a model for a mdl file and storing into asset database
      * 
      * @param file File to load
      * @param asResource Should file loaded from resources
-     * @return Loaded model file or null if an error occurs
      */
-    public static Model loadModel(String file, boolean asResource){
-        
+    public static void loadModel(String file, boolean asResource){
+        if(AssetDatabase.models.containsKey(file)) return;
+
         try {
             
             //Read file
@@ -65,87 +66,96 @@ public class MdlLoader {
             else lines = FileLoader.readFile(file, false);
             
             //Prepare meta data
+            Mesh[] meshes  = null;
             Material[] materials = null;
-            float[] vertices = null, texCoords = null, normals = null, tangents = null;
+            float[][] vertices = null, texCoords = null, normals = null, tangents = null;
             int[][] indices = null;
-            IndexBuffer[] indexBuffers = null;
-            CollisionShape shape = null;
+            CollisionShape[] shapes = null;
             
-            int indexCounter = 0;
-            int materialCounter = 0;
+            int meshCounter = -1;
             int parts = 0;
             
             //Parse lines
             for(String line: lines){
-                if(line.startsWith("vertices")){
+                if(line.startsWith("newMesh")){
+                    meshCounter++;
+                }else if(line.startsWith("vertices")){
                     String[] args = line.split(" ");
-                    vertices = new float[args.length -1];
-                    for(int i = 0; i < vertices.length; i++) 
-                        vertices[i] = Float.parseFloat(args[i +1]);
+                    vertices[meshCounter] = new float[args.length -1];
+                    for(int i = 0; i < vertices[meshCounter].length; i++)
+                        vertices[meshCounter][i] = Float.parseFloat(args[i +1]);
                 }else if(line.startsWith("texCoords")){
                     String[] args = line.split(" ");
-                    texCoords = new float[args.length -1];
-                    for(int i = 0; i < texCoords.length; i++) 
-                        texCoords[i] = Float.parseFloat(args[i +1]);
+                    texCoords[meshCounter] = new float[args.length -1];
+                    for(int i = 0; i < texCoords[meshCounter].length; i++)
+                        texCoords[meshCounter][i] = Float.parseFloat(args[i +1]);
                 }else if(line.startsWith("normals")){
                     String[] args = line.split(" ");
-                    normals = new float[args.length -1];
-                    for(int i = 0; i < normals.length; i++) 
-                        normals[i] = Float.parseFloat(args[i +1]);
+                    normals[meshCounter] = new float[args.length -1];
+                    for(int i = 0; i < normals[meshCounter].length; i++)
+                        normals[meshCounter][i] = Float.parseFloat(args[i +1]);
                 }else if(line.startsWith("tangents")){
                     String[] args = line.split(" ");
-                    tangents = new float[args.length -1];
-                    for(int i = 0; i < tangents.length; i++) 
-                        tangents[i] = Float.parseFloat(args[i +1]);
+                    tangents[meshCounter] = new float[args.length -1];
+                    for(int i = 0; i < tangents[meshCounter].length; i++)
+                        tangents[meshCounter][i] = Float.parseFloat(args[i +1]);
                 }else if(line.startsWith("shape ")){
-                    shape = CollisionShapeParser.toShape(line.replaceFirst("shape ", ""));
+                    shapes[meshCounter] =
+                            CollisionShapeParser.toShape(line.replaceFirst("shape ", ""));
                 }else if(line.startsWith("indexBuffer")){
                     String[] args = line.split(" ");
-                    assert indices != null;
-                    indices[indexCounter] = new int[args.length -1];
-                    for(int i = 0; i < indices[indexCounter].length; i++) 
-                        indices[indexCounter][i] = Integer.parseInt(args[i +1]);
-                    indexCounter++;
+                    indices[meshCounter] = new int[args.length -1];
+                    for(int i = 0; i < indices[meshCounter].length; i++)
+                        indices[meshCounter][i] = Integer.parseInt(args[i +1]);
                 }else if(line.startsWith("material ")){
-                    assert materials != null;
-                    materials[materialCounter++] =
+                    materials[meshCounter] =
                             MaterialParser.toMaterial(line.replaceFirst("material ", ""), asResource);
                 }else if(line.startsWith("parts")){
                     String[] args = line.split(" ");
                     parts = Integer.parseInt(args[1]);
-                    
-                    materials = new Material[parts];
+
+                    //Reserve data storage
+                    meshes = new Mesh[parts];
+                    vertices = new float[parts][];
+                    texCoords = new float[parts][];
+                    normals = new float[parts][];
+                    tangents = new float[parts][];
                     indices = new int[parts][];
-                    indexBuffers = new IndexBuffer[parts];
+                    materials = new Material[parts];
+                    shapes = new CollisionShape[parts];
                 }
             }
-            
-            //Create collision shape
-            if (shape instanceof ConvexHullShape) {
-                assert vertices != null;
-                shape = Physics.createConvexHullShape(vertices);
-            } else if (shape instanceof TriangleMeshShape) {
-                assert indices != null;
-                shape = Physics.createTriangleMeshShape(vertices, indices);
+
+            //create model
+            for(int i = 0; i < parts; i++) {
+
+                //Create collision shape
+                if (shapes[i] instanceof ConvexHullShape) {
+                    assert vertices != null;
+                    shapes[i] = Physics.createConvexHullShape(vertices[i]);
+                } else if (shapes[i] instanceof TriangleMeshShape) {
+                    assert indices != null;
+                    shapes[i] = Physics.createTriangleMeshShape(vertices[i], indices);
+                }
+
+                //Adding data to vao
+                VertexArrayObject vao = new VertexArrayObject();
+                vao.addVertexBuffer(vertices[i], 3, 0);
+                vao.addVertexBuffer(texCoords[i], 2, 1);
+                vao.addVertexBuffer(normals[i], 3, 2);
+                vao.addVertexBuffer(tangents[i], 3, 3);
+
+                //Create index buffers
+                IndexBuffer indexBuffer = vao.addIndexBuffer(indices[i]);
+
+                //Create model
+                meshes[i] = new Mesh(vao, indexBuffer, materials[i], shapes[i]);
             }
             
-            //Adding data to vao
-            VertexArrayObject vao = new VertexArrayObject();
-            vao.addVertexBuffer(vertices, 3, 0);
-            vao.addVertexBuffer(texCoords, 2, 1);
-            vao.addVertexBuffer(normals, 3, 2);
-            vao.addVertexBuffer(tangents, 3, 3);
-            
-            //Create index buffers
-            for(int i = 0; i < parts; i++){
-                indexBuffers[i] = vao.addIndexBuffer(indices[i]);
-            }
-            
-            return new Model(vao, indexBuffers, materials, shape);
+            AssetDatabase.models.put(file, new Model(meshes));
         } catch (IOException ex) {
             Logger.warn("Error by loading model", "The modelfile '" + file + "' "
                     + "could not be loaded. Returning null!");
-            return null;
         }
     }
     
@@ -157,48 +167,80 @@ public class MdlLoader {
     public static void saveModel(String file, MetaModel model){
         
         try {
-            int partCount = model.getIndices().length;
+            int partCount = model.getMeshes().length;
             
             //Prepare model data strings
             String parts = "parts " + partCount;
-            String shape = "shape " + CollisionShapeParser.toString(model.getShape());
 
-            StringBuilder vertices = new StringBuilder("vertices");
-            for (float vertex : model.getVertices()) vertices.append(" ").append(vertex);
+            //Prepare parts data strings
+            String[] vertices = new String[partCount];
+            for(int i = 0; i < partCount; i++){
+                StringBuilder vertexBuffer = new StringBuilder("vertices");
+                for (int index : model.getMeshes()[i].getIndices()) vertexBuffer.append(" ").append(index);
+                vertices[i] = vertexBuffer.toString();
+            }
 
-            StringBuilder texCoords = new StringBuilder("texCoords");
-            for (float texCoord : model.getTexCoords()) texCoords.append(" ").append(texCoord);
+            //Prepare parts data strings
+            String[] texCoords = new String[partCount];
+            for(int i = 0; i < partCount; i++){
+                StringBuilder texCoordBuffer = new StringBuilder("texCoords");
+                for (int index : model.getMeshes()[i].getIndices()) texCoordBuffer.append(" ").append(index);
+                texCoords[i] = texCoordBuffer.toString();
+            }
 
-            StringBuilder normals = new StringBuilder("normals");
-            for (float normal : model.getNormals()) normals.append(" ").append(normal);
+            //Prepare parts data strings
+            String[] normals = new String[partCount];
+            for(int i = 0; i < partCount; i++){
+                StringBuilder normalBuffer = new StringBuilder("normals");
+                for (int index : model.getMeshes()[i].getIndices()) normalBuffer.append(" ").append(index);
+                normals[i] = normalBuffer.toString();
+            }
 
-            StringBuilder tangents = new StringBuilder("tangents");
-            for (float tangent : model.getTangents()) tangents.append(" ").append(tangent);
-            
+            //Prepare parts data strings
+            String[] tangents = new String[partCount];
+            for(int i = 0; i < partCount; i++){
+                StringBuilder tangentBuffer = new StringBuilder("tangents");
+                for (int index : model.getMeshes()[i].getIndices()) tangentBuffer.append(" ").append(index);
+                tangents[i] = tangentBuffer.toString();
+            }
+
             //Prepare parts data strings
             String[] indexBuffers = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder indexBuffer = new StringBuilder("indexBuffer");
-                for (int index : model.getIndices()[i]) indexBuffer.append(" ").append(index);
+                for (int index : model.getMeshes()[i].getIndices()) indexBuffer.append(" ").append(index);
                 indexBuffers[i] = indexBuffer.toString();
             }
-            
+
+            //Prepare parts data strings
             String[] materials = new String[partCount];
             for(int i = 0; i < partCount; i++)
                 materials[i] = "material " + 
-                        MaterialParser.toString(model.getMaterials()[i]);
-            
+                        MaterialParser.toString(model.getMeshes()[i].getMaterials());
+
+            //Prepare parts data strings
+            String[] shapes = new String[partCount];
+            for(int i = 0; i < partCount; i++)
+                shapes[i] = "shape " +
+                        CollisionShapeParser.toString(model.getMeshes()[i].getShape());
+
             //Combine data strings
-            String[] data = new String[6 +(partCount * 2)];
+            String[] data = new String[partCount * 8 +1];
+
+            //Model data
             data[0] = parts;
-            data[1] = vertices.toString();
-            data[2] = texCoords.toString();
-            data[3] = normals.toString();
-            data[4] = tangents.toString();
-            data[5] = shape;
+
+            //Mesh data
+            int counter = data.length;
             for(int i = 0; i < partCount; i++){
-                data[6 +(i * 2)] = materials[i];
-                data[7 +(i * 2)] = indexBuffers[i];
+                data[counter++] = "newMesh";
+                data[counter++] = vertices[i];
+                data[counter++] = texCoords[i];
+                data[counter++] = normals[i];
+                data[counter++] = tangents[i];
+                data[counter++] = shapes[i];
+                data[counter++] = materials[i];
+                data[counter++] = indexBuffers[i];
             }
             
             //Write data strings into file

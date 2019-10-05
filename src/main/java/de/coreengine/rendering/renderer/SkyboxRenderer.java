@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.renderer;
 
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Cube3D;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Skybox;
@@ -59,7 +59,7 @@ public class SkyboxRenderer {
     void render(Skybox skybox, Camera cam){
         GL11.glDisable(GL11.GL_CULL_FACE);
         
-        SimpleModel model = Cube3D.getInstance();
+        Mesh model = Cube3D.getInstance();
         
         shader.start();
         

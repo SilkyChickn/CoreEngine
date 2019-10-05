@@ -28,7 +28,7 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.GBuffer;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.light.*;
@@ -59,7 +59,7 @@ public class DeferredRenderer {
                 List<SpotLight> spotLights, List<AmbientLight> ambientLights,
                 List<DirectionalLight> directionalLights, Camera cam, ShadowLight shadowLight) {
         
-        SimpleModel quad = Quad2D.getInstance();
+        Mesh quad = Quad2D.getInstance();
         
         shader.start();
         quad.getVao().bind();

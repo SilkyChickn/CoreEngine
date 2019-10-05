@@ -36,7 +36,7 @@ import de.coreengine.util.gl.VertexArrayObject;
  *
  * @author Darius Dinger
  */
-public class SimpleModel {
+public class Mesh {
     
     //Vao of the model, where all vertices are stored
     private final VertexArrayObject vao;
@@ -57,8 +57,8 @@ public class SimpleModel {
      * @param indexBuffer Models IndeBuffer with the indices, that connecting the vertices
      * @param shape Collision shape of the model
      */
-    public SimpleModel(VertexArrayObject vao, IndexBuffer indexBuffer, 
-            CollisionShape shape) {
+    public Mesh(VertexArrayObject vao, IndexBuffer indexBuffer,
+                CollisionShape shape) {
         this.vao = vao;
         this.indexBuffer = indexBuffer;
         this.material = new Material();
@@ -72,8 +72,8 @@ public class SimpleModel {
      * @param material Models material
      * @param shape Collision shape of the model
      */
-    public SimpleModel(VertexArrayObject vao, IndexBuffer indexBuffer, 
-            Material material, CollisionShape shape) {
+    public Mesh(VertexArrayObject vao, IndexBuffer indexBuffer,
+                Material material, CollisionShape shape) {
         this.vao = vao;
         this.indexBuffer = indexBuffer;
         this.material = material;

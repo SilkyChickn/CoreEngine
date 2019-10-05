@@ -25,61 +25,47 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.coreengine.asset.meta;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
+package de.coreengine.rendering.model;
 
-/**Class that stores image data and represent and drive image
- *
- * @author Darius Dinger
- */
-public class Image implements Serializable{
-    
-    //Image data (pixels)
-    private final ByteBuffer data;
-    
-    //Image width and height (in px)
-    private final int width, height;
-    
-    //Gl id of the image
-    private final int glTexture;
-    
-    /**Creates new Image
-     * 
-     * @param data image data
-     * @param width image width
-     * @param height image height
-     * @param glId OpenGL id of the texture
+import de.coreengine.animation.Animation;
+import de.coreengine.animation.Joint;
+
+import java.util.HashMap;
+
+public class AnimatedModel extends Model{
+
+    //Skeleton blueprint for animated entities
+    private final Joint skeleton;
+
+    //Animations that can be played by this model
+    private final HashMap<String, Animation> animations;
+
+    /**Creating new animated model
+     *
+     * @param meshes Meshes of the model
+     * @param skeleton Skeleton blueprint for animated entities
+     * @param animations Animations that can be played by this model
      */
-    public Image(ByteBuffer data, int width, int height, int glId) {
-        this.data = data;
-        this.width = width;
-        this.height = height;
-        this.glTexture = glId;
+    public AnimatedModel(Mesh[] meshes, Joint skeleton, HashMap<String, Animation> animations) {
+        super(meshes);
+
+        this.skeleton = skeleton;
+        this.animations = animations;
     }
-    
-    /**@return image width
+
+    /**Creating a new instanceof the skeleton of this model. So every entity can have its own skeleton, for
+     * individual animation poses
+     *
+     * @return New skeleton instance
      */
-    public int getWidth() {
-        return width;
+    public Joint getNewSkeletonInstance() {
+        return new Joint(skeleton);
     }
-    
-    /**@return image height
+
+    /**@return Animations that can be played by this model
      */
-    public int getHeight() {
-        return height;
-    }
-    
-    /**@return image data
-     */
-    public ByteBuffer getData() {
-        return data;
-    }
-    
-    /**@return OpenGl id of the texture
-     */
-    public int getGlTexture() {
-        return glTexture;
+    public HashMap<String, Animation> getAnimations() {
+        return animations;
     }
 }

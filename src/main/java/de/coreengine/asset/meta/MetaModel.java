@@ -27,8 +27,6 @@
  */
 package de.coreengine.asset.meta;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-
 /**Meta model file that can be saved in a file
  *
  * @author Darius Dinger
@@ -36,92 +34,17 @@ import com.bulletphysics.collision.shapes.CollisionShape;
 public class MetaModel{
     
     //Data
-    private int[][] indices;
-    private float[] vertices, texCoords, normals, tangents;
-    private MetaMaterial[] materials;
-    private CollisionShape shape;
-    
-    /**@param indices New meta models indices
+    private MetaMesh[] meshes;
+
+    /**@param meshes Models new meshes
      */
-    public void setIndices(int[][] indices) {
-        this.indices = indices;
+    public void setMeshes(MetaMesh[] meshes) {
+        this.meshes = meshes;
     }
-    
-    /**@param vertices New meta models vertices
+
+    /**@return Models meshes
      */
-    public void setVertices(float[] vertices) {
-        this.vertices = vertices;
-    }
-    
-    /**@param texCoords New meta models texture coordinates
-     */
-    public void setTexCoords(float[] texCoords) {
-        this.texCoords = texCoords;
-    }
-    
-    /**@param normals New meta models normals
-     */
-    public void setNormals(float[] normals) {
-        this.normals = normals;
-    }
-    
-    /**@param tangents New meta models tangents
-     */
-    public void setTangents(float[] tangents) {
-        this.tangents = tangents;
-    }
-    
-    /**@param materials  New meta models materials
-     */
-    public void setMaterials(MetaMaterial[] materials) {
-        this.materials = materials;
-    }
-    
-    /**@param shape New meta models collision shape
-     */
-    public void setShape(CollisionShape shape) {
-        this.shape = shape;
-    }
-    
-    /**@return Models collision shape
-     */
-    public CollisionShape getShape() {
-        return shape;
-    }
-    
-    /**@return Models materials
-     */
-    public MetaMaterial[] getMaterials() {
-        return materials;
-    }
-    
-    /**@return Models indices
-     */
-    public int[][] getIndices() {
-        return indices;
-    }
-    
-    /**@return Models tangents
-     */
-    public float[] getTangents() {
-        return tangents;
-    }
-    
-    /**@return models texture coordinates
-     */
-    public float[] getTexCoords() {
-        return texCoords;
-    }
-    
-    /**@return models vertices
-     */
-    public float[] getVertices() {
-        return vertices;
-    }
-    
-    /**@return models normals
-     */
-    public float[] getNormals() {
-        return normals;
+    public MetaMesh[] getMeshes() {
+        return meshes;
     }
 }

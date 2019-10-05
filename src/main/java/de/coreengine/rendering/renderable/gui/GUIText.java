@@ -27,8 +27,8 @@
  */
 package de.coreengine.rendering.renderable.gui;
 
-import de.coreengine.asset.meta.Character;
-import de.coreengine.asset.meta.Font;
+import de.coreengine.rendering.model.Character;
+import de.coreengine.rendering.model.Font;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.util.Configuration;
 import de.coreengine.util.Logger;

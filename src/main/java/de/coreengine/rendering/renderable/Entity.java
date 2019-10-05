@@ -36,10 +36,10 @@ import de.coreengine.rendering.model.Transformation;
  */
 public class Entity {
     
-    //Tranformation of the entiy
+    //Transformation of the entity
     private Transformation transform = new Transformation();
     
-    //Model ofthe entity
+    //Model of the entity
     private Model model = null;
     
     /**@param model New model of the entity

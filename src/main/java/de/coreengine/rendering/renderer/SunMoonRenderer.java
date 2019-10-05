@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.renderer;
 
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Moon;
@@ -50,7 +50,7 @@ public class SunMoonRenderer{
     void render(Moon moon, Camera cam){
         GL11.glDisable(GL11.GL_CULL_FACE);
         
-        SimpleModel model = Quad2D.getInstance();
+        Mesh model = Quad2D.getInstance();
         
         shader.start();
         

@@ -27,67 +27,59 @@
  */
 package de.coreengine.asset.meta;
 
-import de.coreengine.util.gl.VertexArrayObject;
+import java.io.Serializable;
+import java.nio.ByteBuffer;
 
-import java.util.HashMap;
-
-/**Class that represent a font to render text
+/**Class that stores image data and represent and drive image
  *
  * @author Darius Dinger
  */
-public class Font {
+public class MetaTexture implements Serializable{
     
-    //Texture atlas image of the font
-    private final int textureAtlas;
+    //MetaTexture data (pixels)
+    private final ByteBuffer data;
     
-    //Characters of the font sirtet by ascii
-    private final HashMap<Integer, Character> characters;
+    //MetaTexture width and height (in px)
+    private final int width, height;
     
-    //Vertex array object of the character models
-    private final VertexArrayObject vao;
+    //Gl id of the image
+    private final String glTexture;
     
-    //Height of a line of text
-    private final float lineHeight;
-    
-    /**Creating new font
+    /**Creates new MetaTexture
      * 
-     * @param textureAtlas Texture atlas image of the font
-     * @param characters Characters of the font sirtet by ascii
-     * @param vao Vertex array object of the character models
-     * @param lineHeight Height of a line of text
+     * @param data image data
+     * @param width image width
+     * @param height image height
+     * @param id OpenGL id of the texture
      */
-    public Font(int textureAtlas, HashMap<Integer, Character> characters, 
-            VertexArrayObject vao, float lineHeight) {
-        this.textureAtlas = textureAtlas;
-        this.characters = characters;
-        this.vao = vao;
-        this.lineHeight = lineHeight;
+    public MetaTexture(ByteBuffer data, int width, int height, String id) {
+        this.data = data;
+        this.width = width;
+        this.height = height;
+        this.glTexture = id;
     }
     
-    /**@return Texture atlas image of the font
+    /**@return image width
      */
-    public int getTextureAtlas() {
-        return textureAtlas;
+    public int getWidth() {
+        return width;
     }
     
-    /**Getting character for specific ascii
-     * 
-     * @param ascii Ascii of the char
-     * @return Character of ascii
+    /**@return image height
      */
-    public Character getCharacter(int ascii){
-        return characters.get(ascii);
+    public int getHeight() {
+        return height;
     }
     
-    /**@return VAO of the font chars
+    /**@return image data
      */
-    public VertexArrayObject getVao() {
-        return vao;
+    public ByteBuffer getData() {
+        return data;
     }
     
-    /**@return Height of a line of text
+    /**@return OpenGl id of the texture
      */
-    public float getLineHeight() {
-        return lineHeight;
+    public String getGlTexture() {
+        return glTexture;
     }
 }

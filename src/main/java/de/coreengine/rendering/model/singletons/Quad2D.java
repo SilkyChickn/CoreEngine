@@ -28,7 +28,7 @@
 package de.coreengine.rendering.model.singletons;
 
 import com.bulletphysics.collision.shapes.BU_Simplex1to4;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 
@@ -41,11 +41,11 @@ import javax.vecmath.Vector3f;
 public class Quad2D {
     
     //Instance of a 2D quad model
-    private static SimpleModel instance = null;
+    private static Mesh instance = null;
     
     /**@return Instance of a 2D quad model
      */
-    public static SimpleModel getInstance() {
+    public static Mesh getInstance() {
         if(instance == null) create();
         return instance;
     }
@@ -62,7 +62,7 @@ public class Quad2D {
             3, 0, 2, 2, 0, 1
         });
         
-        instance = new SimpleModel(vao, index, new BU_Simplex1to4(
+        instance = new Mesh(vao, index, new BU_Simplex1to4(
                 new Vector3f(-1, -1, 0), new Vector3f(1, -1, 0), 
                 new Vector3f(1, 1, 0), new Vector3f(-1, 1, 0)
         ));

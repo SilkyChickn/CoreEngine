@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.model.singletons;
 
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 
@@ -38,11 +38,11 @@ import de.coreengine.util.gl.VertexArrayObject;
 public class Point3D {
     
     //Instance of a 3D point model
-    private static SimpleModel instance = null;
+    private static Mesh instance = null;
     
     /**@return Instance of a 3D point model
      */
-    public static SimpleModel getInstance() {
+    public static Mesh getInstance() {
         if(instance == null) create();
         return instance;
     }
@@ -55,6 +55,6 @@ public class Point3D {
 
         IndexBuffer index = vao.addIndexBuffer(new int[]{0});
 
-        instance = new SimpleModel(vao, index, null);
+        instance = new Mesh(vao, index, null);
     }
 }

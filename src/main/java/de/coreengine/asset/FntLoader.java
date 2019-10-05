@@ -27,8 +27,8 @@
  */
 package de.coreengine.asset;
 
-import de.coreengine.asset.meta.Character;
-import de.coreengine.asset.meta.Font;
+import de.coreengine.rendering.model.Character;
+import de.coreengine.rendering.model.Font;
 import de.coreengine.util.Logger;
 import de.coreengine.util.Toolbox;
 import de.coreengine.util.gl.IndexBuffer;
@@ -47,14 +47,14 @@ import java.util.List;
 public class FntLoader {
     private static final float LINE_HEIGHT = 0.03f;
     
-    /**Loading font file and its texture atlas from fnt file
+    /**Loading font file and its texture atlas from fnt file ad store it into database
      * 
      * @param file Fnt file name relative to application
      * @param asResource Load font from resources
-     * @return Loaded font file
      */
-    public static Font loadFont(String file, boolean asResource){
-        
+    public static void loadFont(String file, boolean asResource){
+        if(AssetDatabase.fonts.containsKey(file)) return;
+
         try {
             
             //Load fnt file
@@ -63,7 +63,7 @@ public class FntLoader {
             else data = FileLoader.readFile(file, false);
             
             //Fnt data
-            int textureAtlas = 0;
+            String textureAtlas = "";
             HashMap<Integer, Character> chars = new HashMap<>();
             VertexArrayObject vao = new VertexArrayObject();
             
@@ -109,11 +109,8 @@ public class FntLoader {
                         //Load texture atlas
                         for(String arg: args){
                             if(arg.startsWith("file=")){
-                                String atlasName = arg.split("=")
-                                        [1].replace("\"", "");
-                                textureAtlas = ImageLoader.loadImageFileGl(
-                                        path +atlasName, false, GL11.GL_LINEAR, 
-                                        asResource);
+                                textureAtlas = path + arg.split("=")[1].replace("\"", "");
+                                TextureLoader.loadTextureFileGl(textureAtlas, false, GL11.GL_LINEAR, asResource);
                             }
                         }
                         
@@ -171,14 +168,12 @@ public class FntLoader {
             vao.addVertexBuffer(verticesArr, 2, 0);
             vao.addVertexBuffer(texCoordsArr, 2, 1);
             vao.addVertexBuffer(offsetsArr, 2, 2);
-            
-            return new Font(textureAtlas, chars, vao, LINE_HEIGHT);
+
+            AssetDatabase.fonts.put(file, new Font(textureAtlas, chars, vao, LINE_HEIGHT));
         } catch (IOException ex) {
             Logger.warn("Error by loading font", "The fnt file '" + file +
-                    "' could not be loaded! Returning null.");
+                    "' could not be loaded!");
         }
-        
-        return null;
     }
     
     private static void addVertexData(List<Float> vertices, List<Float> texCoords, 
@@ -203,7 +198,7 @@ public class FntLoader {
         vertices.add(ox);
         vertices.add(oy);
         
-        //Texture coords
+        //MetaTexture coords
         texCoords.add(tx +tw);
         texCoords.add(ty +th);
         

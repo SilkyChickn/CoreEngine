@@ -1,7 +1,6 @@
 package de.coreengine.examples.rotatingCube.gameObjects;
 
 import com.bulletphysics.collision.shapes.BoxShape;
-import de.coreengine.asset.ObjLoader;
 import de.coreengine.rendering.model.Model;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.renderer.MasterRenderer;

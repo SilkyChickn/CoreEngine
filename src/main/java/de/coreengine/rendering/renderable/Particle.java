@@ -42,11 +42,11 @@ public class Particle {
     private Vector3f position = new Vector3f();
 
     //Particles current texture
-    private int texture = Material.TEXTURE_WHITE;
+    private String texture = Material.TEXTURE_WHITE;
 
     /**@return Particles current texture
      */
-    public int getTexture() {
+    public String getTexture() {
         return texture;
     }
 
@@ -54,7 +54,7 @@ public class Particle {
      *
      * @param texture New texture of the particle
      */
-    public void setTexture(int texture) {
+    public void setTexture(String texture) {
         this.texture = texture;
     }
 

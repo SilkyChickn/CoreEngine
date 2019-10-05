@@ -28,7 +28,8 @@
 
 package de.coreengine.rendering.renderer;
 
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.asset.AssetDatabase;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.programs.ParticleShader;
 import de.coreengine.rendering.renderable.Camera;
@@ -49,9 +50,9 @@ public class ParticleRenderer {
      * @param particles Particle batches, sortet by textures
      * @param cam Camera to render particles from
      */
-    public void render(HashMap<Integer, List<Particle>> particles, Camera cam){
+    public void render(HashMap<String, List<Particle>> particles, Camera cam){
 
-        SimpleModel model = Quad2D.getInstance();
+        Mesh model = Quad2D.getInstance();
 
         shader.start();
         shader.prepareCam(cam);
@@ -60,8 +61,9 @@ public class ParticleRenderer {
         model.getVao().enableAttributes();
 
         //Iterate particle textures
-        for(int tex: particles.keySet()){
-            shader.prepareParticles(tex);
+        for(String tex: particles.keySet()){
+            int texId = AssetDatabase.getTexture(tex);
+            shader.prepareParticles(texId);
 
             //Iterate particles for texture
             for(Particle particle: particles.get(tex)){

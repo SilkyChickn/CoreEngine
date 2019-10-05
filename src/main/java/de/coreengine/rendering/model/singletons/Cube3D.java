@@ -28,7 +28,7 @@
 package de.coreengine.rendering.model.singletons;
 
 import com.bulletphysics.collision.shapes.BoxShape;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 
@@ -41,11 +41,11 @@ import javax.vecmath.Vector3f;
 public class Cube3D {
     
     //Instance of a 3D cube model
-    private static SimpleModel instance = null;
+    private static Mesh instance = null;
     
     /**@return Instance of a 3D cube model
      */
-    public static SimpleModel getInstance() {
+    public static Mesh getInstance() {
         if(instance == null) create();
         return instance;
     }
@@ -75,7 +75,7 @@ public class Cube3D {
             5, 1, 4, 4, 1, 0 //Bottom
         });
         
-        instance = new SimpleModel(vao, index, new BoxShape(
+        instance = new Mesh(vao, index, new BoxShape(
                 new Vector3f(0.5f, 0.5f, 0.5f)));
     }
 }

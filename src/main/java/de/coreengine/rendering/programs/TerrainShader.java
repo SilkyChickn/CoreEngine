@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.renderable.terrain.TerrainConfig;
 import de.coreengine.rendering.renderable.terrain.TerrainTexturePack;
@@ -149,9 +150,9 @@ public class TerrainShader extends Shader{
      * @param config Config for the next terrain
      */
     public void setTerrainConfig(TerrainConfig config){
-        bindTexture(config.getBlendMap(), blendMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(config.getHeightMap().getGlTexture(), heightMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(config.getLightMap(), lightMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(config.getBlendMap()), blendMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(config.getHeightMap().getGlTexture()), heightMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(config.getLightMap()), lightMapUnit, GL11.GL_TEXTURE_2D);
         
         setUniform(amplitudeLoc, config.getAmplitude());
         setUniform(tessAreaLoc, config.getTesselationArea().x, 
@@ -185,30 +186,30 @@ public class TerrainShader extends Shader{
         setUniform(specularGLoc, pack.getGreenMaterial().reflectivity, pack.getGreenMaterial().shineDamping);
         setUniform(specularBLoc, pack.getBlueMaterial().reflectivity, pack.getBlueMaterial().shineDamping);
         
-        bindTexture(pack.getMaterial().diffuseMap, diffuseUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getRedMaterial().diffuseMap, diffuseRUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getGreenMaterial().diffuseMap, diffuseGUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getBlueMaterial().diffuseMap, diffuseBUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getMaterial().diffuseMap), diffuseUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().diffuseMap), diffuseRUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getGreenMaterial().diffuseMap), diffuseGUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getBlueMaterial().diffuseMap), diffuseBUnit, GL11.GL_TEXTURE_2D);
         
-        bindTexture(pack.getMaterial().specularMap, specularUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getRedMaterial().specularMap, specularRUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getGreenMaterial().specularMap, specularGUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getBlueMaterial().specularMap, specularBUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getMaterial().specularMap), specularUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().specularMap), specularRUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getGreenMaterial().specularMap), specularGUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getBlueMaterial().specularMap), specularBUnit, GL11.GL_TEXTURE_2D);
         
-        bindTexture(pack.getMaterial().ambientOcclusionMap, aoUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getRedMaterial().ambientOcclusionMap, aoRUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getGreenMaterial().ambientOcclusionMap, aoGUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getBlueMaterial().ambientOcclusionMap, aoBUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getMaterial().ambientOcclusionMap), aoUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().ambientOcclusionMap), aoRUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getGreenMaterial().ambientOcclusionMap), aoGUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getBlueMaterial().ambientOcclusionMap), aoBUnit, GL11.GL_TEXTURE_2D);
         
-        bindTexture(pack.getMaterial().displacementMap, displacementUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getRedMaterial().displacementMap, displacementRUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getGreenMaterial().displacementMap, displacementGUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getBlueMaterial().displacementMap, displacementBUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getMaterial().displacementMap), displacementUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().displacementMap), displacementRUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getGreenMaterial().displacementMap), displacementGUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getBlueMaterial().displacementMap), displacementBUnit, GL11.GL_TEXTURE_2D);
         
-        bindTexture(pack.getMaterial().normalMap, normalUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getRedMaterial().normalMap, normalRUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getGreenMaterial().normalMap, normalGUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(pack.getBlueMaterial().normalMap, normalBUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getMaterial().normalMap), normalUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getRedMaterial().normalMap), normalRUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getGreenMaterial().normalMap), normalGUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(pack.getBlueMaterial().normalMap), normalBUnit, GL11.GL_TEXTURE_2D);
     }
     
     /**Setting clip plane for next terrain

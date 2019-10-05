@@ -28,7 +28,7 @@
 package de.coreengine.rendering.renderable;
 
 import de.coreengine.rendering.model.Material;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.util.Configuration;
 
 import javax.vecmath.Vector2f;
@@ -49,8 +49,8 @@ public class Grassland {
     private static final float DEFAULT_WIND_INTENSITIVITY = 
             Configuration.getValuef("GRASSLAND_DEFAULT_WIND_INTENSITIVITY");
     
-    //Mesh that contains the grass blade positions and its scale
-    private SimpleModel mesh = null;
+    //Mesh1 that contains the grass blade positions and its scale
+    private Mesh mesh = null;
     private float tuftScale = 0.0f;
     
     //Intesitivity of the wind map
@@ -66,10 +66,10 @@ public class Grassland {
     private final Vector2f area = new Vector2f(DEFAULT_RANGE, DEFAULT_GRADIENT);
     
     //Map that contains the locations, where grass to draw, and color
-    private int densityMap = Material.TEXTURE_BLANK;
+    private String densityMap = Material.TEXTURE_BLANK;
     
     //Map that contains the grass vector transformation by wind
-    private int windMap = Material.TEXTURE_BLACK;
+    private String windMap = Material.TEXTURE_BLACK;
     
     //Tiling for the windmap
     private float windMapTiling = 1.0f;
@@ -93,13 +93,13 @@ public class Grassland {
      * 
      * @return Density of the grassland
      */
-    public int getDensityMap() {
+    public String getDensityMap() {
         return densityMap;
     }
     
-    /**@return Mesh that contains the grass blade positions
+    /**@return Mesh1 that contains the grass blade positions
      */
-    public SimpleModel getMesh() {
+    public Mesh getMesh() {
         return mesh;
     }
     
@@ -112,14 +112,14 @@ public class Grassland {
     /**@param mesh New gras mesh
      * @param scale Scale of the tuft mesh
      */
-    public void setMesh(SimpleModel mesh, float scale) {
+    public void setMesh(Mesh mesh, float scale) {
         this.mesh = mesh;
         this.tuftScale = scale;
     }
     
     /**@return Map that contains the grass vector transformation by wind
      */
-    public int getWindMap() {
+    public String getWindMap() {
         return windMap;
     }
     
@@ -128,7 +128,7 @@ public class Grassland {
      * 
      * @param density New densitymap
      */
-    public void setDensityMap(int density) {
+    public void setDensityMap(String density) {
         this.densityMap = density;
     }
     
@@ -136,7 +136,7 @@ public class Grassland {
      * 
      * @param windMap New windmap
      */
-    public void setWindMap(int windMap) {
+    public void setWindMap(String windMap) {
         this.windMap = windMap;
     }
     

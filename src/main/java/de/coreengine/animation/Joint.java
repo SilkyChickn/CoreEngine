@@ -62,6 +62,26 @@ public class Joint {
         calcAnimatedTransform();
     }
 
+    /**Creating new joint as copy from the passed joint
+     *
+     * @param other Joint to copy
+     */
+    public Joint(Joint other){
+
+        //Copy data
+        this.index = other.index;
+        this.inverseBindMatrix = new Matrix4f(other.inverseBindMatrix);
+        this.localPose.invert(inverseBindMatrix);
+
+        //Recursive for children joints
+        for(Joint child: other.children){
+            children.add(new Joint(child));
+        }
+
+        //Recalc animation transform
+        calcAnimatedTransform();
+    }
+
     /**Calculate the animated transformation by multiplying the local pose (transformation matrix of the joint in
      * modelspace) with the inverse bind matrix (inverted default pose).
      */
@@ -69,6 +89,7 @@ public class Joint {
         this.animatedTransform.set(localPose);
         this.animatedTransform.mul(inverseBindMatrix);
 
+        //Recursive for children joints
         for(Joint child: children) child.calcAnimatedTransform();
     }
 

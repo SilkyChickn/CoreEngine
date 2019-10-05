@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.renderable.terrain;
 
-import de.coreengine.asset.meta.Image;
+import de.coreengine.asset.meta.MetaTexture;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.util.Configuration;
 
@@ -61,13 +61,13 @@ public class TerrainConfig {
     private TerrainTexturePack texturePack = new TerrainTexturePack();
     
     //Lightmap of the terrain that contains the normals for faster lighting calculation
-    private int lightMap = Material.DEFAULT_NORMAL_MAP;
+    private String lightMap = Material.DEFAULT_NORMAL_MAP;
     
     //The heightmap contains the height at the specific points
-    private Image heightMap = new Image(null, 0, 0, Material.TEXTURE_BLACK);
+    private MetaTexture heightMap = new MetaTexture(null, 0, 0, Material.TEXTURE_BLACK);
     
     //The blend map contains, wich texture should mapped on wich point on the terrain
-    private int blendMap = Material.TEXTURE_BLACK;
+    private String blendMap = Material.TEXTURE_BLACK;
     
     //Terrains lod stage area sizes
     private float[] lodRanges = DEFAULT_LOD_RANGES;
@@ -113,7 +113,7 @@ public class TerrainConfig {
     
     /**@return Lightmap of the terrain that contains the normals for faster lighting calculation
      */
-    public int getLightMap() {
+    public String getLightMap() {
         return lightMap;
     }
     
@@ -121,13 +121,13 @@ public class TerrainConfig {
      * 
      * @param lightMap New light map
      */
-    public void setLightMap(int lightMap) {
+    public void setLightMap(String lightMap) {
         this.lightMap = lightMap;
     }
     
     /**@return The heightmap contains the height at the specific points
      */
-    public Image getHeightMap() {
+    public MetaTexture getHeightMap() {
         return heightMap;
     }
     
@@ -135,13 +135,13 @@ public class TerrainConfig {
      * 
      * @param heightMap New height map
      */
-    public void setHeightMap(Image heightMap) {
+    public void setHeightMap(MetaTexture heightMap) {
         this.heightMap = heightMap;
     }
     
     /**@return The blend map contains, wich texture should mapped on wich point on the terrain
      */
-    public int getBlendMap() {
+    public String getBlendMap() {
         return blendMap;
     }
     
@@ -149,7 +149,7 @@ public class TerrainConfig {
      * 
      * @param blendMap New blend map
      */
-    public void setBlendMap(int blendMap) {
+    public void setBlendMap(String blendMap) {
         this.blendMap = blendMap;
     }
     

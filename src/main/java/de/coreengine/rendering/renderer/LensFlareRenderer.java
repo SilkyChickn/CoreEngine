@@ -28,7 +28,7 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.framework.Window;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderable.LensFlare;
 import de.coreengine.rendering.programs.LensFlareShader;
@@ -69,7 +69,7 @@ public class LensFlareRenderer {
      */
     void render(LensFlare lensFlare){
         
-        SimpleModel model = Quad2D.getInstance();
+        Mesh model = Quad2D.getInstance();
         
         shader.start();
         

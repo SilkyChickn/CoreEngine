@@ -27,7 +27,7 @@
  */
 package de.coreengine.util;
 
-import de.coreengine.asset.ImageLoader;
+import de.coreengine.asset.TextureLoader;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.rendering.model.Material;
 import org.lwjgl.opengl.GL11;
@@ -66,36 +66,36 @@ public class MaterialParser {
                         break;
                     }
                 case "c_map":
-                    result.diffuseMap = ImageLoader.loadImageFileGl(args[i + 1],
-                            true, GL11.GL_LINEAR, asResource);
+                    result.diffuseMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "n_map":
-                    result.normalMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.normalMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "ao_map":
-                    result.ambientOcclusionMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.ambientOcclusionMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "a_map":
-                    result.alphaMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.alphaMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "g_map":
-                    result.glowMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.glowMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "d_map":
-                    result.displacementMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.displacementMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "s_map":
-                    result.specularMap = ImageLoader.loadImageFileGl(args[i+1], 
-                            true, GL11.GL_LINEAR, asResource);
+                    result.specularMap = args[i+1];
+                    TextureLoader.loadTextureFileGl(args[i+1],true, GL11.GL_LINEAR, asResource);
                     break;
                 case "r_map":
-                    result.reflectionMap = ImageLoader.loadCubeMap(args[i+1], 
-                            "png", asResource);
+                    result.reflectionMap = args[i+1];
+                    TextureLoader.loadCubeMap(args[i+1],"png", asResource);
                     break;
                 case "df":
                     result.displacementFactor = Float.parseFloat(args[i+1]);

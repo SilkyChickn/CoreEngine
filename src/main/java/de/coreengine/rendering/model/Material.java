@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.model;
 
-import de.coreengine.asset.ImageLoader;
+import de.coreengine.asset.TextureLoader;
 import de.coreengine.util.Configuration;
 import org.lwjgl.opengl.GL11;
 
@@ -36,25 +36,21 @@ import org.lwjgl.opengl.GL11;
  * @author Darius Dinger
  */
 public class Material {
-    
     /**A pure black texture
      */
-    public static final int TEXTURE_BLACK = 0;
+    public static final String TEXTURE_BLACK = "black";
     
     /**A pure white texture
      */
-    public static final int TEXTURE_WHITE = 
-            ImageLoader.loadImageFileGl("res/white.png", true, GL11.GL_LINEAR, true);
+    public static final String TEXTURE_WHITE = "res/white.png";
     
     /**A pure blank/alpha texture
      */
-    public static final int TEXTURE_BLANK = 
-            ImageLoader.loadImageFileGl("res/blank.png", true, GL11.GL_LINEAR, true);
+    public static final String TEXTURE_BLANK = "res/blank.png";
     
     /**A pure blue texture (default for normal maps)
      */
-    public static final int DEFAULT_NORMAL_MAP = 
-            ImageLoader.loadImageFileGl("res/defNormalMap.png", true, GL11.GL_LINEAR, true);
+    public static final String DEFAULT_NORMAL_MAP = "res/defNormalMap.png";
     
     /**The diffuse color describes additional color information for diffuse lighting
      */
@@ -63,34 +59,34 @@ public class Material {
     /**Diffuse map, wich contains the color information for the diffuse lighting for
      * the specific pixels
      */
-    public int diffuseMap = TEXTURE_WHITE;
+    public String diffuseMap = TEXTURE_WHITE;
     
     /**Normal map, wich contains the normal clarification for the specific pixels
      */
-    public int normalMap = DEFAULT_NORMAL_MAP;
+    public String normalMap = DEFAULT_NORMAL_MAP;
     
     /**Specular map, wich contains the specific specular lighting clarification for
      * the specific pixel
      */
-    public int specularMap = TEXTURE_BLACK;
+    public String specularMap = TEXTURE_BLACK;
     
     /**Displacement map, wich contains the parallax occlusion displacement 
      * clarification for the specific pixel
      */
-    public int displacementMap = TEXTURE_BLACK;
+    public String displacementMap = TEXTURE_BLACK;
     
     /**Ambient occlusion map, wich contains the ambient lighting clarification for
      * the specific pixel
      */
-    public int ambientOcclusionMap = TEXTURE_WHITE;
+    public String ambientOcclusionMap = TEXTURE_WHITE;
     
     /**Alpha map, wich contains additionally alpha information
      */
-    public int alphaMap = TEXTURE_BLACK;
+    public String alphaMap = TEXTURE_BLACK;
     
     /**Reflection cube map, that contains the reflected environment
      */
-    public int reflectionMap = TEXTURE_BLACK;
+    public String reflectionMap = TEXTURE_BLACK;
     
     /**Objects glowing color (black for no glowing)
      */
@@ -98,7 +94,7 @@ public class Material {
     
     /**Glowing map, wich contains, where the object glows
      */
-    public int glowMap = TEXTURE_BLACK;
+    public String glowMap = TEXTURE_BLACK;
     
     /**The displacement factor describes the intensity of the parallax 
      * occlusion mapping
@@ -121,4 +117,12 @@ public class Material {
      */
     public float shineDamping = 
             Configuration.getValuef("MATERIAL_DEFAULT_SHINE_DAMPING");
+
+    static {
+
+        //Load default textures
+        TextureLoader.loadTextureFileGl(TEXTURE_WHITE, true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFileGl(TEXTURE_BLANK, true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFileGl(DEFAULT_NORMAL_MAP, true, GL11.GL_LINEAR, true);
+    }
 }

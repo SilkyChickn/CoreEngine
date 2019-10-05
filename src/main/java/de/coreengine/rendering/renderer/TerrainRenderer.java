@@ -86,7 +86,7 @@ public class TerrainRenderer {
     /**Rendering a node from the terrain quad tree
      * 
      * @param node Node to render
-     * @param mesh Mesh to use for render
+     * @param mesh Mesh1 to use for render
      */
     private void renderNode(TerrainNode node, TerrainMesh mesh){
         

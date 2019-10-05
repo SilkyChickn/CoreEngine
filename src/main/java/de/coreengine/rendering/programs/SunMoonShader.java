@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Moon;
@@ -76,6 +77,6 @@ public class SunMoonShader extends Shader{
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getFacingMVPMatrix(
                 moon.getPosition().x, moon.getPosition().y, moon.getPosition().z)));
         
-        bindTexture(moon.getTexture(), colorTextureUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(moon.getTexture()), colorTextureUnit, GL11.GL_TEXTURE_2D);
     }
 }

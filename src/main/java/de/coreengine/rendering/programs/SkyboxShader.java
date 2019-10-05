@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Skybox;
@@ -104,7 +105,7 @@ public class SkyboxShader extends Shader{
             
             //Load texture
             cubeMapTextureUnits[i] = i;
-            bindTexture(skybox.getCubeMapTextures()[i], i, GL13.GL_TEXTURE_CUBE_MAP);
+            bindTexture(AssetDatabase.getTexture(skybox.getCubeMapTextures()[i]), i, GL13.GL_TEXTURE_CUBE_MAP);
         }
         
         //Load arrays and skybox stuff

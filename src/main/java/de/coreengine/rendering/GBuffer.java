@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL30;
  */
 public class GBuffer extends FrameBufferObject{
     
-    //Texture ids of the gBuffer buffers
+    //MetaTexture ids of the gBuffer buffers
     private final int colorBuffer, positionBuffer, normalBuffer, pickingBuffer, 
             glowingBuffer, sunBuffer, variable0Buffer, variable1Buffer;
     

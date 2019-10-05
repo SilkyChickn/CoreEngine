@@ -288,9 +288,9 @@ public abstract class Shader {
     
     /**Binding texture to an opengl textureunit
      * 
-     * @param texture Texture to bind
+     * @param texture MetaTexture to bind
      * @param unit Textureunit to bind texture to
-     * @param type Texture type (GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP, ...)
+     * @param type MetaTexture type (GL_TEXTURE_2D, GL_TEXTURE_CUBE_MAP, ...)
      */
     protected final void bindTexture(int texture, int unit, int type){
         GL13.glActiveTexture(GL13.GL_TEXTURE0 +unit);

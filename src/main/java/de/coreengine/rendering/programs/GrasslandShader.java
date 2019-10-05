@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.terrain.Terrain;
@@ -99,11 +100,11 @@ public class GrasslandShader extends Shader{
      * @param terrain Next terrain
      */
     public void prepareTerrain(Terrain terrain){
-        bindTexture(terrain.getGrassland().getMesh().getMaterial().diffuseMap, 
+        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getMesh().getMaterial().diffuseMap),
                 bladesTextureUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(terrain.getGrassland().getDensityMap(), 
+        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getDensityMap()),
                 densityMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(terrain.getGrassland().getWindMap(), 
+        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getWindMap()),
                 windMapUnit, GL11.GL_TEXTURE_2D);
         
         setUniform(bladesColorLoc, terrain.getGrassland().getMesh().
@@ -117,9 +118,9 @@ public class GrasslandShader extends Shader{
         setUniform(scaleLoc, terrain.getGrassland().getTuftScale());
         setUniform(tuftCount, terrain.getGrassland().getDensity());
         
-        bindTexture(terrain.getConfig().getHeightMap().getGlTexture(), 
+        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getHeightMap().getGlTexture()),
                 heightMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(terrain.getConfig().getLightMap(), 
+        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getLightMap()),
                 lightMapUnit, GL11.GL_TEXTURE_2D);
         
         setUniform(amplitudeLoc, terrain.getConfig().getAmplitude());

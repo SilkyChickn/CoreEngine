@@ -29,22 +29,41 @@
 package de.coreengine.rendering.renderable;
 
 import de.coreengine.animation.Joint;
+import de.coreengine.rendering.model.AnimatedModel;
+import de.coreengine.rendering.model.Transformation;
 
 /**Class that represents an animated entity in the world
  *
  * @author Darius Dinger
  */
-public class AnimatedEntity extends Entity{
+public class AnimatedEntity {
+
+    //Transformation of the entity
+    private Transformation transform = new Transformation();
+
+    //Model of the entity
+    private AnimatedModel model = null;
 
     //Root joint of the models skeleton
     private Joint skeleton = null;
 
-    /**Setting the skeleton of the animated model (must fit to the models vao)
-     *
-     * @param skeleton Root joint of the models skeleton
+    /**@param model New model of the entity
      */
-    public void setSkeleton(Joint skeleton) {
-        this.skeleton = skeleton;
+    public void setModel(AnimatedModel model) {
+        this.model = model;
+        this.skeleton = model.getNewSkeletonInstance();
+    }
+
+    /**@return Read/writeable transformation of the entity
+     */
+    public Transformation getTransform() {
+        return transform;
+    }
+
+    /**@return Model of the entity
+     */
+    public AnimatedModel getModel() {
+        return model;
     }
 
     /**@return Root joint of the models skeleton

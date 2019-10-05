@@ -65,7 +65,7 @@ public class LightScatteringPPShader extends PPShader{
         colorLoc = getUniformLocation("color");
     }
     
-    /**@param texture Texture id of the sun buffer
+    /**@param texture MetaTexture id of the sun buffer
      */
     public void setSunTexture(int texture){
         bindTexture(texture, sunTextureUnit, GL11.GL_TEXTURE_2D);

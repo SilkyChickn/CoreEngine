@@ -27,7 +27,7 @@
  */
 package de.coreengine.asset;
 
-import de.coreengine.asset.meta.Image;
+import de.coreengine.asset.meta.MetaTexture;
 import de.coreengine.system.Game;
 import de.coreengine.util.BufferUtils;
 import de.coreengine.util.Configuration;
@@ -41,27 +41,38 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-/**Class for loading images from drive
- *
+/**Class for loading Textures from drive<br>
+ *<br>
+ * Supported Formats:<br>
+ * JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib<br>
+ * PNG 1/2/4/8/16-bit-per-channel<br>
+ * TGA (not sure what subset, if a subset)<br>
+ * BMP non-1bpp, non-RLE<br>
+ * PSD (composited view only, no extra channels, 8/16 bit-per-channel)<br>
+ * GIF (*desired_channels always reports as 4-channel)<br>
+ * HDR (radiance rgbE format)<br>
+ * PIC (Softimage PIC)<br>
+ * PNM (PPM and PGM binary only)<br>
+ *<br>
  * @author Darius Dinger
  */
-public class ImageLoader {
+public class TextureLoader {
     private static final float MIPMAP_LEVEL = Configuration.getValuef("MIPMAP_LEVEL");
-    
-    /**Load image file from ressources and store into Image object
+
+    /**Load MetaTexture file and store into MetaTexture object
      * 
-     * @param imageFile Path to image relative to application
-     * @param mipmap Uses this image mipmapping/anisotropic filtering (if supported)
+     * @param textureFile Path to MetaTexture relative to application
+     * @param mipmap Uses this MetaTexture mipmapping/anisotropic filtering (if supported)
      * @param filtering Wich filtering mathod (GL_NEARES, GL_LINEAR, ...)
-     * @param asResource Loading image from resources
-     * @return Image object
+     * @param asResource Loading MetaTexture from resources
+     * @return MetaTexture object
      */
-    public static Image loadImageFile(String imageFile, boolean mipmap,
-                                      int filtering, boolean asResource) {
-        
+    public static MetaTexture loadTextureFile(String textureFile, boolean mipmap,
+                                              int filtering, boolean asResource) {
+
         //Define window icon variables
-        ByteBuffer imageData = null;
-        int imageWidth = 0, imageHeight = 0;
+        ByteBuffer textureData = null;
+        int textureWidth = 0, textureHeight = 0;
         
         //Try to load icon
         try (MemoryStack stack = MemoryStack.stackPush()){
@@ -75,28 +86,28 @@ public class ImageLoader {
                 
                 //Load resource
                 ByteBuffer buffer = BufferUtils.
-                        ioResourceToByteBuffer(imageFile, 8 * 1024);
+                        ioResourceToByteBuffer(textureFile, 8 * 1024);
                 
-                //Load image and throw exception at error
-                imageData = STBImage.stbi_load_from_memory(buffer, w, h, comp, 4);
+                //Load MetaTexture and throw exception at error
+                textureData = STBImage.stbi_load_from_memory(buffer, w, h, comp, 4);
             }else{
                 
-                //Load image and throw exception at error
-                imageData = STBImage.stbi_load(imageFile, w, h, comp, 4);
+                //Load MetaTexture and throw exception at error
+                textureData = STBImage.stbi_load(textureFile, w, h, comp, 4);
             }
             
-            if(imageData == null){
-                Logger.err("Error by loading image", "The image file " + imageFile +
+            if(textureData == null){
+                Logger.err("Error by loading MetaTexture", "The MetaTexture file " + textureFile +
                         " could not be loaded!");
                 Game.exit(1);
             }
             
             //Set width and height from buffer
-            imageWidth = w.get();
-            imageHeight = h.get();
+            textureWidth = w.get();
+            textureHeight = h.get();
         }catch(IOException e){
-            Logger.err("Error by loading image", "An IO Error occurs while "
-                    + "loading image " + imageFile + "!");
+            Logger.err("Error by loading MetaTexture", "An IO Error occurs while "
+                    + "loading MetaTexture " + textureFile + "!");
             Game.exit(1);
         }
         
@@ -105,8 +116,8 @@ public class ImageLoader {
         
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
         
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, imageWidth, imageHeight, 
-                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imageData);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, textureWidth, textureHeight,
+                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureData);
         
         if(mipmap){
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
@@ -125,61 +136,62 @@ public class ImageLoader {
         }
         
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-        
-        return new Image(imageData, imageWidth, imageHeight, tex);
+
+        AssetDatabase.textures.put(textureFile, tex);
+
+        return new MetaTexture(textureData, textureWidth, textureHeight, textureFile);
     }
     
-    /**Loading a image file into an opengl texture. Returning 0, if image
-     * could not be load
+    /**Loading a MetaTexture file into an opengl texture and storing into asset database
      * 
-     * @param imageFile Path to image relative to application
-     * @param mipmap Uses this image mipmapping/anisotropic filtering (if supported)
+     * @param textureFile Path to MetaTexture relative to application
+     * @param mipmap Uses this MetaTexture mipmapping/anisotropic filtering (if supported)
      * @param filtering Wich filtering mathod (GL_NEARES, GL_LINEAR, ...)
-     * @param asResource Loading image from resources
-     * @return Opengl texture with image data
+     * @param asResource Loading MetaTexture from resources
      */
-    public static int loadImageFileGl(String imageFile, boolean mipmap, 
-            int filtering, boolean asResource){
-        Image img = loadImageFile(imageFile, mipmap, filtering, asResource);
-        return img.getGlTexture();
+    public static void loadTextureFileGl(String textureFile, boolean mipmap, int filtering, boolean asResource){
+        if(AssetDatabase.textures.containsKey(textureFile)) return;
+        loadTextureFile(textureFile, mipmap, filtering, asResource);
     }
     
-    /**Loading cube map texture from abstract path and extension. The cube map
+    /**Loading cube map texture from abstract path and extension and storing into asset database. The cube map
      * file names will be generated by:<br>
      * path + ['_lf', '_rt', '_up', '_dn', '_ft', '_bk'] + '.' + ext
      * 
      * @param path Abstract path to the cubemap
-     * @param ext Extension of the cube map images
-     * @param asResource Loading cube map images from resources
+     * @param ext Extension of the cube map Textures
+     * @param asResource Loading cube map Textures from resources
      * @return Cube map texture id
      */
-    public static int loadCubeMap(String path, String ext, boolean asResource){
-        return loadCubeMap(path + "_lf." + ext, path + "_rt." + ext, 
+    public static void loadCubeMap(String path, String ext, boolean asResource){
+        loadCubeMap(path, path + "_lf." + ext, path + "_rt." + ext,
                 path + "_up." + ext, path + "_dn." + ext, path + "_ft." + ext, 
                 path + "_bk." + ext, asResource);
     }
     
-    /**Loadig cubemap texture from 6 texture files
-     * 
+    /**Loadig cubemap texture from 6 texture files and storing into asset database
+     *
+     * @param key Key in the asset database
      * @param left Left sube map texture
      * @param right Right sube map texture
      * @param top Top sube map texture
      * @param bottom Bottom sube map texture
      * @param front Front sube map texture
      * @param back Back sube map texture
-     * @param asResource Loading cube map images from resources
+     * @param asResource Loading cube map Textures from resources
      * @return Loaded cube map texture id
      */
-    public static int loadCubeMap(String left, String right, String top, 
+    public static void loadCubeMap(String key, String left, String right, String top,
             String bottom, String front, String back, boolean asResource){
-        
-        //Loading cube map images
-        Image imgL = loadImageFile(left, false, GL11.GL_LINEAR, asResource);
-        Image imgR = loadImageFile(right, false, GL11.GL_LINEAR, asResource);
-        Image imgT = loadImageFile(top, false, GL11.GL_LINEAR, asResource);
-        Image imgB = loadImageFile(bottom, false, GL11.GL_LINEAR, asResource);
-        Image imgF = loadImageFile(front, false, GL11.GL_LINEAR, asResource);
-        Image imgBa = loadImageFile(back, false, GL11.GL_LINEAR, asResource);
+        if(AssetDatabase.textures.containsKey(key)) return;
+
+        //Loading cube map Textures
+        MetaTexture imgL = loadTextureFile(left, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgR = loadTextureFile(right, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgT = loadTextureFile(top, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgB = loadTextureFile(bottom, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgF = loadTextureFile(front, false, GL11.GL_LINEAR, asResource);
+        MetaTexture imgBa = loadTextureFile(back, false, GL11.GL_LINEAR, asResource);
         
         //Gen and bind cube map texture
         int tex = GL11.glGenTextures();
@@ -187,28 +199,28 @@ public class ImageLoader {
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, tex);
         GL11.glEnable(GL13.GL_TEXTURE_CUBE_MAP);
         
-        //Apply textures to image
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, 
+        //Apply textures to MetaTexture
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
                 GL11.GL_RGBA, imgL.getWidth(), imgL.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgL.getData());
         
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, 
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
                 GL11.GL_RGBA, imgR.getWidth(), imgR.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgR.getData());
         
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, 
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
                 GL11.GL_RGBA, imgT.getWidth(), imgT.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgT.getData());
         
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, 
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
                 GL11.GL_RGBA, imgB.getWidth(), imgB.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgB.getData());
         
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, 
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
                 GL11.GL_RGBA, imgF.getWidth(), imgF.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgF.getData());
         
-        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, 
+        GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
                 GL11.GL_RGBA, imgBa.getWidth(), imgBa.getHeight(), 0, 
                 GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgBa.getData());
         
@@ -222,6 +234,6 @@ public class ImageLoader {
         
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
 
-        return tex;
+        AssetDatabase.textures.put(key, tex);
     }
 }

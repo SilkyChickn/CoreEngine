@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.renderer;
 
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Water;
@@ -51,7 +51,7 @@ public class WaterRenderer {
      */
     void render(List<Water> waters, Camera camera){
         
-        SimpleModel model = Quad2D.getInstance();
+        Mesh model = Quad2D.getInstance();
         
         shader.start();
         shader.setCamera(camera);

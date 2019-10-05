@@ -27,12 +27,14 @@
  */
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.programs.EntityShader;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector4f;
+import java.util.HashMap;
 import java.util.List;
 
 /**Renderer that can render an model into the world
@@ -45,41 +47,46 @@ public class EntityRenderer {
     
     /**Renders a list of entities into the bound framebuffer
      * 
-     * @param entities Entity list to render
+     * @param entities Entity map to render
      * @param cam Camera to render from
      * @param clipPlane Clip plane of the entities
      */
-    void render(List<Entity> entities, Camera cam, Vector4f clipPlane){
-        
+    void render(HashMap<Mesh, List<Entity>> entities, Camera cam, Vector4f clipPlane){
+
+        //Setup shader
         shader.start();
         shader.setCamera(cam);
         shader.setClipPlane(clipPlane.x, clipPlane.y,
                 clipPlane.z, clipPlane.w);
-        
-        entities.forEach(entity -> {
-            if(entity.getModel() != null){
-                
-                entity.getModel().getVao().bind();
-                entity.getModel().getVao().enableAttributes();
-                
+
+        for(Mesh mesh: entities.keySet()){
+
+            //Bind mesh data
+            mesh.getVao().bind();
+            mesh.getVao().enableAttributes();
+            mesh.getIndexBuffer().bind();
+
+            //Load material into shader
+            shader.prepareMaterial(mesh.getMaterial());
+
+            //Iterate instanced entities
+            for(Entity entity: entities.get(mesh)){
+
+                //Prepare entity
                 shader.prepareEntity(entity);
-                
-                for(int i = 0; i < entity.getModel().getMeshCount(); i++){
-                    entity.getModel().getIndexBufferAt(i).bind();
-                    
-                    shader.prepareMaterial(entity.getModel().getMaterialAt(i));
-                    
-                    GL11.glDrawElements(GL11.GL_TRIANGLES, 
-                            entity.getModel().getIndexBufferAt(i).getSize(), GL11.GL_UNSIGNED_INT, 0);
-                    
-                    entity.getModel().getIndexBufferAt(i).unbind();
-                }
-                
-                entity.getModel().getVao().disableAttributes();
-                entity.getModel().getVao().unbind();
+
+                //Render entity
+                GL11.glDrawElements(GL11.GL_TRIANGLES,
+                        mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
             }
-        });
-        
+
+            //Unbind mesh data
+            mesh.getIndexBuffer().unbind();
+            mesh.getVao().disableAttributes();
+            mesh.getVao().unbind();
+        }
+
+        //Stop shader
         shader.stop();
     }
 }

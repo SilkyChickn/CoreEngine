@@ -47,7 +47,7 @@ public class Moon{
     private float size = DEFAULT_SIZE;
     
     //Moon texture
-    private int texture = Material.TEXTURE_BLANK;
+    private String texture = Material.TEXTURE_BLANK;
     
     //Moon light sources
     private PointLight pointLight = new PointLight();
@@ -70,15 +70,15 @@ public class Moon{
         this.size = size;
     }
     
-    /**@return Texture of the moon
+    /**@return MetaTexture of the moon
      */
-    public final int getTexture() {
+    public final String getTexture() {
         return texture;
     }
     
     /**@param texture New texture of the moon
      */
-    public final void setTexture(int texture) {
+    public final void setTexture(String texture) {
         this.texture = texture;
     }
     

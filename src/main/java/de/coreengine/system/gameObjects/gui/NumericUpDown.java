@@ -27,8 +27,8 @@
  */
 package de.coreengine.system.gameObjects.gui;
 
-import de.coreengine.asset.ImageLoader;
-import de.coreengine.asset.meta.Font;
+import de.coreengine.asset.TextureLoader;
+import de.coreengine.rendering.model.Font;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.Configuration;
@@ -48,12 +48,8 @@ public class NumericUpDown extends GameObject{
             Configuration.getValuef("NUMERIC_DEFAULT_MAX");
     private static final float DEFAULT_MIN = 
             Configuration.getValuef("NUMERIC_DEFAULT_MIN");
-    private static final int DEFAULT_UP_BUTTON_IMG = 
-            ImageLoader.loadImageFileGl("res/up.png",
-                    true, GL11.GL_LINEAR, true);
-    private static final int DEFAULT_DOWN_BUTTON_IMG = 
-            ImageLoader.loadImageFileGl("res/down.png",
-                    true, GL11.GL_LINEAR, true);
+    private static final String DEFAULT_UP_BUTTON_IMG = "res/up.png";
+    private static final String DEFAULT_DOWN_BUTTON_IMG = "res/down.png";
     
     //Components
     private GUIPane pane;
@@ -88,6 +84,9 @@ public class NumericUpDown extends GameObject{
         filter.add("9");
         filter.add(".");
         textField.setFilter(filter);
+
+        TextureLoader.loadTextureFileGl("res/up.png", true, GL11.GL_LINEAR, true);
+        TextureLoader.loadTextureFileGl("res/down.png", true, GL11.GL_LINEAR, true);
     }
     
     @Override

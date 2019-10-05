@@ -38,7 +38,7 @@ import javax.vecmath.Matrix4f;
 public class Skybox {
     
     //Skybox cube map textures and blendings
-    private int[] cubeMapTextures = new int[0];
+    private String[] cubeMapTextures = new String[0];
     private float[] blendingFactors = new float[0];
     
     //Current rotation ind degrees and rotation matrix
@@ -70,7 +70,7 @@ public class Skybox {
      * @param cubeMapTextures Cube map textures
      * @param blendingFactors Initial blending factors
      */
-    public void setCubeMapTextures(int[] cubeMapTextures, float[] blendingFactors) {
+    public void setCubeMapTextures(String[] cubeMapTextures, float[] blendingFactors) {
         if(cubeMapTextures.length == blendingFactors.length){
             this.cubeMapTextures = cubeMapTextures;
             this.blendingFactors = blendingFactors;
@@ -81,9 +81,9 @@ public class Skybox {
      * the units else it wouldnt change!
      * 
      * @param id Id of the unit to set the texture
-     * @param tex Texture to set at the id
+     * @param tex MetaTexture to set at the id
      */
-    public void setCubeMapTexture(int id, int tex){
+    public void setCubeMapTexture(int id, String tex){
         if(id >= 0 && id < cubeMapTextures.length){
             cubeMapTextures[id] = tex;
         }
@@ -113,7 +113,7 @@ public class Skybox {
      * @param blending Initial blending factor
      * @return Unit id of the texture
      */
-    public int addCubeMapTexture(int tex, float blending){
+    public int addCubeMapTexture(String tex, float blending){
         cubeMapTextures = Toolbox.addElement(cubeMapTextures, tex);
         blendingFactors = Toolbox.addElement(blendingFactors, blending);
         return cubeMapTextures.length -1;
@@ -127,7 +127,7 @@ public class Skybox {
     
     /**@return Read/writeable array of the cube map textures
      */
-    public int[] getCubeMapTextures() {
+    public String[] getCubeMapTextures() {
         return cubeMapTextures;
     }
     

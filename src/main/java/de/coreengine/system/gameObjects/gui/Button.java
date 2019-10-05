@@ -55,9 +55,9 @@ public class Button extends GameObject{
     private boolean clickAble = true;
     
     //Textures to change to, when state changed
-    private int overTexture = Material.TEXTURE_BLACK;
-    private int pressedTexture = Material.TEXTURE_BLACK;
-    private int texture = Material.TEXTURE_WHITE;
+    private String overTexture = Material.TEXTURE_BLACK;
+    private String pressedTexture = Material.TEXTURE_BLACK;
+    private String texture = Material.TEXTURE_WHITE;
     
     /**Creating new Button and setting ts parent or null, if no parent gui
      * exist
@@ -156,7 +156,7 @@ public class Button extends GameObject{
         return mouseOver;
     }
     
-    public void setTexture(int texture) {
+    public void setTexture(String texture) {
         pane.setTexture(texture);
         this.texture = texture;
     }
@@ -175,7 +175,7 @@ public class Button extends GameObject{
      * 
      * @param overTexture New mouse over texture
      */
-    public void setOverTexture(int overTexture) {
+    public void setOverTexture(String overTexture) {
         this.overTexture = overTexture;
     }
     
@@ -184,7 +184,7 @@ public class Button extends GameObject{
      * 
      * @param pressedTexture New mouse pressed texture
      */
-    public void setPressedTexture(int pressedTexture) {
+    public void setPressedTexture(String pressedTexture) {
         this.pressedTexture = pressedTexture;
     }
 }

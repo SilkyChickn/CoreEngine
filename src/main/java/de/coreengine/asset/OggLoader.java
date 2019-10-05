@@ -41,9 +41,14 @@ import java.nio.ShortBuffer;
  * @author Darius Dinger
  */
 public class OggLoader {
-    
-    public static int loadSound(String file){
-        
+
+    /**Loading ogg sound file and storing into asset database
+     *
+     * @param file Ogg sound file
+     */
+    public static void loadSound(String file){
+        if(AssetDatabase.sounds.containsKey(file)) return;
+
         ShortBuffer audioData;
         int channels, sampleRate;
         
@@ -88,6 +93,6 @@ public class OggLoader {
         assert audioData != null;
         AL10.alBufferData(sound, format, audioData, sampleRate);
         
-        return sound;
+        AssetDatabase.sounds.put(file, sound);
     }
 }

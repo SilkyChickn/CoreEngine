@@ -29,7 +29,7 @@ package de.coreengine.rendering.renderer;
 
 import de.coreengine.framework.Window;
 import de.coreengine.rendering.FrameBufferObject;
-import de.coreengine.rendering.model.SimpleModel;
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.renderer.ppeffects.PostProcessingEffect;
 import org.lwjgl.opengl.GL11;
@@ -76,7 +76,7 @@ public class PostProcesser {
             return;
         }
         
-        SimpleModel model = Quad2D.getInstance();
+        Mesh model = Quad2D.getInstance();
         
         model.getVao().bind();
         model.getVao().enableAttributes();

@@ -27,7 +27,7 @@
  */
 package de.coreengine.framework;
 
-import de.coreengine.asset.meta.Image;
+import de.coreengine.asset.meta.MetaTexture;
 import de.coreengine.util.Logger;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWImage;
@@ -193,21 +193,21 @@ public class Window implements GLFWWindowSizeCallbackI{
         GLFW.glfwPollEvents();
     }
     
-    /**Set image as icon for the glfw window
+    /**Set metaTexture as icon for the glfw window
      * 
-     * @param image Image to set as icon
+     * @param metaTexture MetaTexture to set as icon
      */
-    public static void setIcon(Image image) {
+    public static void setIcon(MetaTexture metaTexture) {
         
         //Create GLFWImage from ressource
         GLFWImage glfwImage = GLFWImage.malloc();
-        glfwImage.set(image.getWidth(), image.getHeight(), image.getData());
+        glfwImage.set(metaTexture.getWidth(), metaTexture.getHeight(), metaTexture.getData());
         
         //Create GLFWImage-Buffer from GLFWImage
         GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
         imagebf.put(0, glfwImage);
         
-        //Set window image from GLFWImage-Buffer
+        //Set window metaTexture from GLFWImage-Buffer
         GLFW.glfwSetWindowIcon(window, imagebf);
     }
     

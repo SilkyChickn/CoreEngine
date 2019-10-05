@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.programs;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.renderable.Camera;
@@ -121,12 +122,12 @@ public class EntityShader extends Shader{
         setUniform(reflectivityLoc, mat.reflectivity);
         setUniform(shineDamperLoc, mat.shineDamping);
         setUniform(glowColorLoc, mat.glowColor);
-        
-        bindTexture(mat.diffuseMap, diffuseMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(mat.normalMap, normalMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(mat.specularMap, specularMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(mat.ambientOcclusionMap, aoMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(mat.displacementMap, displacementMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(mat.glowMap, glowMapUnit, GL11.GL_TEXTURE_2D);
+
+        bindTexture(AssetDatabase.getTexture(mat.diffuseMap), diffuseMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(mat.normalMap), normalMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(mat.specularMap), specularMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(mat.ambientOcclusionMap), aoMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(mat.displacementMap), displacementMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(mat.glowMap), glowMapUnit, GL11.GL_TEXTURE_2D);
     }
 }

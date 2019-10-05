@@ -28,6 +28,7 @@
 
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.programs.ShadowMapShader;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.renderable.gui.GUIPane;
@@ -35,6 +36,7 @@ import de.coreengine.rendering.renderable.light.ShadowLight;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class ShadowMapRenderer {
@@ -48,7 +50,7 @@ public class ShadowMapRenderer {
      * @param guis 3 Dimensional GUIs to render
      * @param shadowLight Shadow Light to render from
      */
-    void render(List<Entity> entities, List<GUIPane> guis, ShadowLight shadowLight){
+    void render(HashMap<Mesh, List<Entity>> entities, List<GUIPane> guis, ShadowLight shadowLight){
         shadowLight.getShadowMap().bind(GL30.GL_COLOR_ATTACHMENT0);
         GL11.glClearColor(0, 0, 0, 1);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -56,27 +58,29 @@ public class ShadowMapRenderer {
         shader.start();
         shader.setVPMat(shadowLight.getVpMat());
 
-        entities.forEach(entity -> {
-            if(entity.getModel() != null){
+        for(Mesh mesh: entities.keySet()){
 
-                entity.getModel().getVao().bind();
-                entity.getModel().getVao().enableAttributes();
+            //Bind mesh data
+            mesh.getVao().bind();
+            mesh.getVao().enableAttributes();
+            mesh.getIndexBuffer().bind();
 
+            //Iterate instanced entities
+            for(Entity entity: entities.get(mesh)){
+
+                //Prepare entity
                 shader.prepareEntity(entity);
 
-                for(int i = 0; i < entity.getModel().getMeshCount(); i++){
-                    entity.getModel().getIndexBufferAt(i).bind();
-
-                    GL11.glDrawElements(GL11.GL_TRIANGLES,
-                            entity.getModel().getIndexBufferAt(i).getSize(), GL11.GL_UNSIGNED_INT, 0);
-
-                    entity.getModel().getIndexBufferAt(i).unbind();
-                }
-
-                entity.getModel().getVao().disableAttributes();
-                entity.getModel().getVao().unbind();
+                //Render entity
+                GL11.glDrawElements(GL11.GL_TRIANGLES,
+                        mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
             }
-        });
+
+            //Unbind mesh data
+            mesh.getIndexBuffer().unbind();
+            mesh.getVao().disableAttributes();
+            mesh.getVao().unbind();
+        }
 
         shader.stop();
         shadowLight.getShadowMap().unbind();

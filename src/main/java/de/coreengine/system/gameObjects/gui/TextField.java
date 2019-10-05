@@ -30,7 +30,7 @@ package de.coreengine.system.gameObjects.gui;
 import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
 import de.coreengine.rendering.model.Color;
-import de.coreengine.asset.meta.Font;
+import de.coreengine.rendering.model.Font;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;

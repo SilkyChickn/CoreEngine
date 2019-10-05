@@ -56,7 +56,7 @@ public class GUIPane {
     
     //Color and texture of the pane
     private Color color = new Color();
-    private int texture = Material.TEXTURE_BLACK;
+    private String texture = Material.TEXTURE_BLACK;
     
     //Mouse picking
     private final Color pickColor;
@@ -102,15 +102,15 @@ public class GUIPane {
         return color;
     }
     
-    /**@return Texture of the pane
+    /**@return MetaTexture of the pane
      */
-    public int getTexture() {
+    public String getTexture() {
         return texture;
     }
     
     /**@param texture New texture of the pane
      */
-    public void setTexture(int texture) {
+    public void setTexture(String texture) {
         this.texture = texture;
     }
     
