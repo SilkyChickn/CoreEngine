@@ -30,18 +30,23 @@ package de.coreengine.system.gameObjects;
 
 import de.coreengine.animation.Animation;
 import de.coreengine.animation.Animator;
+import de.coreengine.asset.AssetDatabase;
+import de.coreengine.rendering.model.AnimatedModel;
 import de.coreengine.rendering.renderable.AnimatedEntity;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.FrameTimer;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Animated extends GameObject {
 
     //Animated entity to play animation on
     private AnimatedEntity animatedEntity = null;
 
-    //Animation to play on entity
-    private Animation animation = null;
+    //Current playing animation name
+    private String currentAnimation = null;
 
     //Current time of the animation
     private float currentTime = 0;
@@ -75,14 +80,15 @@ public class Animated extends GameObject {
     /**Reposing the skeleton to the current animation pose
      */
     private void reposeSkeleton(){
-        Animator.applyAnimation(animatedEntity.getSkeleton(), animation, currentTime);
+        if(currentAnimation == null) return;
+        Animator.applyAnimation(animatedEntity.getSkeleton(), getCurrentAnimation(), currentTime);
     }
 
     @Override
     public void onUpdate() {
 
         //If animation is paused or no animation or entity set, update children and return
-        if(pause || animatedEntity == null || animation == null) {
+        if(pause || animatedEntity == null || currentAnimation == null) {
             super.onUpdate();
             return;
         }
@@ -91,10 +97,11 @@ public class Animated extends GameObject {
         currentTime += FrameTimer.getTslf();
 
         //Is animation finished
-        if(currentTime >= animation.getLength()){
-            if(loop) currentTime %= animation.getLength();
+        Animation curAnimation = getCurrentAnimation();
+        if(currentTime >= curAnimation.getLength()){
+            if(loop) currentTime %= curAnimation.getLength();
             else {
-                currentTime = animation.getLength();
+                currentTime = curAnimation.getLength();
                 pause();
             }
         }
@@ -102,9 +109,20 @@ public class Animated extends GameObject {
         //Animate skeleton of the entity
         reposeSkeleton();
 
-        System.out.println(currentTime);
-
         super.onUpdate();
+    }
+
+    /**@return Current playing animation or null, if no animation selected
+     */
+    private Animation getCurrentAnimation(){
+        return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().get(currentAnimation);
+    }
+
+    /**@return All available animations
+     */
+    public Set<String> getAnimations(){
+        if(animatedEntity == null) return new HashSet<>();
+        else return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().keySet();
     }
 
     @Override
@@ -130,28 +148,33 @@ public class Animated extends GameObject {
         reposeSkeleton();
     }
 
-    /**Setting the entity, that should be animated. If the entity doesnt fit to the current set animation, the entity
-     * will not be setted and this method returns false
+    /**Setting the entity, that should be animated. Unset the current set animation.
      *
      * @param animatedEntity Entity to animate
      */
-    public boolean setAnimatedEntity(AnimatedEntity animatedEntity) {
-        if(animation == null || Animator.checkFit(animatedEntity.getSkeleton(), animation)){
-            this.animatedEntity = animatedEntity;
+    public void setAnimatedEntity(AnimatedEntity animatedEntity) {
+        this.animatedEntity = animatedEntity;
+        this.currentAnimation = null;
+        stop();
+    }
+
+    /**Setting the animation, that should be played. If the animation doesnt exist or the anmated entity isnt set,
+     * animation will not be setted and this method returns false. Pass null to unset animation
+     *
+     * @param animation Animation to play
+     */
+    public boolean setAnimation(String animation) {
+        AnimatedModel model = AssetDatabase.getAnimatedModel(animatedEntity.getModel());
+        if(animatedEntity != null && model.getAnimations().containsKey(animation)){
+            this.currentAnimation = animation;
+            stop();
             return true;
         }else return false;
     }
 
-    /**Setting the animation, that should be played. If the animation doesnt fit to the current set entity, the
-     * animation will not be setted and this method returns false
-     *
-     * @param animation Animation to play
+    /**@return Current set entity
      */
-    public boolean setAnimation(Animation animation) {
-        if(animatedEntity == null || Animator.checkFit(animatedEntity.getSkeleton(), animation)){
-            this.animation = animation;
-            stop();
-            return true;
-        }else return false;
+    public AnimatedEntity getEntity() {
+        return animatedEntity;
     }
 }

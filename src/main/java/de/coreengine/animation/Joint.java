@@ -28,6 +28,8 @@
 
 package de.coreengine.animation;
 
+import de.coreengine.asset.modelLoader.NodeData;
+
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -37,6 +39,9 @@ public class Joint {
 
     //Index of the joint in the skeleton
     private int index;
+
+    //Name of this joint
+    private String name;
 
     //Children joints of this joint
     private List<Joint> children = new ArrayList<>();
@@ -55,8 +60,9 @@ public class Joint {
      * @param index Index of the joint in the skeleton
      * @param inverseBindMatrix Inverse matrix of joints default position
      */
-    public Joint(int index, Matrix4f inverseBindMatrix){
+    public Joint(int index, String name, Matrix4f inverseBindMatrix){
         this.index = index;
+        this.name = name;
         this.inverseBindMatrix = inverseBindMatrix;
         this.localPose.invert(inverseBindMatrix);
         calcAnimatedTransform();
@@ -70,6 +76,7 @@ public class Joint {
 
         //Copy data
         this.index = other.index;
+        this.name = other.name;
         this.inverseBindMatrix = new Matrix4f(other.inverseBindMatrix);
         this.localPose.invert(inverseBindMatrix);
 
@@ -91,6 +98,27 @@ public class Joint {
 
         //Recursive for children joints
         for(Joint child: children) child.calcAnimatedTransform();
+    }
+
+    /**Getting first found joint in this hierarchy with this name. If joint couldn't be found
+     * returning null.
+     *
+     * @param name Name to find
+     * @return Found joint or null
+     */
+    public Joint getByName(String name){
+
+        //Get node with this name
+        if(name.equals(this.name)) return this;
+        else {
+            for(Joint child: children){
+                Joint result = child.getByName(name);
+                if(result != null) return result;
+            }
+        }
+
+        //Joint with this name not found in this hierarchy
+        return null;
     }
 
     /**Setting the current local pose matrix of this joint in model space

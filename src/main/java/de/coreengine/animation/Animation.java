@@ -28,6 +28,12 @@
 
 package de.coreengine.animation;
 
+import de.coreengine.util.Logger;
+import javafx.util.Pair;
+
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+import java.util.ArrayList;
 import java.util.List;
 
 /**Represents a animation that can be played by an animated model
@@ -37,22 +43,44 @@ public class Animation {
     //Length of the animation (last keyframe)
     private float length;
 
-    //List of all keyframes per joint by joints name
-    private List<List<KeyFrame>> keyFrames;
+    //List of all keyframe lists of the joints
+    private List<KeyFrameList<Vector3f>> positionKeys;
+    private List<KeyFrameList<Quat4f>> rotationKeys;
+    private List<KeyFrameList<Vector3f>> scaleKeys;
 
     /**Creating animation and init values
      *
-     * @param keyFrames List of all keyframes per joint
+     * @param positionKeys Keyframe lists of the joints positions
+     * @param rotationKeys Keyframe lists of the joints rotations
+     * @param scaleKeys Keyframe lists of the joints scales
      */
-    public Animation(List<List<KeyFrame>> keyFrames) {
-        this.keyFrames = keyFrames;
+    public Animation(List<KeyFrameList<Vector3f>> positionKeys, List<KeyFrameList<Quat4f>> rotationKeys,
+                     List<KeyFrameList<Vector3f>> scaleKeys) {
+        if(positionKeys.size() != rotationKeys.size() || positionKeys.size() != scaleKeys.size()){
+            Logger.warn("Invalid animation data", "The passed keyframe lists, " +
+                    "does hav not the same joint count!");
+        }
+
+        this.positionKeys = positionKeys;
+        this.rotationKeys = rotationKeys;
+        this.scaleKeys = scaleKeys;
 
         //Get last keyframe timestamp as animation length
+        getLastKeyFrameTime();
+    }
+
+    /**Get the timestamp of the last keyframe and store it into length
+     */
+    private void getLastKeyFrameTime(){
         length = 0.0f;
-        for(List<KeyFrame> kf: keyFrames){
-            for(KeyFrame k: kf){
-                if(k.getTimestamp() > length) length = k.getTimestamp();
-            }
+        for(KeyFrameList<Vector3f> kfl: positionKeys){
+            if(kfl.getLastTimeStamp() > length) length = kfl.getLastTimeStamp();
+        }
+        for(KeyFrameList<Quat4f> kfl: rotationKeys){
+            if(kfl.getLastTimeStamp() > length) length = kfl.getLastTimeStamp();
+        }
+        for(KeyFrameList<Vector3f> kfl: scaleKeys){
+            if(kfl.getLastTimeStamp() > length) length = kfl.getLastTimeStamp();
         }
     }
 
@@ -62,11 +90,30 @@ public class Animation {
         return length;
     }
 
-    /**This returns a list of all joints represented as a list of keyframes for this joint
+    /**Getting the keyframe for the position keyframes of a specific joint
      *
-     * @return List of all keyframes per joint
+     * @param jointId Id of the joint
+     * @return Joints position keyframes
      */
-    public List<List<KeyFrame>> getKeyFrames() {
-        return keyFrames;
+    public KeyFrameList<Vector3f> getPositionKeyFrames(int jointId){
+        return positionKeys.get(jointId);
+    }
+
+    /**Getting the keyframe for the rotation keyframes of a specific joint
+     *
+     * @param jointId Id of the joint
+     * @return Joints rotation keyframes
+     */
+    public KeyFrameList<Quat4f> getRotationKeyFrames(int jointId){
+        return rotationKeys.get(jointId);
+    }
+
+    /**Getting the keyframe for the scale keyframes of a specific joint
+     *
+     * @param jointId Id of the joint
+     * @return Joints scale keyframes
+     */
+    public KeyFrameList<Vector3f> getScaleKeyFrames(int jointId){
+        return scaleKeys.get(jointId);
     }
 }

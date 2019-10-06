@@ -6,8 +6,8 @@ in vec3 position;
 in vec2 texCoord;
 in vec3 normal;
 in vec3 tangent;
-in ivec3 joints;
-in vec3 weights;
+in ivec4 joints;
+in vec4 weights;
 
 out vec2 tex_frag_in;
 out vec3 tan_frag_in;
@@ -33,7 +33,7 @@ void main(void){
     tan_frag_in = vec3(0.0);
 
     //Iterate through effected joints
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 4; i++){
         mat4 jointTrans = jointMat[joints[i]];
 
         //Interpolate position

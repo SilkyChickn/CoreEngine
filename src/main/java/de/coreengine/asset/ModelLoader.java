@@ -29,20 +29,26 @@
 package de.coreengine.asset;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
+import de.coreengine.animation.Animation;
+import de.coreengine.animation.Joint;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.asset.meta.MetaMesh;
 import de.coreengine.asset.meta.MetaModel;
-import de.coreengine.asset.modelLoader.MaterialData;
-import de.coreengine.asset.modelLoader.MeshData;
+import de.coreengine.asset.modelLoader.*;
+import de.coreengine.rendering.model.AnimatedModel;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.Model;
 import de.coreengine.util.Logger;
 import javafx.util.Pair;
-import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIScene;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.lwjgl.assimp.Assimp.*;
 
@@ -122,6 +128,18 @@ public class ModelLoader {
         loadModelFileMeta(file, texPath, asResource, shape);
     }
 
+    /**Loading an animated model from a file into asset database
+     *
+     * @param file Model file to load
+     * @param texPath Location of the texture files
+     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     * @param asResource Load model from resources
+     */
+    public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, CollisionShape shape){
+        if(AssetDatabase.animatedModels.containsKey(file)) return;
+        loadAnimatedModelFileMeta(file, texPath, asResource, shape);
+    }
+
     /**Loading a model from a file into asset database and storing data into meta model
      *
      * @param file Model file to load
@@ -135,18 +153,13 @@ public class ModelLoader {
         //Ensure tex path is a directory
         if(!texPath.endsWith("/")) texPath += "/";
 
-        //Load and parse model
-        int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_JoinIdenticalVertices |aiProcess_CalcTangentSpace;
-        AIScene aiScene = aiImportFile(file, flags);
-        if(aiScene == null){
-            Logger.warn("Error by loading model", "The model file " + file + " could not be loaded! " +
-                    "Returning null!");
-            return null;
-        }
+        //Load scene
+        AIScene aiScene = getScene(file);
+        if(aiScene == null) return null;
 
-        //Get data
+        //Static data
         Pair<Material, MetaMaterial>[] materials = getMaterials(aiScene, texPath);
-        Pair<Mesh, MetaMesh>[] meshs = getMeshs(aiScene, materials, shape);
+        Pair<Mesh, MetaMesh>[] meshs = getMeshs(aiScene, materials, shape, null);
 
         //Mesh data
         Mesh[] meshes = new Mesh[meshs.length];
@@ -165,24 +178,113 @@ public class ModelLoader {
         return metaModel;
     }
 
+    /**Loading an animated model from a file into asset database and storing data into meta model
+     *
+     * @param file Model file to load
+     * @param texPath Location of the texture files
+     * @param asResource Load model from resources
+     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     */
+    public static void loadAnimatedModelFileMeta(String file, String texPath, boolean asResource, CollisionShape shape){
+        //TODO: Adding MetaAnimatedModel class to store raw animated model data and return here
+
+        //Ensure tex path is a directory
+        if(!texPath.endsWith("/")) texPath += "/";
+
+        //Load scene
+        AIScene aiScene = getScene(file);
+        if(aiScene == null) return;
+
+        //Static data
+        List<BoneData> boneData = new ArrayList<>();
+        Pair<Material, MetaMaterial>[] materials = getMaterials(aiScene, texPath);
+        Pair<Mesh, MetaMesh>[] meshs = getMeshs(aiScene, materials, shape, boneData);
+        System.out.println("Bones:" + boneData.size());
+
+        //Animation data
+        HashMap<String, Animation> animations = getAnimations(aiScene, boneData);
+        NodeData nodeData = new NodeData(aiScene.mRootNode());
+        nodeData.parse(boneData);
+        Joint skeleton = nodeData.getSkeleton();
+
+        //Mesh data
+        Mesh[] meshes = new Mesh[meshs.length];
+        MetaMesh[] metaMeshes = new MetaMesh[meshs.length];
+        for(int i = 0; i < meshs.length; i++){
+            meshes[i] = meshs[i].getKey();
+            metaMeshes[i] = meshs[i].getValue();
+        }
+
+        //Create and store models
+        //TODO: Create skeleton and pass below
+        AnimatedModel animatedModel = new AnimatedModel(meshes, skeleton, animations);
+        AssetDatabase.animatedModels.put(file, animatedModel);
+    }
+
+    /**Loading an aiScene from a file
+     *
+     * @param file Model file to load
+     * @return Loaded AIScene
+     */
+    private static AIScene getScene(String file){
+
+        //Load and parse model
+        int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_JoinIdenticalVertices |
+                aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_LimitBoneWeights |
+                aiProcess_ValidateDataStructure | aiProcess_RemoveRedundantMaterials | aiProcess_GenUVCoords |
+                aiProcess_OptimizeMeshes;
+
+        AIScene aiScene = aiImportFile(file, flags);
+        if(aiScene == null){
+            Logger.warn("Error by loading model", "The model file " + file + " could not be loaded! " +
+                    "Returning null!");
+            return null;
+        }
+
+        return aiScene;
+    }
+
+    /**Loading animations from an aiScene
+     *
+     * @param aiScene AIScene to load animations from
+     * @param bones Bones of the model
+     * @return Map of animations with its name
+     */
+    private static HashMap<String, Animation> getAnimations(AIScene aiScene, List<BoneData> bones){
+        int animationCount = aiScene.mNumAnimations();
+
+        //Create animation data structure
+        HashMap<String, Animation> animations = new HashMap<>();
+
+        for(int i = 0; i < animationCount; i++){
+            AIAnimation aiAnimation = AIAnimation.create(aiScene.mAnimations().get(i));
+            AnimationData animationData = new AnimationData(aiAnimation);
+            animationData.parse(bones);
+            animations.put(animationData.getName(), animationData.getAnimation());
+        }
+
+        return animations;
+    }
+
     /**Loading meshes and meta meshes from an aiScene
      *
      * @param aiScene AIScene to load meshes from
      * @param materials Materials of the AIScene
+     * @param bones List to add bones, or null to dont load bones
      * @return Array of the scene meshes
      */
     private static Pair<Mesh, MetaMesh>[] getMeshs(AIScene aiScene, Pair<Material, MetaMaterial>[] materials,
-                                                   CollisionShape shape){
+                                                   CollisionShape shape, List<BoneData> bones){
         int meshCount = aiScene.mNumMeshes();
 
-        //Create mesh data structures
+        //Create mesh data structure
         Pair<Mesh, MetaMesh>[] meshes = new Pair[meshCount];
 
         //Iterate through meshes and parse them
         for(int i = 0; i < meshCount; i++){
             AIMesh aiMesh = AIMesh.create(aiScene.mMeshes().get(i));
             MeshData meshData = new MeshData(aiMesh, materials);
-            meshData.parse(shape);
+            meshData.parse(shape, bones);
             meshes[i] = new Pair<>(meshData.getMesh(), meshData.getMetaMesh());
         }
 
@@ -198,7 +300,7 @@ public class ModelLoader {
     private static Pair<Material, MetaMaterial>[] getMaterials(AIScene aiScene, String texPath){
         int matCount = aiScene.mNumMaterials();
 
-        //Create material data structures
+        //Create material data structure
         Pair<Material, MetaMaterial>[] materials = new Pair[matCount];
 
         //Iterate through materials and parse them

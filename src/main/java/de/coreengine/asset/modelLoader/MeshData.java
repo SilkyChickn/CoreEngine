@@ -40,10 +40,11 @@ import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 import javafx.util.Pair;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIVector2D;
-import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.*;
 
+import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MeshData {
@@ -67,8 +68,10 @@ public class MeshData {
     }
 
     /**Parse ai meshes into meshes and meta meshes
+     *
+     * @param bones Bone list to add bones or null to dont load bones
      */
-    public void parse(CollisionShape shape){
+    public void parse(CollisionShape shape, List<BoneData> bones){
 
         //Get material, load empty material if id not exist
         Pair<Material, MetaMaterial> material;
@@ -84,6 +87,55 @@ public class MeshData {
         float[] normals = bufferToArray(Objects.requireNonNull(aiMesh.mNormals()), true);
         float[] tangents = bufferToArray(Objects.requireNonNull(aiMesh.mTangents()), true);
         int[] indices = getIndices();
+
+        //Load bones if requested
+        int[] jointIds = new int[aiMesh.mNumVertices() * 4];
+        float[] weights = new float[aiMesh.mNumVertices() * 4];
+        if(bones != null) {
+
+            //Load and parse bones
+            int boneCount = aiMesh.mNumBones();
+            for (int i = 0; i < boneCount; i++) {
+                AIBone aiBone = AIBone.create(aiMesh.mBones().get(i));
+                BoneData bone = new BoneData(aiBone);
+                bone.parse();
+                bones.add(bone);
+            }
+
+            //Fill up arrays
+            //Iterate through all vertices
+            for(int vertexId = 0; vertexId < aiMesh.mNumVertices(); vertexId++){
+
+                //List to store all joints that effect this vertex
+                List<Pair<Integer, Float>> joints = new ArrayList<>();
+
+                //Iterate through bones
+                for(int jointId = 0; jointId < bones.size(); jointId++){
+                    BoneData bone = bones.get(jointId);
+
+                    //Iterate through bones effected vertices, to see if this vertex is effected by this bone
+                    for(Pair<Integer, Float> effectedVertex: bone.getEffectedVertices()){
+
+                        //If this vertex gets effected by this bone -> add to effected bones/joints
+                        if(effectedVertex.getKey() == vertexId){
+                            joints.add(new Pair<>(jointId, effectedVertex.getValue()));
+                        }
+                    }
+                }
+
+                //Add joints to joint ids and weights
+                for(int i = 0; i < 4; i++){
+                    int id = 0;
+                    float weight = 0;
+                    if(i < joints.size()){
+                        id = joints.get(i).getKey();
+                        weight = joints.get(i).getValue();
+                    }
+                    jointIds[vertexId*4+i] = id;
+                    weights[vertexId*4+i] = weight;
+                }
+            }
+        }
 
         //Calculate collision shape
         if(shape instanceof ConvexHullShape){
@@ -101,6 +153,8 @@ public class MeshData {
         metaMesh.setIndices(indices);
         metaMesh.setMaterial(material.getValue());
         metaMesh.setShape(shape);
+        if(bones != null) metaMesh.setJointIds(jointIds);
+        if(bones != null) metaMesh.setWeights(weights);
 
         //Construct mesh
         VertexArrayObject vao = new VertexArrayObject();
@@ -108,6 +162,8 @@ public class MeshData {
         vao.addVertexBuffer(texCoords, 2, 1);
         vao.addVertexBuffer(normals, 3, 2);
         vao.addVertexBuffer(tangents, 3, 3);
+        if(bones != null) vao.addVertexBuffer(jointIds, 4, 4);
+        if(bones != null) vao.addVertexBuffer(weights, 4, 5);
         IndexBuffer indexBuffer = vao.addIndexBuffer(indices);
         mesh = new Mesh(vao, indexBuffer, material.getKey(), shape);
     }

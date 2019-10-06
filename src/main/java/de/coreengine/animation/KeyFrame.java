@@ -28,28 +28,22 @@
 
 package de.coreengine.animation;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
-public class KeyFrame {
+public class KeyFrame<Component> {
 
     //Time stamp of the keyframe in the animation
     private float timestamp;
 
     //Transformation of the joint at this specific keyframe
-    private Vector3f translation;
-    private Quat4f rotation;
+    private Component status;
 
     /**Creating new keyframe for an animation
      *
      * @param timestamp Time stamp of the keyframe in the animation
-     * @param translation Translation for the joint at this keyframe
-     * @param rotation Rotation of the joint at this keyframe as quaternion
+     * @param status Components status at this keyframe
      */
-    public KeyFrame(float timestamp, Vector3f translation, Quat4f rotation) {
+    public KeyFrame(float timestamp, Component status) {
         this.timestamp = timestamp;
-        this.translation = translation;
-        this.rotation = rotation;
+        this.status = status;
     }
 
     /**@return Time stamp of the keyframe in the animation
@@ -58,15 +52,9 @@ public class KeyFrame {
         return timestamp;
     }
 
-    /**@return Rotation of the joint at this keyframe as quaternion
+    /**@return Components status at this keyframe
      */
-    public Quat4f getRotation() {
-        return rotation;
-    }
-
-    /**@return Translation for the joint at this keyframe
-     */
-    public Vector3f getTranslation() {
-        return translation;
+    public Component getStatus() {
+        return status;
     }
 }

@@ -33,8 +33,8 @@ import com.bulletphysics.collision.shapes.CollisionShape;
 public class MetaMesh {
 
     //Data
-    private float[] vertices, texCoords, normals, tangents;
-    private int[] indices;
+    private float[] vertices, texCoords, normals, tangents, weights;
+    private int[] indices, jointIds;
     private MetaMaterial material;
     private CollisionShape shape;
 
@@ -62,15 +62,27 @@ public class MetaMesh {
         this.normals = normals;
     }
 
+    /**@param jointIds New meta models jointIds
+     */
+    public void setJointIds(int[] jointIds) {
+        this.jointIds = jointIds;
+    }
+
+    /**@param weights New meta models weights
+     */
+    public void setWeights(float[] weights) {
+        this.weights = weights;
+    }
+
     /**@param tangents New meta models tangents
      */
     public void setTangents(float[] tangents) {
         this.tangents = tangents;
     }
 
-    /**@param materials  New meta models materials
+    /**@param material  New meta models materials
      */
-    public void setMaterial(MetaMaterial materials) {
+    public void setMaterial(MetaMaterial material) {
         this.material = material;
     }
 
@@ -120,5 +132,17 @@ public class MetaMesh {
      */
     public float[] getNormals() {
         return normals;
+    }
+
+    /**@return models jointIds
+     */
+    public int[] getJointIds() {
+        return jointIds;
+    }
+
+    /**@return models joint weights
+     */
+    public float[] getWeights() {
+        return weights;
     }
 }
