@@ -126,7 +126,7 @@ public class MemoryDumper {
     
     /**Adding texture to dump after program exits
      * 
-     * @param textureId MetaTexture id to dump at exit
+     * @param textureId TextureData id to dump at exit
      */
     public static void addTexture(int textureId){
         TEXTURES = Toolbox.addElement(TEXTURES, textureId);

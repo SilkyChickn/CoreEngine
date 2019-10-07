@@ -31,20 +31,13 @@ package de.coreengine.asset;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import de.coreengine.animation.Animation;
 import de.coreengine.animation.Joint;
+import de.coreengine.asset.meta.MetaAnimatedModel;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.asset.meta.MetaMesh;
 import de.coreengine.asset.meta.MetaModel;
 import de.coreengine.asset.modelLoader.*;
-import de.coreengine.rendering.model.AnimatedModel;
-import de.coreengine.rendering.model.Material;
-import de.coreengine.rendering.model.Mesh;
-import de.coreengine.rendering.model.Model;
 import de.coreengine.util.Logger;
-import javafx.util.Pair;
-import org.lwjgl.assimp.AIAnimation;
-import org.lwjgl.assimp.AIMaterial;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +47,7 @@ import static org.lwjgl.assimp.Assimp.*;
 
 /**Class for loading model files<br>
  * <br>
- * Supported Formats:<br>
+ * Supported Formats (From Assimp):<br>
  * <br>
  * COMMON INTERCHANGE FORMATS (An asterisk indicates limited support)<br>
  * Autodesk ( .fbx )<br>
@@ -125,7 +118,8 @@ public class ModelLoader {
      */
     public static void loadModelFile(String file, String texPath, boolean asResource, CollisionShape shape){
         if(AssetDatabase.models.containsKey(file)) return;
-        loadModelFileMeta(file, texPath, asResource, shape);
+        MetaModel metaModel = loadModelFileMeta(file, asResource, shape);
+        if(metaModel != null) AssetDatabase.models.put(file, metaModel.getInstance(texPath, asResource));
     }
 
     /**Loading an animated model from a file into asset database
@@ -137,69 +131,51 @@ public class ModelLoader {
      */
     public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, CollisionShape shape){
         if(AssetDatabase.animatedModels.containsKey(file)) return;
-        loadAnimatedModelFileMeta(file, texPath, asResource, shape);
+        MetaAnimatedModel metaAnimatedModel = loadAnimatedModelFileMeta(file, asResource, shape);
+        if(metaAnimatedModel != null) AssetDatabase.animatedModels.put(file, metaAnimatedModel.getInstance(texPath, asResource));
     }
 
-    /**Loading a model from a file into asset database and storing data into meta model
+    /**Loading a meta model from a file
      *
      * @param file Model file to load
-     * @param texPath Location of the texture files
      * @param asResource Load model from resources
      * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
      * @return Meta model with raw model data
      */
-    public static MetaModel loadModelFileMeta(String file, String texPath, boolean asResource, CollisionShape shape){
-
-        //Ensure tex path is a directory
-        if(!texPath.endsWith("/")) texPath += "/";
+    public static MetaModel loadModelFileMeta(String file, boolean asResource, CollisionShape shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
         if(aiScene == null) return null;
 
         //Static data
-        Pair<Material, MetaMaterial>[] materials = getMaterials(aiScene, texPath);
-        Pair<Mesh, MetaMesh>[] meshs = getMeshs(aiScene, materials, shape, null);
+        MetaMaterial[] materials = getMaterials(aiScene);
+        MetaMesh[] meshes = getMeshs(aiScene, materials, shape, null);
 
-        //Mesh data
-        Mesh[] meshes = new Mesh[meshs.length];
-        MetaMesh[] metaMeshes = new MetaMesh[meshs.length];
-        for(int i = 0; i < meshs.length; i++){
-            meshes[i] = meshs[i].getKey();
-            metaMeshes[i] = meshs[i].getValue();
-        }
-
-        //Create and store models
+        //Create and store model data
         MetaModel metaModel = new MetaModel();
-        metaModel.setMeshes(metaMeshes);
-        Model model = new Model(meshes);
-        AssetDatabase.models.put(file, model);
+        metaModel.meshes = meshes;
 
         return metaModel;
     }
 
-    /**Loading an animated model from a file into asset database and storing data into meta model
+    /**Loading an meta animated model from a file
      *
      * @param file Model file to load
-     * @param texPath Location of the texture files
      * @param asResource Load model from resources
      * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
      */
-    public static void loadAnimatedModelFileMeta(String file, String texPath, boolean asResource, CollisionShape shape){
-        //TODO: Adding MetaAnimatedModel class to store raw animated model data and return here
-
-        //Ensure tex path is a directory
-        if(!texPath.endsWith("/")) texPath += "/";
+    public static MetaAnimatedModel loadAnimatedModelFileMeta(String file, boolean asResource,
+                                                              CollisionShape shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
-        if(aiScene == null) return;
+        if(aiScene == null) return null;
 
         //Static data
         List<BoneData> boneData = new ArrayList<>();
-        Pair<Material, MetaMaterial>[] materials = getMaterials(aiScene, texPath);
-        Pair<Mesh, MetaMesh>[] meshs = getMeshs(aiScene, materials, shape, boneData);
-        System.out.println("Bones:" + boneData.size());
+        MetaMaterial[] materials = getMaterials(aiScene);
+        MetaMesh[] meshs = getMeshs(aiScene, materials, shape, boneData);
 
         //Animation data
         HashMap<String, Animation> animations = getAnimations(aiScene, boneData);
@@ -207,18 +183,13 @@ public class ModelLoader {
         nodeData.parse(boneData);
         Joint skeleton = nodeData.getSkeleton();
 
-        //Mesh data
-        Mesh[] meshes = new Mesh[meshs.length];
-        MetaMesh[] metaMeshes = new MetaMesh[meshs.length];
-        for(int i = 0; i < meshs.length; i++){
-            meshes[i] = meshs[i].getKey();
-            metaMeshes[i] = meshs[i].getValue();
-        }
+        //Create and store model data
+        MetaAnimatedModel metaAnimatedModel = new MetaAnimatedModel();
+        metaAnimatedModel.meshes = meshs;
+        metaAnimatedModel.skeleton = skeleton;
+        metaAnimatedModel.animations = animations;
 
-        //Create and store models
-        //TODO: Create skeleton and pass below
-        AnimatedModel animatedModel = new AnimatedModel(meshes, skeleton, animations);
-        AssetDatabase.animatedModels.put(file, animatedModel);
+        return metaAnimatedModel;
     }
 
     /**Loading an aiScene from a file
@@ -228,13 +199,19 @@ public class ModelLoader {
      */
     private static AIScene getScene(String file){
 
-        //Load and parse model
+        //Importer flags
         int flags = aiProcess_Triangulate | aiProcess_FixInfacingNormals | aiProcess_JoinIdenticalVertices |
                 aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_LimitBoneWeights |
                 aiProcess_ValidateDataStructure | aiProcess_RemoveRedundantMaterials | aiProcess_GenUVCoords |
                 aiProcess_OptimizeMeshes;
 
-        AIScene aiScene = aiImportFile(file, flags);
+        //Import model with props
+        AIPropertyStore props = aiCreatePropertyStore();
+        aiSetImportPropertyInteger(props, AI_CONFIG_IMPORT_REMOVE_EMPTY_BONES, 0);
+        AIScene aiScene = aiImportFileExWithProperties(file, flags, null, props);
+        aiReleasePropertyStore(props);
+
+        //Error at import
         if(aiScene == null){
             Logger.warn("Error by loading model", "The model file " + file + " could not be loaded! " +
                     "Returning null!");
@@ -266,49 +243,48 @@ public class ModelLoader {
         return animations;
     }
 
-    /**Loading meshes and meta meshes from an aiScene
+    /**Loading meta meshes from an aiScene
      *
      * @param aiScene AIScene to load meshes from
      * @param materials Materials of the AIScene
      * @param bones List to add bones, or null to dont load bones
      * @return Array of the scene meshes
      */
-    private static Pair<Mesh, MetaMesh>[] getMeshs(AIScene aiScene, Pair<Material, MetaMaterial>[] materials,
-                                                   CollisionShape shape, List<BoneData> bones){
+    private static MetaMesh[] getMeshs(AIScene aiScene, MetaMaterial[] materials, CollisionShape shape,
+                                       List<BoneData> bones){
         int meshCount = aiScene.mNumMeshes();
 
         //Create mesh data structure
-        Pair<Mesh, MetaMesh>[] meshes = new Pair[meshCount];
+        MetaMesh[] meshes = new MetaMesh[meshCount];
 
         //Iterate through meshes and parse them
         for(int i = 0; i < meshCount; i++){
             AIMesh aiMesh = AIMesh.create(aiScene.mMeshes().get(i));
             MeshData meshData = new MeshData(aiMesh, materials);
             meshData.parse(shape, bones);
-            meshes[i] = new Pair<>(meshData.getMesh(), meshData.getMetaMesh());
+            meshes[i] = meshData.getMetaMesh();
         }
 
         return meshes;
     }
 
-    /**Loading materials and meta materials from an aiScene
+    /**Loading meta materials from an aiScene
      *
      * @param aiScene AIScene to load materials from
-     * @param texPath Location to load textures from
      * @return Array of the scene materials
      */
-    private static Pair<Material, MetaMaterial>[] getMaterials(AIScene aiScene, String texPath){
+    private static MetaMaterial[] getMaterials(AIScene aiScene){
         int matCount = aiScene.mNumMaterials();
 
         //Create material data structure
-        Pair<Material, MetaMaterial>[] materials = new Pair[matCount];
+        MetaMaterial[] materials = new MetaMaterial[matCount];
 
         //Iterate through materials and parse them
         for(int i = 0; i < matCount; i++){
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
             MaterialData materialData = new MaterialData(aiMaterial);
-            materialData.parse(texPath);
-            materials[i] = new Pair<>(materialData.getMaterial(), materialData.getMetaMaterial());
+            materialData.parse();
+            materials[i] = materialData.getMetaMaterial();
         }
 
         return materials;

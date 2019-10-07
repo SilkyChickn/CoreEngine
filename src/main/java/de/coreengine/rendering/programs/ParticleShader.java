@@ -80,7 +80,7 @@ public class ParticleShader extends Shader {
 
     /**Preparing stuff for next particles
      *
-     * @param texture MetaTexture of next particles
+     * @param texture TextureData of next particles
      */
     public void prepareParticles(int texture){
         bindTexture(texture, colorTextureUnit, GL11.GL_TEXTURE_2D);

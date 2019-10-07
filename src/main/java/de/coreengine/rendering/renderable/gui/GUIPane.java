@@ -102,7 +102,7 @@ public class GUIPane {
         return color;
     }
     
-    /**@return MetaTexture of the pane
+    /**@return TextureData of the pane
      */
     public String getTexture() {
         return texture;

@@ -56,7 +56,7 @@ public class ParticleSystem extends GameObject {
     private static final float[] DEFAULT_GENERATION_COUNT_RANGE =
             Configuration.getValuefa("PARTICLE_SYSTEM_DEFAULT_GENERATION_COUNT_RANGE");
     
-    //MetaTexture for the particles
+    //TextureData for the particles
     private String texture = Material.TEXTURE_WHITE;
 
     //Particle generation ranges settings
@@ -156,7 +156,7 @@ public class ParticleSystem extends GameObject {
         return position;
     }
 
-    /**@param texture MetaTexture for next generated particles
+    /**@param texture TextureData for next generated particles
      */
     public void setTexture(String texture) {
         this.texture = texture;

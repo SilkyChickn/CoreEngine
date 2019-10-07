@@ -167,7 +167,7 @@ public class MdlLoader {
     public static void saveModel(String file, MetaModel model){
         
         try {
-            int partCount = model.getMeshes().length;
+            int partCount = model.meshes.length;
             
             //Prepare model data strings
             String parts = "parts " + partCount;
@@ -176,7 +176,7 @@ public class MdlLoader {
             String[] vertices = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder vertexBuffer = new StringBuilder("vertices");
-                for (float vertex : model.getMeshes()[i].getVertices()) vertexBuffer.append(" ").append(vertex);
+                for (float vertex : model.meshes[i].vertices) vertexBuffer.append(" ").append(vertex);
                 vertices[i] = vertexBuffer.toString();
             }
 
@@ -184,7 +184,7 @@ public class MdlLoader {
             String[] texCoords = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder texCoordBuffer = new StringBuilder("texCoords");
-                for (float texCoord : model.getMeshes()[i].getTexCoords()) texCoordBuffer.append(" ").append(texCoord);
+                for (float texCoord : model.meshes[i].texCoords) texCoordBuffer.append(" ").append(texCoord);
                 texCoords[i] = texCoordBuffer.toString();
             }
 
@@ -192,7 +192,7 @@ public class MdlLoader {
             String[] normals = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder normalBuffer = new StringBuilder("normals");
-                for (float normal : model.getMeshes()[i].getNormals()) normalBuffer.append(" ").append(normal);
+                for (float normal : model.meshes[i].normals) normalBuffer.append(" ").append(normal);
                 normals[i] = normalBuffer.toString();
             }
 
@@ -200,7 +200,7 @@ public class MdlLoader {
             String[] tangents = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder tangentBuffer = new StringBuilder("tangents");
-                for (float tangent : model.getMeshes()[i].getTangents()) tangentBuffer.append(" ").append(tangent);
+                for (float tangent : model.meshes[i].tangents) tangentBuffer.append(" ").append(tangent);
                 tangents[i] = tangentBuffer.toString();
             }
 
@@ -209,24 +209,24 @@ public class MdlLoader {
             //Prepare parts data strings
             String[] jointIds = new String[partCount];
             for(int i = 0; i < partCount; i++){
-                if(model.getMeshes()[i].getJointIds() == null){
+                if(model.meshes[i].jointIds == null){
                     animated = false;
                     break;
                 }
                 StringBuilder jointIdBuffer = new StringBuilder("jointIds");
-                for (int jointId : model.getMeshes()[i].getJointIds()) jointIdBuffer.append(" ").append(jointId);
+                for (int jointId : model.meshes[i].jointIds) jointIdBuffer.append(" ").append(jointId);
                 jointIds[i] = jointIdBuffer.toString();
             }
 
             //Prepare parts data strings
             String[] weights = new String[partCount];
             for(int i = 0; i < partCount; i++){
-                if(model.getMeshes()[i].getWeights() == null){
+                if(model.meshes[i].weights == null){
                     animated = false;
                     break;
                 }
                 StringBuilder weightBuffer = new StringBuilder("weights");
-                for (float weight : model.getMeshes()[i].getWeights()) weightBuffer.append(" ").append(weight);
+                for (float weight : model.meshes[i].weights) weightBuffer.append(" ").append(weight);
                 weights[i] = weightBuffer.toString();
             }
 
@@ -234,7 +234,7 @@ public class MdlLoader {
             String[] indexBuffers = new String[partCount];
             for(int i = 0; i < partCount; i++){
                 StringBuilder indexBuffer = new StringBuilder("indexBuffer");
-                for (int index : model.getMeshes()[i].getIndices()) indexBuffer.append(" ").append(index);
+                for (int index : model.meshes[i].indices) indexBuffer.append(" ").append(index);
                 indexBuffers[i] = indexBuffer.toString();
             }
 
@@ -242,13 +242,13 @@ public class MdlLoader {
             String[] materials = new String[partCount];
             for(int i = 0; i < partCount; i++)
                 materials[i] = "material " + 
-                        MaterialParser.toString(model.getMeshes()[i].getMaterials());
+                        MaterialParser.toString(model.meshes[i].material);
 
             //Prepare parts data strings
             String[] shapes = new String[partCount];
             for(int i = 0; i < partCount; i++)
                 shapes[i] = "shape " +
-                        CollisionShapeParser.toString(model.getMeshes()[i].getShape());
+                        CollisionShapeParser.toString(model.meshes[i].shape);
 
             //Combine data strings
             String[] data = new String[partCount * (animated ? 10 : 8) +1];

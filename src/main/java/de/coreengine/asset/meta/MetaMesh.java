@@ -29,120 +29,43 @@
 package de.coreengine.asset.meta;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
+import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.model.Mesh;
+import de.coreengine.util.gl.IndexBuffer;
+import de.coreengine.util.gl.VertexArrayObject;
 
 public class MetaMesh {
 
     //Data
-    private float[] vertices, texCoords, normals, tangents, weights;
-    private int[] indices, jointIds;
-    private MetaMaterial material;
-    private CollisionShape shape;
+    public float[] vertices = null, texCoords = null, normals = null, tangents = null, weights = null;
+    public int[] indices = null, jointIds = null;
+    public MetaMaterial material = null;
+    public CollisionShape shape = null;
 
-    /**@param indices New meta models indices
+    /**Creating new mesh instance of the meta model
+     *
+     * @param texPath Path to get mesh textures from
+     * @param asResource Load mesh textures from resources
+     * @return New mesh instance
      */
-    public void setIndices(int[] indices) {
-        this.indices = indices;
-    }
+    public Mesh getInstance(String texPath, boolean asResource){
 
-    /**@param vertices New meta models vertices
-     */
-    public void setVertices(float[] vertices) {
-        this.vertices = vertices;
-    }
+        //Create vao
+        VertexArrayObject vao = new VertexArrayObject();
+        vao.addVertexBuffer(vertices, 3, 0);
+        vao.addVertexBuffer(texCoords, 2, 1);
+        vao.addVertexBuffer(normals, 3, 2);
+        vao.addVertexBuffer(tangents, 3, 3);
+        vao.addVertexBuffer(jointIds, 4, 4);
+        vao.addVertexBuffer(weights, 4, 5);
 
-    /**@param texCoords New meta models texture coordinates
-     */
-    public void setTexCoords(float[] texCoords) {
-        this.texCoords = texCoords;
-    }
+        //Create index buffer
+        IndexBuffer indexBuffer = vao.addIndexBuffer(indices);
 
-    /**@param normals New meta models normals
-     */
-    public void setNormals(float[] normals) {
-        this.normals = normals;
-    }
+        //Create material
+        Material material = this.material.getInstance(texPath, asResource);
 
-    /**@param jointIds New meta models jointIds
-     */
-    public void setJointIds(int[] jointIds) {
-        this.jointIds = jointIds;
-    }
-
-    /**@param weights New meta models weights
-     */
-    public void setWeights(float[] weights) {
-        this.weights = weights;
-    }
-
-    /**@param tangents New meta models tangents
-     */
-    public void setTangents(float[] tangents) {
-        this.tangents = tangents;
-    }
-
-    /**@param material  New meta models materials
-     */
-    public void setMaterial(MetaMaterial material) {
-        this.material = material;
-    }
-
-    /**@param shape New meta models collision shape
-     */
-    public void setShape(CollisionShape shape) {
-        this.shape = shape;
-    }
-
-    /**@return Models collision shape
-     */
-    public CollisionShape getShape() {
-        return shape;
-    }
-
-    /**@return Models materials
-     */
-    public MetaMaterial getMaterials() {
-        return material;
-    }
-
-    /**@return Models indices
-     */
-    public int[] getIndices() {
-        return indices;
-    }
-
-    /**@return Models tangents
-     */
-    public float[] getTangents() {
-        return tangents;
-    }
-
-    /**@return models texture coordinates
-     */
-    public float[] getTexCoords() {
-        return texCoords;
-    }
-
-    /**@return models vertices
-     */
-    public float[] getVertices() {
-        return vertices;
-    }
-
-    /**@return models normals
-     */
-    public float[] getNormals() {
-        return normals;
-    }
-
-    /**@return models jointIds
-     */
-    public int[] getJointIds() {
-        return jointIds;
-    }
-
-    /**@return models joint weights
-     */
-    public float[] getWeights() {
-        return weights;
+        //Create and return instance
+        return new Mesh(vao, indexBuffer, material, shape);
     }
 }

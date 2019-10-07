@@ -70,7 +70,7 @@ public class Moon{
         this.size = size;
     }
     
-    /**@return MetaTexture of the moon
+    /**@return TextureData of the moon
      */
     public final String getTexture() {
         return texture;

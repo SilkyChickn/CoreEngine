@@ -39,10 +39,10 @@ import de.coreengine.util.bullet.Physics;
 import de.coreengine.util.gl.IndexBuffer;
 import de.coreengine.util.gl.VertexArrayObject;
 import javafx.util.Pair;
-import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.*;
+import org.lwjgl.assimp.AIBone;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIVector3D;
 
-import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +51,9 @@ public class MeshData {
 
     //Input
     private final AIMesh aiMesh;
-    private final Pair<Material, MetaMaterial>[] materials;
+    private final MetaMaterial[] materials;
 
     //Output
-    private Mesh mesh = null;
     private MetaMesh metaMesh = null;
 
     /**Creating new mesh data that can parse ai meshes into meshes and meta meshes
@@ -62,7 +61,7 @@ public class MeshData {
      * @param aiMesh AIMesh to parse
      * @param materials Materials of the AIScene
      */
-    public MeshData(AIMesh aiMesh, Pair<Material, MetaMaterial>[] materials) {
+    public MeshData(AIMesh aiMesh, MetaMaterial[] materials) {
         this.aiMesh = aiMesh;
         this.materials = materials;
     }
@@ -74,11 +73,11 @@ public class MeshData {
     public void parse(CollisionShape shape, List<BoneData> bones){
 
         //Get material, load empty material if id not exist
-        Pair<Material, MetaMaterial> material;
+        MetaMaterial material;
         if(aiMesh.mMaterialIndex() >= 0 && aiMesh.mMaterialIndex() < materials.length){
             material = materials[aiMesh.mMaterialIndex()];
         }else{
-            material = new Pair<>(new Material(), new MetaMaterial());
+            material = new MetaMaterial();
         }
 
         //Get data from mesh
@@ -146,26 +145,15 @@ public class MeshData {
 
         //Construct meta mesh
         metaMesh = new MetaMesh();
-        metaMesh.setVertices(vertices);
-        metaMesh.setTexCoords(texCoords);
-        metaMesh.setNormals(normals);
-        metaMesh.setTangents(tangents);
-        metaMesh.setIndices(indices);
-        metaMesh.setMaterial(material.getValue());
-        metaMesh.setShape(shape);
-        if(bones != null) metaMesh.setJointIds(jointIds);
-        if(bones != null) metaMesh.setWeights(weights);
-
-        //Construct mesh
-        VertexArrayObject vao = new VertexArrayObject();
-        vao.addVertexBuffer(vertices, 3, 0);
-        vao.addVertexBuffer(texCoords, 2, 1);
-        vao.addVertexBuffer(normals, 3, 2);
-        vao.addVertexBuffer(tangents, 3, 3);
-        if(bones != null) vao.addVertexBuffer(jointIds, 4, 4);
-        if(bones != null) vao.addVertexBuffer(weights, 4, 5);
-        IndexBuffer indexBuffer = vao.addIndexBuffer(indices);
-        mesh = new Mesh(vao, indexBuffer, material.getKey(), shape);
+        metaMesh.vertices = vertices;
+        metaMesh.texCoords = texCoords;
+        metaMesh.normals = normals;
+        metaMesh.tangents = tangents;
+        metaMesh.indices = indices;
+        metaMesh.material = material;
+        metaMesh.shape = shape;
+        if(bones != null) metaMesh.jointIds = jointIds;
+        if(bones != null) metaMesh.weights = weights;
     }
 
     /**Extract indices from ai scene
@@ -200,12 +188,6 @@ public class MeshData {
             c++;
         }
         return out;
-    }
-
-    /**@return Parsed mesh
-     */
-    public Mesh getMesh() {
-        return mesh;
     }
 
     /**@return Parsed meta mesh

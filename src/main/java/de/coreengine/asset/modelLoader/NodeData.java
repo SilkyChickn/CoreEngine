@@ -54,20 +54,21 @@ public class NodeData {
     /**Parsing data from the ai node
      */
     public void parse(List<BoneData> bones){
-        skeleton = createJoint(aiNode, null, bones);
+        skeleton = createJoint(aiNode, bones);
+        skeleton.calcBindPose(null);
+        skeleton.calcAnimatedTransformAndPose(null);
     }
 
     /**Recursively creating joint hierarchy from aiNode.
      *
      * @param aiNode AINode of the joint to create
-     * @param parentMatrix Joint parent transMat or null, if root
      * @param bones Loaded bones of the mesh
      * @return Created hierarchy
      */
-    private Joint createJoint(AINode aiNode, Matrix4f parentMatrix, List<BoneData> bones){
+    private Joint createJoint(AINode aiNode, List<BoneData> bones){
 
         //Get bone id
-        int nodeId = 0;
+        int nodeId = -1;
         String nodeName = aiNode.mName().dataString();
         for(int b = 0; b < bones.size(); b++){
             if(bones.get(b).getName().equals(nodeName)){
@@ -76,29 +77,35 @@ public class NodeData {
             }
         }
 
-        //If parent exist multiply transformation matrix with parent transformation matrix
-        Matrix4f transformationMatrix;
-        if(parentMatrix != null){
-            transformationMatrix = new Matrix4f(parentMatrix);
-            transformationMatrix.mul(aiMatToMat(aiNode.mTransformation()));
+        //If bone to node found
+        if(nodeId >= 0){
+
+            //Create this joint
+            Matrix4f localBindPose = aiMatToMat(aiNode.mTransformation());
+            Joint joint = new Joint(nodeId, nodeName, bones.get(nodeId).getOffsetMatrix(), localBindPose);
+
+            //Create and parse children recursively children
+            int childCount = aiNode.mNumChildren();
+            for(int i = 0; i < childCount; i++){
+                AINode aiChild = AINode.create(aiNode.mChildren().get(i));
+                Joint child = createJoint(aiChild, bones);
+                if(child != null) joint.addChild(child);
+            }
+
+            return joint;
         }else{
-            transformationMatrix = aiMatToMat(aiNode.mTransformation());
-        }
-        transformationMatrix.mul(bones.get(nodeId).getOffsetMatrix());
 
-        //Create this joint
-        Matrix4f inverseBindMatrix = new Matrix4f();
-        inverseBindMatrix.invert(transformationMatrix);
-        Joint joint = new Joint(nodeId, nodeName, inverseBindMatrix);
-
-        //Create and parse children recursively children
-        int childCount = aiNode.mNumChildren();
-        for(int i = 0; i < childCount; i++){
-            AINode aiChild = AINode.create(aiNode.mChildren().get(i));
-            joint.addChild(createJoint(aiChild, transformationMatrix, bones));
+            //Create and parse children recursively children
+            int childCount = aiNode.mNumChildren();
+            for(int i = 0; i < childCount; i++){
+                AINode aiChild = AINode.create(aiNode.mChildren().get(i));
+                Joint child = createJoint(aiChild, bones);
+                if(child != null) return child;
+            }
         }
 
-        return joint;
+        //No root found, returning null
+        return null;
     }
 
     /**Converting AIMatrix4x4 into a Matrix4f
@@ -107,10 +114,10 @@ public class NodeData {
      * @return Matrix4f output
      */
     private Matrix4f aiMatToMat(AIMatrix4x4 aiMat){
-        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a3(),
-                aiMat.b1(), aiMat.b2(), aiMat.b3(), aiMat.b3(),
-                aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c3(),
-                aiMat.d1(), aiMat.d2(), aiMat.d3(), 1.0f
+        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a4(),
+                aiMat.b1(), aiMat.b2(), aiMat.b3(), aiMat.b4(),
+                aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c4(),
+                aiMat.d1(), aiMat.d2(), aiMat.d3(), aiMat.d4()
         );
     }
 

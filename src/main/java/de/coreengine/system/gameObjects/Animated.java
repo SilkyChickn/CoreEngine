@@ -37,6 +37,7 @@ import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.FrameTimer;
 
+import javax.vecmath.Matrix4f;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,9 @@ public class Animated extends GameObject {
 
     //Current playing animation name
     private String currentAnimation = null;
+
+    //Speed of the animation
+    private float animationSpeed = 1.0f;
 
     //Current time of the animation
     private float currentTime = 0;
@@ -94,7 +98,7 @@ public class Animated extends GameObject {
         }
 
         //Increase animation time
-        currentTime += FrameTimer.getTslf();
+        currentTime += FrameTimer.getTslf() * animationSpeed;
 
         //Is animation finished
         Animation curAnimation = getCurrentAnimation();
@@ -116,6 +120,15 @@ public class Animated extends GameObject {
      */
     private Animation getCurrentAnimation(){
         return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().get(currentAnimation);
+    }
+
+    /**Setting the speed of the animation.
+     * (curFrame += frameTime * animationSpeed)
+     *
+     * @param animationSpeed New animation speed
+     */
+    public void setAnimationSpeed(float animationSpeed) {
+        this.animationSpeed = animationSpeed;
     }
 
     /**@return All available animations

@@ -27,6 +27,9 @@
  */
 package de.coreengine.asset.meta;
 
+import de.coreengine.rendering.model.Mesh;
+import de.coreengine.rendering.model.Model;
+
 /**Meta model file that can be saved in a file
  *
  * @author Darius Dinger
@@ -34,17 +37,22 @@ package de.coreengine.asset.meta;
 public class MetaModel{
     
     //Data
-    private MetaMesh[] meshes;
+    public MetaMesh[] meshes;
 
-    /**@param meshes Models new meshes
+    /**Creates new model instance of the meta model
+     *
+     * @param texPath Path to get models textures from
+     * @param asResource Load model textures from resources
+     * @return Create model instance
      */
-    public void setMeshes(MetaMesh[] meshes) {
-        this.meshes = meshes;
-    }
+    public Model getInstance(String texPath, boolean asResource){
+        Mesh[] meshes = new Mesh[this.meshes.length];
 
-    /**@return Models meshes
-     */
-    public MetaMesh[] getMeshes() {
-        return meshes;
+        //Create all mesh instances
+        for(int i = 0; i < this.meshes.length; i++){
+            meshes[i] = this.meshes[i].getInstance(texPath, asResource);
+        }
+
+        return new Model(meshes);
     }
 }

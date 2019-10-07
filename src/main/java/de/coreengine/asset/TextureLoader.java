@@ -27,10 +27,9 @@
  */
 package de.coreengine.asset;
 
-import de.coreengine.asset.meta.MetaTexture;
+import de.coreengine.rendering.model.Material;
 import de.coreengine.system.Game;
 import de.coreengine.util.BufferUtils;
-import de.coreengine.util.Configuration;
 import de.coreengine.util.Logger;
 import de.coreengine.util.gl.MemoryDumper;
 import org.lwjgl.opengl.*;
@@ -43,7 +42,7 @@ import java.nio.IntBuffer;
 
 /**Class for loading Textures from drive<br>
  *<br>
- * Supported Formats:<br>
+ * Supported Formats (From STB):<br>
  * <br>
  * JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib<br>
  * PNG 1/2/4/8/16-bit-per-channel<br>
@@ -58,19 +57,18 @@ import java.nio.IntBuffer;
  * @author Darius Dinger
  */
 public class TextureLoader {
-    private static final float MIPMAP_LEVEL = Configuration.getValuef("MIPMAP_LEVEL");
 
-    /**Load MetaTexture file and store into MetaTexture object
+    /**Load TextureData file and store into TextureData object
      * 
-     * @param textureFile Path to MetaTexture relative to application
-     * @param mipmap Uses this MetaTexture mipmapping/anisotropic filtering (if supported)
+     * @param textureFile Path to TextureData relative to application
+     * @param mipmap Uses this TextureData mipmapping/anisotropic filtering (if supported)
      * @param filtering Wich filtering mathod (GL_NEARES, GL_LINEAR, ...)
-     * @param asResource Loading MetaTexture from resources
-     * @return MetaTexture object
+     * @param asResource Loading TextureData from resources
+     * @return TextureData object
      */
-    public static MetaTexture loadTextureFileMeta(String textureFile, boolean mipmap,
+    public static TextureData loadTextureFileMeta(String textureFile, boolean mipmap,
                                                   int filtering, boolean asResource) {
-
+        
         //Define window icon variables
         ByteBuffer textureData = null;
         int textureWidth = 0, textureHeight = 0;
@@ -89,70 +87,50 @@ public class TextureLoader {
                 ByteBuffer buffer = BufferUtils.
                         ioResourceToByteBuffer(textureFile, 8 * 1024);
                 
-                //Load MetaTexture and throw exception at error
+                //Load TextureData and throw exception at error
                 textureData = STBImage.stbi_load_from_memory(buffer, w, h, comp, 4);
             }else{
                 
-                //Load MetaTexture and throw exception at error
+                //Load TextureData and throw exception at error
                 textureData = STBImage.stbi_load(textureFile, w, h, comp, 4);
             }
             
             if(textureData == null){
-                Logger.err("Error by loading MetaTexture", "The MetaTexture file " + textureFile +
-                        " could not be loaded!");
-                Game.exit(1);
+                Logger.warn("Error by loading TextureData", "The TextureData file " + textureFile +
+                        " could not be loaded! Returning null!");
+                return null;
             }
             
             //Set width and height from buffer
             textureWidth = w.get();
             textureHeight = h.get();
         }catch(IOException e){
-            Logger.err("Error by loading MetaTexture", "An IO Error occurs while "
-                    + "loading MetaTexture " + textureFile + "!");
+            Logger.err("Error by loading TextureData", "An IO Error occurs while "
+                    + "loading TextureData " + textureFile + "!");
             Game.exit(1);
         }
         
-        int tex = GL11.glGenTextures();
-        MemoryDumper.addTexture(tex);
+        //Create texture data
+        TextureData texture = new TextureData();
+        texture.data = textureData;
+        texture.width = textureWidth;
+        texture.height = textureHeight;
         
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
-        
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, textureWidth, textureHeight,
-                0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, textureData);
-        
-        if(mipmap){
-            GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-            GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, MIPMAP_LEVEL);
-            
-            if(GL.getCapabilities().GL_EXT_texture_filter_anisotropic){
-                float[] aniso = new float[1];
-                GL11.glGetFloatv(GL46.GL_MAX_TEXTURE_MAX_ANISOTROPY, aniso);
-                float amount = Float.min(4.0f, aniso[0]);
-                GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAX_ANISOTROPY, amount);
-            }
-        }else{
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filtering);
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filtering);
-        }
-        
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-
-        AssetDatabase.textures.put(textureFile, tex);
-
-        return new MetaTexture(textureData, textureWidth, textureHeight, textureFile);
+        return texture;
     }
     
-    /**Loading a MetaTexture file into an opengl texture and storing into asset database
+    /**Loading a TextureData file into an opengl texture and storing into asset database
      * 
-     * @param textureFile Path to MetaTexture relative to application
-     * @param mipmap Uses this MetaTexture mipmapping/anisotropic filtering (if supported)
+     * @param textureFile Path to TextureData relative to application
+     * @param mipmap Uses this TextureData mipmapping/anisotropic filtering (if supported)
      * @param filtering Wich filtering mathod (GL_NEARES, GL_LINEAR, ...)
-     * @param asResource Loading MetaTexture from resources
+     * @param asResource Loading TextureData from resources
      */
     public static void loadTextureFile(String textureFile, boolean mipmap, int filtering, boolean asResource){
         if(AssetDatabase.textures.containsKey(textureFile)) return;
-        loadTextureFileMeta(textureFile, mipmap, filtering, asResource);
+        TextureData textureData = loadTextureFileMeta(textureFile, mipmap, filtering, asResource);
+        if(textureData != null)textureData.generateKey(textureFile, mipmap, filtering);
+        else AssetDatabase.textures.put(textureFile, AssetDatabase.getTexture(Material.TEXTURE_WHITE));
     }
     
     /**Loading cube map texture from abstract path and extension and storing into asset database. The cube map
@@ -162,7 +140,6 @@ public class TextureLoader {
      * @param path Abstract path to the cubemap
      * @param ext Extension of the cube map Textures
      * @param asResource Loading cube map Textures from resources
-     * @return Cube map texture id
      */
     public static void loadCubeMap(String path, String ext, boolean asResource){
         loadCubeMap(path, path + "_lf." + ext, path + "_rt." + ext,
@@ -180,50 +157,49 @@ public class TextureLoader {
      * @param front Front sube map texture
      * @param back Back sube map texture
      * @param asResource Loading cube map Textures from resources
-     * @return Loaded cube map texture id
      */
     public static void loadCubeMap(String key, String left, String right, String top,
             String bottom, String front, String back, boolean asResource){
         if(AssetDatabase.textures.containsKey(key)) return;
 
         //Loading cube map Textures
-        MetaTexture imgL = loadTextureFileMeta(left, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgR = loadTextureFileMeta(right, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgT = loadTextureFileMeta(top, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgB = loadTextureFileMeta(bottom, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgF = loadTextureFileMeta(front, false, GL11.GL_LINEAR, asResource);
-        MetaTexture imgBa = loadTextureFileMeta(back, false, GL11.GL_LINEAR, asResource);
-        
+        TextureData imgL = loadTextureFileMeta(left, false, GL11.GL_LINEAR, asResource);
+        TextureData imgR = loadTextureFileMeta(right, false, GL11.GL_LINEAR, asResource);
+        TextureData imgT = loadTextureFileMeta(top, false, GL11.GL_LINEAR, asResource);
+        TextureData imgB = loadTextureFileMeta(bottom, false, GL11.GL_LINEAR, asResource);
+        TextureData imgF = loadTextureFileMeta(front, false, GL11.GL_LINEAR, asResource);
+        TextureData imgBa = loadTextureFileMeta(back, false, GL11.GL_LINEAR, asResource);
+
         //Gen and bind cube map texture
         int tex = GL11.glGenTextures();
         MemoryDumper.addTexture(tex);
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, tex);
         GL11.glEnable(GL13.GL_TEXTURE_CUBE_MAP);
         
-        //Apply textures to MetaTexture
+        //Apply textures to TextureData
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
-                GL11.GL_RGBA, imgL.getWidth(), imgL.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgL.getData());
+                GL11.GL_RGBA, imgL.width, imgL.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgL.data);
         
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
-                GL11.GL_RGBA, imgR.getWidth(), imgR.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgR.getData());
+                GL11.GL_RGBA, imgR.width, imgR.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgR.data);
         
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
-                GL11.GL_RGBA, imgT.getWidth(), imgT.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgT.getData());
+                GL11.GL_RGBA, imgT.width, imgT.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgT.data);
         
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
-                GL11.GL_RGBA, imgB.getWidth(), imgB.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgB.getData());
+                GL11.GL_RGBA, imgB.width, imgB.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgB.data);
         
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
-                GL11.GL_RGBA, imgF.getWidth(), imgF.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgF.getData());
+                GL11.GL_RGBA, imgF.width, imgF.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgF.data);
         
         GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
-                GL11.GL_RGBA, imgBa.getWidth(), imgBa.getHeight(), 0, 
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgBa.getData());
+                GL11.GL_RGBA, imgBa.width, imgBa.height, 0, 
+                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, imgBa.data);
         
         //Adding filtering
         GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);

@@ -27,7 +27,7 @@
  */
 package de.coreengine.rendering.renderable.terrain;
 
-import de.coreengine.asset.meta.MetaTexture;
+import de.coreengine.asset.TextureData;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.util.Configuration;
 
@@ -64,7 +64,7 @@ public class TerrainConfig {
     private String lightMap = Material.DEFAULT_NORMAL_MAP;
     
     //The heightmap contains the height at the specific points
-    private MetaTexture heightMap = new MetaTexture(null, 0, 0, Material.TEXTURE_BLACK);
+    private TextureData heightMap = new TextureData();
     
     //The blend map contains, wich texture should mapped on wich point on the terrain
     private String blendMap = Material.TEXTURE_BLACK;
@@ -78,7 +78,16 @@ public class TerrainConfig {
     //Tesselation area (x = tessFactor, y = tessRange, z = tessGradient)
     private Vector3f tesselationArea = 
             new Vector3f(DEFAULT_TESS_FACTOR, DEFAULT_TESS_RANGE, DEFAULT_TESS_GRADIENT);
-    
+
+    /**Creates new default terrain config
+     */
+    public TerrainConfig(){
+        heightMap.width = 0;
+        heightMap.height = 0;
+        heightMap.data = null;
+        heightMap.key = Material.TEXTURE_BLACK;
+    }
+
     /**Getting this terrain lod stages as float[]
      * 
      * @return Terrains lod stage area sizes
@@ -127,7 +136,7 @@ public class TerrainConfig {
     
     /**@return The heightmap contains the height at the specific points
      */
-    public MetaTexture getHeightMap() {
+    public TextureData getHeightMap() {
         return heightMap;
     }
     
@@ -135,7 +144,7 @@ public class TerrainConfig {
      * 
      * @param heightMap New height map
      */
-    public void setHeightMap(MetaTexture heightMap) {
+    public void setHeightMap(TextureData heightMap) {
         this.heightMap = heightMap;
     }
     

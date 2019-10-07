@@ -72,7 +72,7 @@ public class LensFlare {
     
     /**Adding texture to the lens flare effect
      * 
-     * @param tex MetaTexture to add
+     * @param tex TextureData to add
      */
     public void addTexture(int tex){
         textures = Toolbox.addElement(textures, tex);

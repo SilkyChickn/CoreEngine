@@ -198,7 +198,7 @@ public class FntLoader {
         vertices.add(ox);
         vertices.add(oy);
         
-        //MetaTexture coords
+        //TextureData coords
         texCoords.add(tx +tw);
         texCoords.add(ty +th);
         

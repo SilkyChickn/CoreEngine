@@ -28,10 +28,7 @@
 
 package de.coreengine.animation;
 
-import de.coreengine.asset.modelLoader.NodeData;
-
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,20 +49,29 @@ public class Joint {
     //Current local pose of this joint
     private Matrix4f localPose = new Matrix4f();
 
+    //Local bind pose of the joint
+    private Matrix4f bindLocalPose = new Matrix4f();
+
     //Inverse matrix of joints default position
-    private Matrix4f inverseBindMatrix;
+    private Matrix4f inverseBindMatrix = new Matrix4f();
+
+    //Debug: Bind and current pose
+    private Matrix4f bindPose = new Matrix4f();
+    private Matrix4f pose = new Matrix4f();
 
     /**Creating new joint
      *
      * @param index Index of the joint in the skeleton
+     * @param name Name of the joint
      * @param inverseBindMatrix Inverse matrix of joints default position
      */
-    public Joint(int index, String name, Matrix4f inverseBindMatrix){
+    public Joint(int index, String name, Matrix4f inverseBindMatrix, Matrix4f bindLocalPose){
         this.index = index;
         this.name = name;
-        this.inverseBindMatrix = inverseBindMatrix;
-        this.localPose.invert(inverseBindMatrix);
-        calcAnimatedTransform();
+        this.inverseBindMatrix.set(inverseBindMatrix);
+        this.localPose.set(bindLocalPose);
+        this.bindLocalPose.set(bindLocalPose);
+        this.animatedTransform.setIdentity();
     }
 
     /**Creating new joint as copy from the passed joint
@@ -77,27 +83,59 @@ public class Joint {
         //Copy data
         this.index = other.index;
         this.name = other.name;
-        this.inverseBindMatrix = new Matrix4f(other.inverseBindMatrix);
-        this.localPose.invert(inverseBindMatrix);
+        this.inverseBindMatrix.set(other.inverseBindMatrix);
+        this.bindLocalPose.set(other.bindLocalPose);
+        this.localPose.set(other.localPose);
+        this.animatedTransform.set(other.animatedTransform);
+        this.bindPose = new Matrix4f(other.bindPose);
+        this.pose = new Matrix4f(other.pose);
 
         //Recursive for children joints
         for(Joint child: other.children){
             children.add(new Joint(child));
         }
-
-        //Recalc animation transform
-        calcAnimatedTransform();
     }
 
-    /**Calculate the animated transformation by multiplying the local pose (transformation matrix of the joint in
-     * modelspace) with the inverse bind matrix (inverted default pose).
+    /**Calculate the bind pose transformation by multiplying the local bind pose (bind transformation matrix of the
+     * joint in bone space) with all parents local bind poses.
+     *
+     * @param parentPose Parents local bind pose or null, if root
      */
-    public void calcAnimatedTransform() {
-        this.animatedTransform.set(localPose);
-        this.animatedTransform.mul(inverseBindMatrix);
+    public void calcBindPose(Matrix4f parentPose) {
+        if(parentPose == null) this.bindPose.setIdentity();
+        else this.bindPose.set(parentPose);
+        this.bindPose.mul(bindLocalPose);
+        for(Joint child: children)
+            child.calcBindPose(this.bindPose);
+    }
 
-        //Recursive for children joints
-        for(Joint child: children) child.calcAnimatedTransform();
+    /**Calculate the animated and pose transformation by multiplying the local pose (transformation matrix of the
+     * joint in bone space) with all parents local poses and the inverse bind matrix (inverted pose in model space).
+     *
+     * @param parentLocalPose Parents local pose or null, if root
+     */
+    public void calcAnimatedTransformAndPose(Matrix4f parentLocalPose) {
+
+        //Calc pose for this joint
+        if(parentLocalPose == null) this.animatedTransform.setIdentity();
+        else this.animatedTransform.set(parentLocalPose);
+        this.animatedTransform.mul(localPose);
+
+        //Save current pose
+        this.pose.set(this.animatedTransform);
+
+        //Calc animated transform for children
+        for(Joint child: children)
+            child.calcAnimatedTransformAndPose(this.animatedTransform);
+
+        //Calc animation transform
+        this.animatedTransform.mul(inverseBindMatrix);
+    }
+
+    /**@return Current local pose of the joint
+     */
+    public Matrix4f getLocalPose() {
+        return localPose;
     }
 
     /**Getting first found joint in this hierarchy with this name. If joint couldn't be found
@@ -149,9 +187,27 @@ public class Joint {
         return index;
     }
 
-    /**@return Transformation to put joint into animated pose
+    /**@return Transformation to put a vertex into the animated pose
      */
     public Matrix4f getAnimatedTransform() {
         return animatedTransform;
+    }
+
+    /**@return Name of the joint
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**@return Bind transformation matrix of the joint in model space
+     */
+    public Matrix4f getBindPose() {
+        return bindPose;
+    }
+
+    /**@return Current transformation matrix of the joint in model space
+     */
+    public Matrix4f getPose() {
+        return pose;
     }
 }

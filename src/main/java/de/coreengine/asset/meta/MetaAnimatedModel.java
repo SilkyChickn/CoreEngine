@@ -25,61 +25,37 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package de.coreengine.asset.meta;
 
-import java.io.Serializable;
-import java.nio.ByteBuffer;
+import de.coreengine.animation.Animation;
+import de.coreengine.animation.Joint;
+import de.coreengine.rendering.model.AnimatedModel;
+import de.coreengine.rendering.model.Mesh;
 
-/**Class that stores image data and represent and drive image
- *
- * @author Darius Dinger
- */
-public class MetaTexture implements Serializable{
-    
-    //MetaTexture data (pixels)
-    private final ByteBuffer data;
-    
-    //MetaTexture width and height (in px)
-    private final int width, height;
-    
-    //Gl id of the image
-    private final String glTexture;
-    
-    /**Creates new MetaTexture
-     * 
-     * @param data image data
-     * @param width image width
-     * @param height image height
-     * @param id OpenGL id of the texture
+import java.util.HashMap;
+
+public class MetaAnimatedModel extends MetaModel{
+
+    //Data
+    public Joint skeleton;
+    public HashMap<String, Animation> animations;
+
+    /**Creates new model instance of the meta model
+     *
+     * @param texPath Path to get models textures from
+     * @param asResource Load model textures from resources
+     * @return Create model instance
      */
-    public MetaTexture(ByteBuffer data, int width, int height, String id) {
-        this.data = data;
-        this.width = width;
-        this.height = height;
-        this.glTexture = id;
-    }
-    
-    /**@return image width
-     */
-    public int getWidth() {
-        return width;
-    }
-    
-    /**@return image height
-     */
-    public int getHeight() {
-        return height;
-    }
-    
-    /**@return image data
-     */
-    public ByteBuffer getData() {
-        return data;
-    }
-    
-    /**@return OpenGl id of the texture
-     */
-    public String getGlTexture() {
-        return glTexture;
+    @Override
+    public AnimatedModel getInstance(String texPath, boolean asResource){
+        Mesh[] meshes = new Mesh[this.meshes.length];
+
+        //Create all mesh instances
+        for(int i = 0; i < this.meshes.length; i++){
+            meshes[i] = this.meshes[i].getInstance(texPath, asResource);
+        }
+
+        return new AnimatedModel(meshes, skeleton, animations);
     }
 }

@@ -118,7 +118,7 @@ public class GrasslandShader extends Shader{
         setUniform(scaleLoc, terrain.getGrassland().getTuftScale());
         setUniform(tuftCount, terrain.getGrassland().getDensity());
         
-        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getHeightMap().getGlTexture()),
+        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getHeightMap().getKey()),
                 heightMapUnit, GL11.GL_TEXTURE_2D);
         bindTexture(AssetDatabase.getTexture(terrain.getConfig().getLightMap()),
                 lightMapUnit, GL11.GL_TEXTURE_2D);

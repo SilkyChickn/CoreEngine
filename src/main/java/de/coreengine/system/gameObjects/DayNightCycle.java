@@ -94,8 +94,8 @@ public class DayNightCycle extends GameObject{
      * @param eveColor Color of the Sun and fog at evening
      * @param nigTex Night skybox cube map texture
      * @param nigColor Color of the Sun and fog at night
-     * @param sunTexture MetaTexture of the sun
-     * @param moonTexture MetaTexture of the moon
+     * @param sunTexture TextureData of the sun
+     * @param moonTexture TextureData of the moon
      */
     public DayNightCycle(String dayTex, Color dayColor, String eveTex, Color eveColor,
                          String nigTex, Color nigColor, String sunTexture, String moonTexture) {

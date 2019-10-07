@@ -37,7 +37,7 @@ import java.util.HashMap;
  */
 public class Font {
     
-    //MetaTexture atlas image of the font
+    //TextureData atlas image of the font
     private final String textureAtlas;
     
     //Characters of the font sirtet by ascii
@@ -51,7 +51,7 @@ public class Font {
     
     /**Creating new font
      * 
-     * @param textureAtlas MetaTexture atlas image of the font
+     * @param textureAtlas TextureData atlas image of the font
      * @param characters Characters of the font sirtet by ascii
      * @param vao Vertex array object of the character models
      * @param lineHeight Height of a line of text
@@ -64,7 +64,7 @@ public class Font {
         this.lineHeight = lineHeight;
     }
     
-    /**@return MetaTexture atlas image of the font
+    /**@return TextureData atlas image of the font
      */
     public String getTextureAtlas() {
         return textureAtlas;

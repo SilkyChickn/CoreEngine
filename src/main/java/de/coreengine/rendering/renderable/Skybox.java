@@ -81,7 +81,7 @@ public class Skybox {
      * the units else it wouldnt change!
      * 
      * @param id Id of the unit to set the texture
-     * @param tex MetaTexture to set at the id
+     * @param tex TextureData to set at the id
      */
     public void setCubeMapTexture(int id, String tex){
         if(id >= 0 && id < cubeMapTextures.length){

@@ -33,54 +33,33 @@ import javafx.util.Pair;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-import java.util.List;
 
 public class Animator {
 
-    /**Setting a skeleton into the current pose of an animation
+    /**Setting a skeleton and all its children into the current pose of an animation
      *
      * @param skeleton Skeleton to animate
      * @param animation Animation to play
      * @param time Current time of the animation
      */
     public static void applyAnimation(Joint skeleton, Animation animation, float time){
-
-        //Get relevant keyframes from list
-        Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantPositionKfs =
-                animation.getPositionKeyFrames(skeleton.getIndex()).getRelevantKeyFrames(time);
-        Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> relevantRotationKfs =
-                animation.getRotationKeyFrames(skeleton.getIndex()).getRelevantKeyFrames(time);
-        //Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantScaleKfs =
-        //        animation.getScaleKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
-
-        //Get interpolated matrix between the two keyframes
-        Vector3f position = getInterpolatedVector(relevantPositionKfs, time);
-        Quat4f rotation = getInterpolatedQuaternion(relevantRotationKfs, time);
-        //Vector3f scale = getInterpolatedVector(relevantScaleKfs, time);
-        Matrix4f interpolatedMatrix = new Matrix4f(rotation, position, 1.0f);
-
-        skeleton.setLocalPose(interpolatedMatrix);
-
-        //Animate all children
-        for(Joint child: skeleton.getChildren()) applyAnimation(child, interpolatedMatrix, animation, time);
-
-        //Recalculate animation matrices from local poses
-        skeleton.calcAnimatedTransform();
+        applyAnimationNode(skeleton, animation, time);
+        skeleton.calcAnimatedTransformAndPose(null);
     }
 
     /**Setting a joint and all its children into the current pose of an animation
      *
-     * @param child Joint to animate
+     * @param node Joint node to animate
      * @param animation Animation to play
      * @param time Current time of the animation
      */
-    private static void applyAnimation(Joint child, Matrix4f parentMatrix, Animation animation, float time){
+    private static void applyAnimationNode(Joint node, Animation animation, float time){
 
         //Get relevant keyframes from list
         Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantPositionKfs =
-                animation.getPositionKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
+                animation.getPositionKeyFrames(node.getIndex()).getRelevantKeyFrames(time);
         Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> relevantRotationKfs =
-                animation.getRotationKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
+                animation.getRotationKeyFrames(node.getIndex()).getRelevantKeyFrames(time);
         //Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantScaleKfs =
         //        animation.getScaleKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
 
@@ -88,15 +67,27 @@ public class Animator {
         Vector3f position = getInterpolatedVector(relevantPositionKfs, time);
         Quat4f rotation = getInterpolatedQuaternion(relevantRotationKfs, time);
         //Vector3f scale = getInterpolatedVector(relevantScaleKfs, time);
-        Matrix4f interpolatedMatrix = new Matrix4f(rotation, position, 1.0f);
 
-        //Mul with parent matrix and set as joints local matrix
-        Matrix4f localPose = new Matrix4f(parentMatrix);
-        localPose.mul(interpolatedMatrix);
-        child.setLocalPose(localPose);
+        //Check if joints transform has to update
+        if(position != null || rotation != null) {
+
+            //Check if position or rotation has no update, then get from current pose
+            if (position == null) {
+                position = new Vector3f();
+                node.getLocalPose().get(position);
+            }
+            if (rotation == null) {
+                rotation = new Quat4f();
+                node.getLocalPose().get(rotation);
+            }
+
+            //Set interpolated local transform as local pose
+            Matrix4f interpolatedMatrix = new Matrix4f(rotation, position, 1.0f);
+            node.setLocalPose(interpolatedMatrix);
+        }
 
         //Animate all children
-        for(Joint c: child.getChildren()) applyAnimation(c, interpolatedMatrix, animation, time);
+        for(Joint c: node.getChildren()) applyAnimationNode(c, animation, time);
     }
 
     /**Calculate the interpolated value of two vector3f keyframes
@@ -120,7 +111,7 @@ public class Animator {
 
             //Calculate interpolated translation
             result.interpolate(keyFrames.getKey().getStatus(), keyFrames.getValue().getStatus(), progression);
-        }
+        }else return null;
 
         return result;
     }
@@ -146,7 +137,7 @@ public class Animator {
 
             //Calculate interpolated translation
             result.interpolate(keyFrames.getKey().getStatus(), keyFrames.getValue().getStatus(), progression);
-        }
+        }else return null;
 
         return result;
     }

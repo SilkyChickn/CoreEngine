@@ -29,11 +29,9 @@
 package de.coreengine.animation;
 
 import de.coreengine.util.Logger;
-import javafx.util.Pair;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
 import java.util.List;
 
 /**Represents a animation that can be played by an animated model
@@ -95,7 +93,7 @@ public class Animation {
      * @param jointId Id of the joint
      * @return Joints position keyframes
      */
-    public KeyFrameList<Vector3f> getPositionKeyFrames(int jointId){
+    KeyFrameList<Vector3f> getPositionKeyFrames(int jointId){
         return positionKeys.get(jointId);
     }
 
@@ -104,7 +102,7 @@ public class Animation {
      * @param jointId Id of the joint
      * @return Joints rotation keyframes
      */
-    public KeyFrameList<Quat4f> getRotationKeyFrames(int jointId){
+    KeyFrameList<Quat4f> getRotationKeyFrames(int jointId){
         return rotationKeys.get(jointId);
     }
 
@@ -113,7 +111,7 @@ public class Animation {
      * @param jointId Id of the joint
      * @return Joints scale keyframes
      */
-    public KeyFrameList<Vector3f> getScaleKeyFrames(int jointId){
+    KeyFrameList<Vector3f> getScaleKeyFrames(int jointId){
         return scaleKeys.get(jointId);
     }
 }

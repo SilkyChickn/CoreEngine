@@ -152,7 +152,7 @@ public class TerrainShader extends Shader{
      */
     public void setTerrainConfig(TerrainConfig config){
         bindTexture(AssetDatabase.getTexture(config.getBlendMap()), blendMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(config.getHeightMap().getGlTexture()), heightMapUnit, GL11.GL_TEXTURE_2D);
+        bindTexture(AssetDatabase.getTexture(config.getHeightMap().getKey()), heightMapUnit, GL11.GL_TEXTURE_2D);
         bindTexture(AssetDatabase.getTexture(config.getLightMap()), lightMapUnit, GL11.GL_TEXTURE_2D);
         
         setUniform(amplitudeLoc, config.getAmplitude());

@@ -28,14 +28,21 @@
 
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.animation.Joint;
+import de.coreengine.framework.Keyboard;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.programs.AnimatedEntityShader;
 import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.renderable.AnimatedEntity;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
+import de.coreengine.util.Toolbox;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +62,14 @@ public class AnimatedEntityRenderer {
      * @param clipPlane Clip plane of the entities
      */
     void render(HashMap<Mesh, List<AnimatedEntity>> entities, Camera cam, Vector4f clipPlane){
+
+        //DEBUG ENABLE SKELETON RENDERING
+        if(Keyboard.isKeyPressed(GLFW.GLFW_KEY_P)) {
+            for (Mesh mesh : entities.keySet())
+                for (AnimatedEntity entity : entities.get(mesh))
+                    renderSkeleton(entity.getSkeleton(), cam, entity.getTransform().getTransMat());
+            return;
+        }
 
         //Setup shader
         shader.start();
@@ -91,5 +106,52 @@ public class AnimatedEntityRenderer {
 
         //Stop shader
         shader.stop();
+    }
+
+    /**Render a skeleton for debugging
+     *
+     * @param skeleton Skeleton to render
+     */
+    private void renderSkeleton(Joint skeleton, Camera cam, Matrix4f modelMatrix){
+
+        //calc mvp matrix of the entity
+        Matrix4f mvp = new Matrix4f(cam.getViewProjectionMatrix());
+        mvp.mul(modelMatrix);
+
+        //Setup gl
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glLoadMatrixf(Toolbox.matrixToFloatArray(mvp));
+
+        //Render skeleton
+        renderNode(skeleton, null);
+    }
+
+    /**Render node and all child nodes recursively of a skeleton
+     *
+     * @param node Node to render
+     */
+    private void renderNode(Joint node, Point3f parent){
+
+        Point3f pos = new Point3f(0, 0, 0);
+        node.getPose().transform(pos);
+
+        //Render joint in blue
+        GL11.glColor3f(0, 0, 1);
+        GL11.glPointSize(10.0f);
+        GL11.glBegin(GL11.GL_POINTS);
+        GL11.glVertex3f(pos.x, pos.y, pos.z);
+        GL11.glEnd();
+
+        //Render bone in green
+        if(parent != null) {
+            GL11.glColor3f(0, 1, 0);
+            GL11.glBegin(GL11.GL_LINES);
+            GL11.glVertex3f(parent.x, parent.y, parent.z);
+            GL11.glVertex3f(pos.x, pos.y, pos.z);
+            GL11.glEnd();
+        }
+
+        //Render all children
+        for(Joint child: node.getChildren()) renderNode(child, pos);
     }
 }

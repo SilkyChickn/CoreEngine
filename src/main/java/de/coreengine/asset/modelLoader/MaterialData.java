@@ -28,14 +28,11 @@
 
 package de.coreengine.asset.modelLoader;
 
-import de.coreengine.asset.TextureLoader;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.rendering.model.Color;
-import de.coreengine.rendering.model.Material;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIString;
-import org.lwjgl.opengl.GL11;
 
 import java.nio.IntBuffer;
 
@@ -47,7 +44,6 @@ public class MaterialData {
     private final AIMaterial aiMaterial;
 
     //Output
-    private final Material material = new Material();
     private final MetaMaterial metaMaterial = new MetaMaterial();
 
     /**Creating new material data that can parse ai materials into materials and meta materials
@@ -59,10 +55,8 @@ public class MaterialData {
     }
 
     /**Parse ai materials into materials and meta materials
-     *
-     * @param texPath Location of the texture files
      */
-    public void parse(String texPath){
+    public void parse(){
 
         //Data buffers
         AIColor4D color = AIColor4D.create();
@@ -70,82 +64,63 @@ public class MaterialData {
         float[] floot = new float[1];
 
         //Load diffuse texture
-        if(getTexturePath(aiTextureType_DIFFUSE, path, texPath)){
-            material.diffuseMap = texPath +path.dataString();
-            metaMaterial.diffuseMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_DIFFUSE, path)){
+            metaMaterial.diffuseMap = path.dataString();
         }
 
         //Load normal texture
-        if(getTexturePath(aiTextureType_NORMALS, path, texPath)){
-            material.normalMap = texPath +path.dataString();
-            metaMaterial.normalMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_NORMALS, path)){
+            metaMaterial.normalMap = path.dataString();
         }
 
         //Load specular texture
-        if(getTexturePath(aiTextureType_SPECULAR, path, texPath)){
-            material.specularMap = texPath +path.dataString();
-            metaMaterial.specularMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_SPECULAR, path)){
+            metaMaterial.specularMap = path.dataString();
         }
 
         //Load ambient texture
-        if(getTexturePath(aiTextureType_AMBIENT, path, texPath)){
-            material.ambientOcclusionMap = texPath +path.dataString();
-            metaMaterial.ambientOcclusionMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_AMBIENT, path)){
+            metaMaterial.ambientOcclusionMap = path.dataString();
         }
 
         //Load alpha texture
-        if(getTexturePath(aiTextureType_OPACITY, path, texPath)){
-            material.alphaMap = texPath +path.dataString();
-            metaMaterial.alphaMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_OPACITY, path)){
+            metaMaterial.alphaMap = path.dataString();
         }
 
         //Load displacement texture
-        if(getTexturePath(aiTextureType_DISPLACEMENT, path, texPath)){
-            material.displacementMap = texPath +path.dataString();
-            metaMaterial.displacementMap = texPath +path.dataString();
+        if(getTexturePath(aiTextureType_DISPLACEMENT, path)){
+            metaMaterial.displacementMap = path.dataString();
         }
 
         //Load diffuse color
         if(aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color)
                 == aiReturn_SUCCESS){
-            material.diffuseColor.set(color.r(), color.g(), color.b());
             metaMaterial.diffuseColor = new Color(color.r(), color.g(), color.b());
         }
 
         //Load shininess
         if(aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_SHININESS, aiTextureType_NONE, 0,
                 floot, new int[] {1}) == aiReturn_SUCCESS){
-            material.shininess = floot[0];
             metaMaterial.shininess = floot[0];
         }
 
         //Load bump/displacement factor
         if(aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_BUMPSCALING, aiTextureType_NONE, 0,
                 floot, new int[] {1}) == aiReturn_SUCCESS){
-            material.displacementFactor = floot[0];
             metaMaterial.displacementFactor = floot[0];
         }
     }
 
-    /**Getting texture from ai material an load if exist
+    /**Getting texture from ai material
      *
      * @param type Type of texture to get
      * @param path Path to store tex path in
-     * @param texPath Location of the texture files
      * @return True if texture exist, else false
      */
-    private boolean getTexturePath(int type, AIString path, String texPath){
-        if(aiGetMaterialTexture(aiMaterial, aiTextureType_DIFFUSE, 0, path,
-                (IntBuffer) null, null, null, null, null, null) == aiReturn_SUCCESS){
-            TextureLoader.loadTextureFile(texPath +path.dataString(), true, GL11.GL_LINEAR, false);
-            return true;
-        }else return false;
-    }
-
-    /**@return Parsed material
-     */
-    public Material getMaterial() {
-        return material;
+    private boolean getTexturePath(int type, AIString path){
+        return aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null,
+                null, null, null) == aiReturn_SUCCESS;
     }
 
     /**@return Parsed meta material
