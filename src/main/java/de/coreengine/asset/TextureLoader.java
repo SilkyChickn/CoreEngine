@@ -44,7 +44,7 @@ import java.nio.IntBuffer;
  *<br>
  * Supported Formats (From STB):<br>
  * <br>
- * JPEG baseline & progressive (12 bpc/arithmetic not supported, same as stock IJG lib<br>
+ * JPEG baseline and progressive (12 bpc/arithmetic not supported, same as stock IJG lib<br>
  * PNG 1/2/4/8/16-bit-per-channel<br>
  * TGA (not sure what subset, if a subset)<br>
  * BMP non-1bpp, non-RLE<br>
