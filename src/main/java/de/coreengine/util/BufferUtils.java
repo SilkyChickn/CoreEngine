@@ -30,6 +30,9 @@ package de.coreengine.util;
 import java.io.*;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.nio.channels.FileChannel;
 
 /**Buffer utilities
@@ -37,7 +40,7 @@ import java.nio.channels.FileChannel;
  * @author Darius Dinger
  */
 public class BufferUtils {
-    
+
     /**Getting a resource as bytebuffer
      * 
      * @param resource Resource path

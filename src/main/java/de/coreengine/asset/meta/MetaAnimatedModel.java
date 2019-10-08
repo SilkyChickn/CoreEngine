@@ -32,6 +32,7 @@ import de.coreengine.animation.Animation;
 import de.coreengine.animation.Joint;
 import de.coreengine.rendering.model.AnimatedModel;
 import de.coreengine.rendering.model.Mesh;
+import de.coreengine.util.Logger;
 
 import java.util.HashMap;
 
@@ -49,11 +50,17 @@ public class MetaAnimatedModel extends MetaModel{
      */
     @Override
     public AnimatedModel getInstance(String texPath, boolean asResource){
+        if(this.meshes == null){
+            Logger.warn("Error by creating animated model instance",
+                    "The meshes array of the meta animated model is null! Returning null");
+            return null;
+        }
+
         Mesh[] meshes = new Mesh[this.meshes.length];
 
         //Create all mesh instances
         for(int i = 0; i < this.meshes.length; i++){
-            meshes[i] = this.meshes[i].getInstance(texPath, asResource);
+            meshes[i] = this.meshes[i].getInstance(texPath, asResource, true);
         }
 
         return new AnimatedModel(meshes, skeleton, animations);

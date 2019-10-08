@@ -28,7 +28,6 @@
 
 package de.coreengine.asset;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
 import de.coreengine.animation.Animation;
 import de.coreengine.animation.Joint;
 import de.coreengine.asset.meta.MetaAnimatedModel;
@@ -113,10 +112,10 @@ public class ModelLoader {
      *
      * @param file Model file to load
      * @param texPath Location of the texture files
-     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      * @param asResource Load model from resources
      */
-    public static void loadModelFile(String file, String texPath, boolean asResource, CollisionShape shape){
+    public static void loadModelFile(String file, String texPath, boolean asResource, String shape){
         if(AssetDatabase.models.containsKey(file)) return;
         MetaModel metaModel = loadModelFileMeta(file, asResource, shape);
         if(metaModel != null) AssetDatabase.models.put(file, metaModel.getInstance(texPath, asResource));
@@ -126,10 +125,10 @@ public class ModelLoader {
      *
      * @param file Model file to load
      * @param texPath Location of the texture files
-     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      * @param asResource Load model from resources
      */
-    public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, CollisionShape shape){
+    public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, String shape){
         if(AssetDatabase.animatedModels.containsKey(file)) return;
         MetaAnimatedModel metaAnimatedModel = loadAnimatedModelFileMeta(file, asResource, shape);
         if(metaAnimatedModel != null) AssetDatabase.animatedModels.put(file, metaAnimatedModel.getInstance(texPath, asResource));
@@ -139,10 +138,10 @@ public class ModelLoader {
      *
      * @param file Model file to load
      * @param asResource Load model from resources
-     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      * @return Meta model with raw model data
      */
-    public static MetaModel loadModelFileMeta(String file, boolean asResource, CollisionShape shape){
+    public static MetaModel loadModelFileMeta(String file, boolean asResource, String shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
@@ -163,10 +162,10 @@ public class ModelLoader {
      *
      * @param file Model file to load
      * @param asResource Load model from resources
-     * @param shape Collision shape, or ConvexHullShape/TriangleMeshShape to auto generate
+     * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      */
     public static MetaAnimatedModel loadAnimatedModelFileMeta(String file, boolean asResource,
-                                                              CollisionShape shape){
+                                                              String shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
@@ -247,10 +246,11 @@ public class ModelLoader {
      *
      * @param aiScene AIScene to load meshes from
      * @param materials Materials of the AIScene
+     * @param shape Collision shape to use
      * @param bones List to add bones, or null to dont load bones
      * @return Array of the scene meshes
      */
-    private static MetaMesh[] getMeshs(AIScene aiScene, MetaMaterial[] materials, CollisionShape shape,
+    private static MetaMesh[] getMeshs(AIScene aiScene, MetaMaterial[] materials, String shape,
                                        List<BoneData> bones){
         int meshCount = aiScene.mNumMeshes();
 

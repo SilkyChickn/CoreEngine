@@ -69,8 +69,9 @@ public class MeshData {
     /**Parse ai meshes into meshes and meta meshes
      *
      * @param bones Bone list to add bones or null to dont load bones
+     * @param collisionShape Collision shape to use
      */
-    public void parse(CollisionShape shape, List<BoneData> bones){
+    public void parse(String collisionShape, List<BoneData> bones){
 
         //Get material, load empty material if id not exist
         MetaMaterial material;
@@ -136,13 +137,6 @@ public class MeshData {
             }
         }
 
-        //Calculate collision shape
-        if(shape instanceof ConvexHullShape){
-            shape = Physics.createConvexHullShape(vertices);
-        }else if(shape instanceof TriangleMeshShape){
-            shape = Physics.createTriangleMeshShape(vertices, indices);
-        }
-
         //Construct meta mesh
         metaMesh = new MetaMesh();
         metaMesh.vertices = vertices;
@@ -151,7 +145,7 @@ public class MeshData {
         metaMesh.tangents = tangents;
         metaMesh.indices = indices;
         metaMesh.material = material;
-        metaMesh.shape = shape;
+        metaMesh.shape = collisionShape;
         if(bones != null) metaMesh.jointIds = jointIds;
         if(bones != null) metaMesh.weights = weights;
     }

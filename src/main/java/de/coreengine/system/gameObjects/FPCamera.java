@@ -166,13 +166,13 @@ public class FPCamera extends GameObject{
         }
         
         camera.updateViewMatrix();
-        
+
         //Replace audio listener
         listener.getPosition().set(camera.getPosition());
         listener.setOrientation(camera.getRay().getRay().x, 0,
                 camera.getRay().getRay().z);
         listener.apply();
-        
+
         move.set(0, 0, 0);
     }
     

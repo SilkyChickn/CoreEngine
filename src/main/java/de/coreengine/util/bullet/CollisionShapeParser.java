@@ -56,7 +56,7 @@ public class CollisionShapeParser {
      * @return Parsed collision shape or null
      */
     public static CollisionShape toShape(String line){
-        if(line.startsWith("convex")) return EMPTY_CONVEX_HULL;
+        if(line == null || line.startsWith("convex")) return EMPTY_CONVEX_HULL;
         else if(line.startsWith("triangleMesh")) return EMPTY_TRIANGLE_MESH;
         else if(line.startsWith("compound")){
             String[] args = line.split(" ");
