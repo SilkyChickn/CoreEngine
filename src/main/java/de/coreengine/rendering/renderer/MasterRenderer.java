@@ -38,7 +38,6 @@ import de.coreengine.rendering.renderable.*;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.light.*;
 import de.coreengine.rendering.renderable.terrain.Terrain;
-
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;

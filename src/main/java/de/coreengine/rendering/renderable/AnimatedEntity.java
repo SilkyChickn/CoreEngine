@@ -30,7 +30,6 @@ package de.coreengine.rendering.renderable;
 
 import de.coreengine.animation.Joint;
 import de.coreengine.asset.AssetDatabase;
-import de.coreengine.rendering.model.AnimatedModel;
 import de.coreengine.rendering.model.Transformation;
 
 /**Class that represents an animated entity in the world

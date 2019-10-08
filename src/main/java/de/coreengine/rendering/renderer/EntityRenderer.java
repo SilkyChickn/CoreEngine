@@ -28,9 +28,9 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
+import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
-import de.coreengine.rendering.programs.EntityShader;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector4f;

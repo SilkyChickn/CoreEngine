@@ -30,8 +30,8 @@ package de.coreengine.rendering.renderable.gui;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Transformation;
-import de.coreengine.util.Toolbox;
 import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.util.Toolbox;
 
 import java.util.LinkedList;
 import java.util.List;

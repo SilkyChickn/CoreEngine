@@ -30,8 +30,8 @@ package de.coreengine.rendering.renderer;
 import de.coreengine.framework.Window;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
-import de.coreengine.rendering.renderable.LensFlare;
 import de.coreengine.rendering.programs.LensFlareShader;
+import de.coreengine.rendering.renderable.LensFlare;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4f;

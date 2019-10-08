@@ -28,9 +28,9 @@
 package de.coreengine.rendering.renderable.terrain;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
+import de.coreengine.rendering.renderable.Grassland;
 import de.coreengine.util.Configuration;
 import de.coreengine.util.bullet.TerrainShapeCreator;
-import de.coreengine.rendering.renderable.Grassland;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;

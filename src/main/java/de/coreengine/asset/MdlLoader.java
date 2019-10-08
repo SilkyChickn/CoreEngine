@@ -29,7 +29,6 @@
 package de.coreengine.asset;
 
 import de.coreengine.asset.meta.MetaModel;
-import de.coreengine.rendering.model.Model;
 import de.coreengine.util.Logger;
 
 import java.io.FileInputStream;

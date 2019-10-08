@@ -29,9 +29,9 @@ package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
+import de.coreengine.rendering.programs.WaterShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Water;
-import de.coreengine.rendering.programs.WaterShader;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;

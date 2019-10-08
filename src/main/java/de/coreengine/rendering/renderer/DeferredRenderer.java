@@ -30,9 +30,9 @@ package de.coreengine.rendering.renderer;
 import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
+import de.coreengine.rendering.programs.DeferredShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.light.*;
-import de.coreengine.rendering.programs.DeferredShader;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;

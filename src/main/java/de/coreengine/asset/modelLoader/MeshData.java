@@ -28,16 +28,8 @@
 
 package de.coreengine.asset.modelLoader;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.ConvexHullShape;
-import com.bulletphysics.collision.shapes.TriangleMeshShape;
 import de.coreengine.asset.meta.MetaMaterial;
 import de.coreengine.asset.meta.MetaMesh;
-import de.coreengine.rendering.model.Material;
-import de.coreengine.rendering.model.Mesh;
-import de.coreengine.util.bullet.Physics;
-import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.util.gl.VertexArrayObject;
 import javafx.util.Pair;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIMesh;

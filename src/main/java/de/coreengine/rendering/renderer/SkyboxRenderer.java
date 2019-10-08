@@ -29,10 +29,10 @@ package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Cube3D;
+import de.coreengine.rendering.programs.SkyboxShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Skybox;
 import de.coreengine.util.Configuration;
-import de.coreengine.rendering.programs.SkyboxShader;
 import org.lwjgl.opengl.GL11;
 
 /**Renderer that can render a skybox

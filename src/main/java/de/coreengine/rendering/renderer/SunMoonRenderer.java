@@ -29,9 +29,9 @@ package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
+import de.coreengine.rendering.programs.SunMoonShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Moon;
-import de.coreengine.rendering.programs.SunMoonShader;
 import org.lwjgl.opengl.GL11;
 
 /**Class that can render a sun texture into the scene

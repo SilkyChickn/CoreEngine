@@ -35,7 +35,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-/**A Material that can be stored into a file</br>
+/**A Material that can be stored into a file<br>
  * A value of null means the default value of a material
  *
  * @author Darius Dinger
@@ -50,25 +50,25 @@ public class MetaMaterial {
     public Float displacementFactor = null, tiling = null, shininess = null,
             shineDamping = null;
 
-    /**Constructing meta material from a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
+    /**Constructing meta material from a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
      * DefaultDiffuseColor (byte) | DefaultGlowColor (byte) | DiffuseMap size in bytes (short) |
      * NormalMap size in bytes (short) | SpecularMap size in bytes (short) | DisplacementMap size in bytes (short) |
      * AmbientOcclusionMap size in bytes (short) | AlphaMap size in bytes (short) | ReflectionMap size in bytes (short) |
      * GlowMap size in bytes (short) | DefaultDisplacementFactor (byte) | DefaultTiling (byte) |
      * DefaultShininess (byte) | DefaultShineDamping (byte)<br>
-     * </br>
-     * Second Sector [Colors]:</br>
-     * DiffuseColor (3 floats) | GlowColor (3 floats)</br>
-     * </br>
-     * Third Sector [Textures]:</br>
+     * <br>
+     * Second Sector [Colors]:<br>
+     * DiffuseColor (3 floats) | GlowColor (3 floats)<br>
+     * <br>
+     * Third Sector [Textures]:<br>
      * DiffuseMapPath (string) | NormalMapPath (string) | SpecularMapPath (string) | DisplacementMapPath (string) |
-     * AmbientOcclusionMapPath (string) | AlphaMapPath (string) | ReflectionMapPath (string) | GlowMapPath (string)</br>
-     * </br>
-     * Fourth Sector [Floats]:</br>
-     * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)</br>
+     * AmbientOcclusionMapPath (string) | AlphaMapPath (string) | ReflectionMapPath (string) | GlowMapPath (string)<br>
+     * <br>
+     * Fourth Sector [Floats]:<br>
+     * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)<br>
      *
      * @param data Byte array to construct meta material from
      */
@@ -104,25 +104,25 @@ public class MetaMaterial {
         shineDamping = data[21] > 0 ? null : floats[3];
     }
 
-    /**Converting the meta material into a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
+    /**Converting the meta material into a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
      * DefaultDiffuseColor (byte) | DefaultGlowColor (byte) | DiffuseMap size in bytes (short) |
      * NormalMap size in bytes (short) | SpecularMap size in bytes (short) | DisplacementMap size in bytes (short) |
      * AmbientOcclusionMap size in bytes (short) | AlphaMap size in bytes (short) | ReflectionMap size in bytes (short) |
      * GlowMap size in bytes (short) | DefaultDisplacementFactor (byte) | DefaultTiling (byte) |
      * DefaultShininess (byte) | DefaultShineDamping (byte)<br>
-     * </br>
-     * Second Sector [Colors]:</br>
-     * DiffuseColor (3 floats) | GlowColor (3 floats)</br>
-     * </br>
-     * Third Sector [Textures]:</br>
+     * <br>
+     * Second Sector [Colors]:<br>
+     * DiffuseColor (3 floats) | GlowColor (3 floats)<br>
+     * <br>
+     * Third Sector [Textures]:<br>
      * DiffuseMapPath (String) | NormalMapPath (String) | SpecularMapPath (String) | DisplacementMapPath (String) |
-     * AmbientOcclusionMapPath (String) | AlphaMapPath (String) | ReflectionMapPath (String) | GlowMapPath (String)</br>
-     * </br>
-     * Fourth Sector [Floats]:</br>
-     * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)</br>
+     * AmbientOcclusionMapPath (String) | AlphaMapPath (String) | ReflectionMapPath (String) | GlowMapPath (String)<br>
+     * <br>
+     * Fourth Sector [Floats]:<br>
+     * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)<br>
      * 
      * @return Converted byte array
      */

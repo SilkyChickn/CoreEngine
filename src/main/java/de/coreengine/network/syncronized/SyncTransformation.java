@@ -28,8 +28,8 @@
 package de.coreengine.network.syncronized;
 
 import com.bulletphysics.dynamics.RigidBody;
-import de.coreengine.rendering.model.Transformation;
 import de.coreengine.network.Syncronized;
+import de.coreengine.rendering.model.Transformation;
 import de.coreengine.util.Toolbox;
 
 import javax.vecmath.Matrix4f;

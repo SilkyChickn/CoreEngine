@@ -37,7 +37,6 @@ import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.FrameTimer;
 
-import javax.vecmath.Matrix4f;
 import java.util.HashSet;
 import java.util.Set;
 

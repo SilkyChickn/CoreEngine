@@ -30,8 +30,8 @@ package de.coreengine.rendering.renderable;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.renderable.light.PointLight;
-import de.coreengine.util.Configuration;
 import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.util.Configuration;
 
 import javax.vecmath.Vector3f;
 

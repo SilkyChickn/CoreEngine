@@ -28,9 +28,9 @@
 package de.coreengine.rendering.renderer.ppeffects;
 
 import de.coreengine.rendering.model.Color;
-import de.coreengine.util.Configuration;
 import de.coreengine.rendering.programs.pp.FogPPShader;
 import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.util.Configuration;
 
 import java.util.List;
 

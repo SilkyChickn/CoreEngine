@@ -28,8 +28,8 @@
 package de.coreengine.rendering.renderer.ppeffects;
 
 import de.coreengine.framework.Window;
-import de.coreengine.util.Configuration;
 import de.coreengine.rendering.programs.pp.RadialBlurPPShader;
+import de.coreengine.util.Configuration;
 
 import javax.vecmath.Vector2f;
 import java.util.List;

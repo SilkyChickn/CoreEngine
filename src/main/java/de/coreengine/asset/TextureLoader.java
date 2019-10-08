@@ -32,7 +32,9 @@ import de.coreengine.system.Game;
 import de.coreengine.util.BufferUtils;
 import de.coreengine.util.Logger;
 import de.coreengine.util.gl.MemoryDumper;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
 

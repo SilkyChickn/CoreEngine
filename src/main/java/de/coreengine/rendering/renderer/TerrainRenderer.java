@@ -28,11 +28,11 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.singletons.TerrainMesh;
+import de.coreengine.rendering.programs.TerrainShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.terrain.Terrain;
 import de.coreengine.rendering.renderable.terrain.TerrainNode;
 import de.coreengine.util.gl.IndexBuffer;
-import de.coreengine.rendering.programs.TerrainShader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL40;
 

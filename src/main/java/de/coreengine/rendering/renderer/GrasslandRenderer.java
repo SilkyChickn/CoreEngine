@@ -27,9 +27,9 @@
  */
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.rendering.programs.GrasslandShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.terrain.Terrain;
-import de.coreengine.rendering.programs.GrasslandShader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL31;
 

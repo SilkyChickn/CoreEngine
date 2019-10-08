@@ -30,9 +30,9 @@ package de.coreengine.rendering.renderer;
 import de.coreengine.framework.Window;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
+import de.coreengine.rendering.programs.GUIShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.gui.GUIPane;
-import de.coreengine.rendering.programs.GUIShader;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;

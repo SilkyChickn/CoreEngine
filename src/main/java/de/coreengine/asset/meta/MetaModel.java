@@ -32,7 +32,6 @@ import de.coreengine.rendering.model.Model;
 import de.coreengine.util.ByteArrayUtils;
 import de.coreengine.util.Logger;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**Meta model file that can be saved in a file
@@ -44,14 +43,14 @@ public class MetaModel{
     //Data
     public MetaMesh[] meshes = null;
 
-    /**Constructing meta model from a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
-     * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...</br>
-     * </br>
-     * Second Sector [MeshData]:</br>
-     * Mesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...</br>
+    /**Constructing meta model from a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
+     * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...<br>
+     * <br>
+     * Second Sector [MeshData]:<br>
+     * Mesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...<br>
      *
      * @param data Data to construct meta model from
      */
@@ -80,14 +79,14 @@ public class MetaModel{
         }
     }
 
-    /**Converting the meta model into a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
-     * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...</br>
-     * </br>
-     * Second Sector [MeshData]:</br>
-     * mMesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...</br>
+    /**Converting the meta model into a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
+     * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...<br>
+     * <br>
+     * Second Sector [MeshData]:<br>
+     * mMesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...<br>
      *
      * @return Converted byte array
      */

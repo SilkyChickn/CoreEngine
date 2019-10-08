@@ -49,22 +49,22 @@ public class MetaMesh {
     public MetaMaterial material = null;
     public String shape = null;
 
-    /**Constructing meta mesh from a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
+    /**Constructing meta mesh from a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
      * VerticesSize (int) | TextureCoordinatesSize (int) | NormalsSize (int) | TangentsSize (int) | JointIdsSize (int) |
-     * WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)</br>
-     * </br>
-     * Second Sector [MeshData]:</br>
+     * WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)<br>
+     * <br>
+     * Second Sector [MeshData]:<br>
      * Vertices (float[]) | TextureCoordinates (float[]) | Normals (float[]) | Tangents (float[]) |
-     * JointIds (int[]) | Weights (float[]) | Indices (int[])</br>
-     * </br>
-     * Third Sector [Material]:</br>
-     * Material (MetaMaterial)</br>
-     * </br>
-     * Fourth Sector [CollisionShape]:</br>
-     * CollisionShape (String)</br>
+     * JointIds (int[]) | Weights (float[]) | Indices (int[])<br>
+     * <br>
+     * Third Sector [Material]:<br>
+     * Material (MetaMaterial)<br>
+     * <br>
+     * Fourth Sector [CollisionShape]:<br>
+     * CollisionShape (String)<br>
      *
      * @param data Byte array to construct meta mesh from
      */
@@ -99,22 +99,22 @@ public class MetaMesh {
         shape = metaData[8] == 0 ? null : new String(Arrays.copyOfRange(data, counter, counter +metaData[8]));
     }
 
-    /**Converting the meta mesh into a byte array.</br>
-     * </br>
-     * Format:</br>
-     * First Sector [MetaData]:</br>
+    /**Converting the meta mesh into a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
      * VerticesSize (int) | TextureCoordinatesSize (int) | NormalsSize (int) | TangentsSize (int) | JointIdsSize (int) |
-     * WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)</br>
-     * </br>
-     * Second Sector [MeshData]:</br>
+     * WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)<br>
+     * <br>
+     * Second Sector [MeshData]:<br>
      * Vertices (float[]) | TextureCoordinates (float[]) | Normals (float[]) | Tangents (float[]) |
-     * JointIds (int[]) | Weights (float[]) | Indices (int[])</br>
-     * </br>
-     * Third Sector [Material]:</br>
-     * Material (MetaMaterial)</br>
-     * </br>
-     * Fourth Sector [CollisionShape]:</br>
-     * CollisionShape (String)</br>
+     * JointIds (int[]) | Weights (float[]) | Indices (int[])<br>
+     * <br>
+     * Third Sector [Material]:<br>
+     * Material (MetaMaterial)<br>
+     * <br>
+     * Fourth Sector [CollisionShape]:<br>
+     * CollisionShape (String)<br>
      *
      * @return Converted byte array
      */

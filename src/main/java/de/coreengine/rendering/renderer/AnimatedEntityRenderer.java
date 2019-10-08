@@ -32,17 +32,14 @@ import de.coreengine.animation.Joint;
 import de.coreengine.framework.Keyboard;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.programs.AnimatedEntityShader;
-import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.renderable.AnimatedEntity;
 import de.coreengine.rendering.renderable.Camera;
-import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.util.Toolbox;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 import java.util.HashMap;
 import java.util.List;
