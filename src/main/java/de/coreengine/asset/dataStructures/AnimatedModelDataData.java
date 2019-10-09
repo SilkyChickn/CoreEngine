@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.asset.meta;
+package de.coreengine.asset.dataStructures;
 
 import de.coreengine.animation.Animation;
 import de.coreengine.animation.Joint;
@@ -36,13 +36,13 @@ import de.coreengine.util.Logger;
 
 import java.util.HashMap;
 
-public class MetaAnimatedModel extends MetaModel{
+public class AnimatedModelDataData extends ModelData {
 
     //Data
     public Joint skeleton;
     public HashMap<String, Animation> animations;
 
-    /**Creates new model instance of the meta model
+    /**Creates new model instance of the dataStructures model
      *
      * @param texPath Path to get models textures from
      * @param asResource Load model textures from resources
@@ -52,7 +52,7 @@ public class MetaAnimatedModel extends MetaModel{
     public AnimatedModel getInstance(String texPath, boolean asResource){
         if(this.meshes == null){
             Logger.warn("Error by creating animated model instance",
-                    "The meshes array of the meta animated model is null! Returning null");
+                    "The meshes array of the dataStructures animated model is null! Returning null");
             return null;
         }
 

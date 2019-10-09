@@ -25,7 +25,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.coreengine.asset.meta;
+package de.coreengine.asset.dataStructures;
 
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.Model;
@@ -38,21 +38,21 @@ import java.util.Arrays;
  *
  * @author Darius Dinger
  */
-public class MetaModel{
+public class ModelData {
     
     //Data
-    public MetaMesh[] meshes = null;
+    public MeshData[] meshes = null;
 
-    /**Constructing meta model from a byte array.<br>
+    /**Constructing dataStructures model from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
      * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...<br>
      * <br>
-     * Second Sector [MeshData]:<br>
-     * Mesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...<br>
+     * Second Sector [MeshParser]:<br>
+     * Mesh0 (MeshData) | Mesh1 (MeshData) | ...<br>
      *
-     * @param data Data to construct meta model from
+     * @param data Data to construct dataStructures model from
      */
     public void fromBytes(byte[] data){
 
@@ -72,21 +72,21 @@ public class MetaModel{
         int[] meshSizes = ByteArrayUtils.fromBytesi(meshSizesB);
 
         //Get mesh data
-        meshes = new MetaMesh[meshCount];
+        meshes = new MeshData[meshCount];
         for(int i = 0; i < meshCount; i++){
-            meshes[i] = new MetaMesh();
+            meshes[i] = new MeshData();
             meshes[i].fromBytes(Arrays.copyOfRange(data, counter, counter += meshSizes[i]));
         }
     }
 
-    /**Converting the meta model into a byte array.<br>
+    /**Converting the dataStructures model into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
      * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...<br>
      * <br>
-     * Second Sector [MeshData]:<br>
-     * mMesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...<br>
+     * Second Sector [Meshes]:<br>
+     * mMesh0 (MeshData) | Mesh1 (MeshData) | ...<br>
      *
      * @return Converted byte array
      */
@@ -102,7 +102,7 @@ public class MetaModel{
         }else meshDataA = new byte[0][];
         byte[] meshData = ByteArrayUtils.combine(meshDataA);
 
-        //Get meta data
+        //Get dataStructures data
         int[] meshCountI = meshes == null ? new int[] {0} : new int[] { meshes.length };
         byte[] meshCount = ByteArrayUtils.toBytes(meshCountI);
 
@@ -119,7 +119,7 @@ public class MetaModel{
         return ByteArrayUtils.combine(meshCount, meshSizes, meshData);
     }
 
-    /**Creates new model instance of the meta model
+    /**Creates new model instance of the dataStructures model
      *
      * @param texPath Path to get models textures from
      * @param asResource Load model textures from resources
@@ -128,7 +128,7 @@ public class MetaModel{
     public Model getInstance(String texPath, boolean asResource){
         if(this.meshes == null){
             Logger.warn("Error by creating model instance",
-                    "The meshes array of the meta model is null! Returning null");
+                    "The meshes array of the dataStructures model is null! Returning null");
             return null;
         }
 

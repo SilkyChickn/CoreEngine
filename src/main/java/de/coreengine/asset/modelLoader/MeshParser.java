@@ -28,8 +28,8 @@
 
 package de.coreengine.asset.modelLoader;
 
-import de.coreengine.asset.meta.MetaMaterial;
-import de.coreengine.asset.meta.MetaMesh;
+import de.coreengine.asset.dataStructures.MaterialData;
+import de.coreengine.asset.dataStructures.MeshData;
 import javafx.util.Pair;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIMesh;
@@ -39,38 +39,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MeshData {
+public class MeshParser {
 
     //Input
     private final AIMesh aiMesh;
-    private final MetaMaterial[] materials;
+    private final MaterialData[] materials;
 
     //Output
-    private MetaMesh metaMesh = null;
+    private MeshData meshData = null;
 
-    /**Creating new mesh data that can parse ai meshes into meshes and meta meshes
+    /**Creating new mesh data that can parse ai meshes into meshes and dataStructures meshes
      *
      * @param aiMesh AIMesh to parse
      * @param materials Materials of the AIScene
      */
-    public MeshData(AIMesh aiMesh, MetaMaterial[] materials) {
+    public MeshParser(AIMesh aiMesh, MaterialData[] materials) {
         this.aiMesh = aiMesh;
         this.materials = materials;
     }
 
-    /**Parse ai meshes into meshes and meta meshes
+    /**Parse ai meshes into meshes and dataStructures meshes
      *
      * @param bones Bone list to add bones or null to dont load bones
      * @param collisionShape Collision shape to use
      */
-    public void parse(String collisionShape, List<BoneData> bones){
+    public void parse(String collisionShape, List<BoneParser> bones){
 
         //Get material, load empty material if id not exist
-        MetaMaterial material;
+        MaterialData material;
         if(aiMesh.mMaterialIndex() >= 0 && aiMesh.mMaterialIndex() < materials.length){
             material = materials[aiMesh.mMaterialIndex()];
         }else{
-            material = new MetaMaterial();
+            material = new MaterialData();
         }
 
         //Get data from mesh
@@ -89,7 +89,7 @@ public class MeshData {
             int boneCount = aiMesh.mNumBones();
             for (int i = 0; i < boneCount; i++) {
                 AIBone aiBone = AIBone.create(aiMesh.mBones().get(i));
-                BoneData bone = new BoneData(aiBone);
+                BoneParser bone = new BoneParser(aiBone);
                 bone.parse();
                 bones.add(bone);
             }
@@ -103,7 +103,7 @@ public class MeshData {
 
                 //Iterate through bones
                 for(int jointId = 0; jointId < bones.size(); jointId++){
-                    BoneData bone = bones.get(jointId);
+                    BoneParser bone = bones.get(jointId);
 
                     //Iterate through bones effected vertices, to see if this vertex is effected by this bone
                     for(Pair<Integer, Float> effectedVertex: bone.getEffectedVertices()){
@@ -129,17 +129,17 @@ public class MeshData {
             }
         }
 
-        //Construct meta mesh
-        metaMesh = new MetaMesh();
-        metaMesh.vertices = vertices;
-        metaMesh.texCoords = texCoords;
-        metaMesh.normals = normals;
-        metaMesh.tangents = tangents;
-        metaMesh.indices = indices;
-        metaMesh.material = material;
-        metaMesh.shape = collisionShape;
-        if(bones != null) metaMesh.jointIds = jointIds;
-        if(bones != null) metaMesh.weights = weights;
+        //Construct dataStructures mesh
+        meshData = new MeshData();
+        meshData.vertices = vertices;
+        meshData.texCoords = texCoords;
+        meshData.normals = normals;
+        meshData.tangents = tangents;
+        meshData.indices = indices;
+        meshData.material = material;
+        meshData.shape = collisionShape;
+        if(bones != null) meshData.jointIds = jointIds;
+        if(bones != null) meshData.weights = weights;
     }
 
     /**Extract indices from ai scene
@@ -176,9 +176,9 @@ public class MeshData {
         return out;
     }
 
-    /**@return Parsed meta mesh
+    /**@return Parsed dataStructures mesh
      */
-    public MetaMesh getMetaMesh() {
-        return metaMesh;
+    public MeshData getMeshData() {
+        return meshData;
     }
 }

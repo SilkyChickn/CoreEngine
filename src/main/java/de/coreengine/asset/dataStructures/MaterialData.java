@@ -25,7 +25,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.coreengine.asset.meta;
+package de.coreengine.asset.dataStructures;
 
 import de.coreengine.asset.TextureLoader;
 import de.coreengine.rendering.model.Color;
@@ -40,7 +40,7 @@ import java.util.Arrays;
  *
  * @author Darius Dinger
  */
-public class MetaMaterial {
+public class MaterialData {
     
     //Data
     public Color diffuseColor = null, glowColor = null;
@@ -50,7 +50,7 @@ public class MetaMaterial {
     public Float displacementFactor = null, tiling = null, shininess = null,
             shineDamping = null;
 
-    /**Constructing meta material from a byte array.<br>
+    /**Constructing dataStructures material from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -70,11 +70,11 @@ public class MetaMaterial {
      * Fourth Sector [Floats]:<br>
      * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)<br>
      *
-     * @param data Byte array to construct meta material from
+     * @param data Byte array to construct dataStructures material from
      */
     public void fromBytes(byte[] data){
 
-        //Get meta data
+        //Get dataStructures data
         byte[] mapSizesB = Arrays.copyOfRange(data, 2, 18);
         short[] mapSizes = ByteArrayUtils.fromBytess(mapSizesB);
 
@@ -104,7 +104,7 @@ public class MetaMaterial {
         shineDamping = data[21] > 0 ? null : floats[3];
     }
 
-    /**Converting the meta material into a byte array.<br>
+    /**Converting the dataStructures material into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -128,7 +128,7 @@ public class MetaMaterial {
      */
     public byte[] toBytes(){
 
-        //Define meta data
+        //Define dataStructures data
         byte[] defaultColors = new byte[] {
                 diffuseColor == null ? (byte) 1: (byte) 0,
                 glowColor == null ? (byte) 1: (byte) 0,
@@ -187,7 +187,7 @@ public class MetaMaterial {
                 glowMapBytes, floats);
     }
     
-    /**Getting a new instance of the meta material
+    /**Getting a new instance of the dataStructures material
      *
      * @return New material instance
      */

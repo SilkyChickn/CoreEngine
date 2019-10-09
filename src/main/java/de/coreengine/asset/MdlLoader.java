@@ -28,7 +28,7 @@
 
 package de.coreengine.asset;
 
-import de.coreengine.asset.meta.MetaModel;
+import de.coreengine.asset.dataStructures.ModelData;
 import de.coreengine.util.Logger;
 
 import java.io.FileInputStream;
@@ -36,7 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-/**Class that can load mdl files (Core engine file format, see de.coreengine.asset.meta)
+/**Class that can load mdl files (Core engine file format, see de.coreengine.asset.dataStructures)
  *
  * @author Darius
  */
@@ -50,21 +50,21 @@ public class MdlLoader {
      */
     public static void loadModel(String file, String texPath, boolean asResource){
         if(AssetDatabase.models.containsKey(file)) return;
-        MetaModel metaModel = loadMetaModel(file, asResource);
-        AssetDatabase.models.put(file, metaModel.getInstance(texPath, asResource));
+        ModelData modelData = loadModelData(file, asResource);
+        if(modelData != null)AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
     }
 
-    /**Saving meta model to a file
+    /**Saving dataStructures model to a file
      *
      * @param file Filename to save
-     * @param metaModel Meta model to save
+     * @param modelData Meta model to save
      */
-    public static void saveMetaModel(String file, MetaModel metaModel){
+    public static void saveModelData(String file, ModelData modelData){
 
         try {
 
-            //Construct data from meta model
-            byte[] data = metaModel.toBytes();
+            //Construct data from dataStructures model
+            byte[] data = modelData.toBytes();
 
             //Read bytes from file
             FileOutputStream fos = new FileOutputStream(file);
@@ -72,21 +72,21 @@ public class MdlLoader {
             fos.close();
 
         } catch (FileNotFoundException e0) {
-            Logger.err("Error by saving meta model", "The meta model file " +
+            Logger.err("Error by saving dataStructures model", "The dataStructures model file " +
                     file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.err("Error by saving meta model", "The meta model file " +
+            Logger.err("Error by saving dataStructures model", "The dataStructures model file " +
                     file + " could not be saved! Returning null!");
         }
     }
 
-    /**Loading meta model from a file
+    /**Loading dataStructures model from a file
      *
      * @param file File to load
-     * @param asResource Loading meta model from resources
-     * @return Loaded meta model
+     * @param asResource Loading dataStructures model from resources
+     * @return Loaded dataStructures model
      */
-    public static MetaModel loadMetaModel(String file, boolean asResource){
+    public static ModelData loadModelData(String file, boolean asResource){
 
         try {
 
@@ -96,16 +96,16 @@ public class MdlLoader {
             fis.read(data);
             fis.close();
 
-            //Construct meta model from bytes
-            MetaModel metaModel = new MetaModel();
-            metaModel.fromBytes(data);
-            return metaModel;
+            //Construct dataStructures model from bytes
+            ModelData modelData = new ModelData();
+            modelData.fromBytes(data);
+            return modelData;
 
         } catch (FileNotFoundException e0) {
-            Logger.warn("Error by loading meta model", "The meta model file " +
+            Logger.warn("Error by loading dataStructures model", "The dataStructures model file " +
                     file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.warn("Error by loading meta model", "The meta model file " +
+            Logger.warn("Error by loading dataStructures model", "The dataStructures model file " +
                     file + " could not be loaded! Returning null!");
         }
 

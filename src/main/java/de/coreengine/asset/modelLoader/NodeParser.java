@@ -35,7 +35,7 @@ import org.lwjgl.assimp.AINode;
 import javax.vecmath.Matrix4f;
 import java.util.List;
 
-public class NodeData {
+public class NodeParser {
 
     //Input
     private final AINode aiNode;
@@ -47,13 +47,13 @@ public class NodeData {
      *
      * @param aiNode AINode to parse
      */
-    public NodeData(AINode aiNode) {
+    public NodeParser(AINode aiNode) {
         this.aiNode = aiNode;
     }
 
     /**Parsing data from the ai node
      */
-    public void parse(List<BoneData> bones){
+    public void parse(List<BoneParser> bones){
         skeleton = createJoint(aiNode, bones);
         skeleton.calcBindPose(null);
         skeleton.calcAnimatedTransformAndPose(null);
@@ -65,7 +65,7 @@ public class NodeData {
      * @param bones Loaded bones of the mesh
      * @return Created hierarchy
      */
-    private Joint createJoint(AINode aiNode, List<BoneData> bones){
+    private Joint createJoint(AINode aiNode, List<BoneParser> bones){
 
         //Get bone id
         int nodeId = -1;

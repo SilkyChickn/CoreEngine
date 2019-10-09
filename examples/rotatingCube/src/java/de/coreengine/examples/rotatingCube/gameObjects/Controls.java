@@ -1,7 +1,7 @@
 package de.coreengine.examples.rotatingCube.gameObjects;
 
 import de.coreengine.asset.FntLoader;
-import de.coreengine.asset.meta.Font;
+import de.coreengine.asset.dataStructures.Font;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderer.MasterRenderer;

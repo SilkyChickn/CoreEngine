@@ -29,15 +29,15 @@ Sometimes a byte is used as boolean, then 0 is false and all greater than 0 is t
 
 ![Error showing image](FileFormat.jpg "File Format")
 
-## MetaModel
+## ModelData
 
 #### First Sector [MetaData]
 MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...
 
 #### Second Sector [MeshData]
-mMesh0 (MetaMesh) | Mesh1 (MetaMesh) | ...
+Mesh0 (MeshData) | Mesh1 (MeshData) | ...
 
-## MetaMesh
+## MeshData
 
 #### First Sector [MetaData]
 VerticesSize (int) | TextureCoordinatesSize (int) | NormalsSize (int) | TangentsSize (int) | JointIdsSize (int) | WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)
@@ -46,12 +46,12 @@ VerticesSize (int) | TextureCoordinatesSize (int) | NormalsSize (int) | Tangents
 Vertices (float[]) | TextureCoordinates (float[]) | Normals (float[]) | Tangents (float[]) | JointIds (int[]) | Weights (float[]) | Indices (int[])
 
 #### Third Sector [Material]
-Material (MetaMaterial)
+Material (MaterialData)
 
 #### Fourth Sector [CollisionShape]
 CollisionShape (String)
 
-## MetaMaterial
+## MaterialData
 
 #### First Sector [MetaData]
 DefaultDiffuseColor (byte) | DefaultGlowColor (byte) | DiffuseMap size in bytes (short) | NormalMap size in bytes (short) | SpecularMap size in bytes (short) | DisplacementMap size in bytes (short) | AmbientOcclusionMap size in bytes (short) | AlphaMap size in bytes (short) | ReflectionMap size in bytes (short) | GlowMap size in bytes (short) | DefaultDisplacementFactor (byte) | DefaultTiling (byte) | DefaultShininess (byte) | DefaultShineDamping (byte)

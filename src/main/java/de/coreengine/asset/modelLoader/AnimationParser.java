@@ -41,7 +41,7 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationData {
+public class AnimationParser {
 
     //Input
     private final AIAnimation aiAnimation;
@@ -54,7 +54,7 @@ public class AnimationData {
      *
      * @param aiAnimation AIAnimation to parse
      */
-    public AnimationData(AIAnimation aiAnimation) {
+    public AnimationParser(AIAnimation aiAnimation) {
         this.aiAnimation = aiAnimation;
     }
 
@@ -62,7 +62,7 @@ public class AnimationData {
      *
      * @param bones Loaded bones
      */
-    public void parse(List<BoneData> bones){
+    public void parse(List<BoneParser> bones){
 
         //Get animation name
         name = aiAnimation.mName().dataString();

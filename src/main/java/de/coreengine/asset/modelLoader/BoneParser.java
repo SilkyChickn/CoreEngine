@@ -35,7 +35,7 @@ import org.lwjgl.assimp.AIVertexWeight;
 
 import javax.vecmath.Matrix4f;
 
-public class BoneData {
+public class BoneParser {
 
     //Input
     private final AIBone aiBone;
@@ -49,7 +49,7 @@ public class BoneData {
      *
      * @param aiBone AIBone to parse
      */
-    public BoneData(AIBone aiBone) {
+    public BoneParser(AIBone aiBone) {
         this.aiBone = aiBone;
     }
 

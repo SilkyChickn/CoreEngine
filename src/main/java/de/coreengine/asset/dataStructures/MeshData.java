@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.asset.meta;
+package de.coreengine.asset.dataStructures;
 
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.ConvexHullShape;
@@ -41,15 +41,15 @@ import de.coreengine.util.gl.VertexArrayObject;
 
 import java.util.Arrays;
 
-public class MetaMesh {
+public class MeshData {
 
     //Data
     public float[] vertices = null, texCoords = null, normals = null, tangents = null, weights = null;
     public int[] indices = null, jointIds = null;
-    public MetaMaterial material = null;
+    public MaterialData material = null;
     public String shape = null;
 
-    /**Constructing meta mesh from a byte array.<br>
+    /**Constructing dataStructures mesh from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -61,16 +61,16 @@ public class MetaMesh {
      * JointIds (int[]) | Weights (float[]) | Indices (int[])<br>
      * <br>
      * Third Sector [Material]:<br>
-     * Material (MetaMaterial)<br>
+     * Material (MaterialData)<br>
      * <br>
      * Fourth Sector [CollisionShape]:<br>
      * CollisionShape (String)<br>
      *
-     * @param data Byte array to construct meta mesh from
+     * @param data Byte array to construct dataStructures mesh from
      */
     public void fromBytes(byte[] data){
 
-        //Get meta data
+        //Get dataStructures data
         byte[] metaDataB = Arrays.copyOfRange(data, 0, 36);
         int[] metaData = ByteArrayUtils.fromBytesi(metaDataB);
 
@@ -92,26 +92,26 @@ public class MetaMesh {
                 ByteArrayUtils.fromBytesi(Arrays.copyOfRange(data, counter, counter += metaData[6]));
 
         //Get material
-        material = metaData[7] == 0 ? null : new MetaMaterial();
+        material = metaData[7] == 0 ? null : new MaterialData();
         if(material != null) material.fromBytes(Arrays.copyOfRange(data, counter, counter += metaData[7]));
 
         //Get collision shape
         shape = metaData[8] == 0 ? null : new String(Arrays.copyOfRange(data, counter, counter +metaData[8]));
     }
 
-    /**Converting the meta mesh into a byte array.<br>
+    /**Converting the dataStructures mesh into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
      * VerticesSize (int) | TextureCoordinatesSize (int) | NormalsSize (int) | TangentsSize (int) | JointIdsSize (int) |
      * WeightsSize (int) | IndicesSize (int) | MaterialSize (int) | CollisionShapeSize (int)<br>
      * <br>
-     * Second Sector [MeshData]:<br>
+     * Second Sector [MeshParser]:<br>
      * Vertices (float[]) | TextureCoordinates (float[]) | Normals (float[]) | Tangents (float[]) |
      * JointIds (int[]) | Weights (float[]) | Indices (int[])<br>
      * <br>
      * Third Sector [Material]:<br>
-     * Material (MetaMaterial)<br>
+     * Material (MaterialData)<br>
      * <br>
      * Fourth Sector [CollisionShape]:<br>
      * CollisionShape (String)<br>
@@ -124,7 +124,7 @@ public class MetaMesh {
         byte[] materialBytes = material == null ? new byte[0] : material.toBytes();
         byte[] shapeBytes = shape == null ? new byte[0] : shape.getBytes();
 
-        //Define meta data
+        //Define dataStructures data
         int[] metaDataI = new int[] {
                 vertices == null ? 0 : vertices.length * 4, texCoords == null ? 0 : texCoords.length * 4,
                 normals == null ? 0 : normals.length * 4, tangents == null ? 0 : tangents.length * 4,
@@ -148,7 +148,7 @@ public class MetaMesh {
                 jointIdsBytes, weightsBytes, indicesBytes, materialBytes, shapeBytes);
     }
 
-    /**Creating new mesh instance of the meta model
+    /**Creating new mesh instance of the dataStructures model
      *
      * @param texPath Path to get mesh textures from
      * @param asResource Load mesh textures from resources
@@ -161,37 +161,37 @@ public class MetaMesh {
         if(vertices != null) vao.addVertexBuffer(vertices, 3, 0);
         else {
             Logger.warn("Error by creating mesh instance",
-                    "The vertices of the meta mesh are null! Returning null!");
+                    "The vertices of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(texCoords != null) vao.addVertexBuffer(texCoords, 2, 1);
         else {
             Logger.warn("Error by creating mesh instance",
-                    "The texture coordinates of the meta mesh are null! Returning null!");
+                    "The texture coordinates of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(normals != null) vao.addVertexBuffer(normals, 3, 2);
         else {
             Logger.warn("Error by creating mesh instance",
-                    "The normals of the meta mesh are null! Returning null!");
+                    "The normals of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(tangents != null) vao.addVertexBuffer(tangents, 3, 3);
         else {
             Logger.warn("Error by creating mesh instance",
-                    "The tangents of the meta mesh are null! Returning null!");
+                    "The tangents of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(jointIds != null && animated) vao.addVertexBuffer(jointIds, 4, 4);
         else if(jointIds == null){
             Logger.warn("Error by creating mesh instance (animated)",
-                    "The joint ids of the meta mesh are null! Returning null!");
+                    "The joint ids of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(weights != null && animated) vao.addVertexBuffer(weights, 4, 5);
         else if(weights == null){
             Logger.warn("Error by creating mesh instance (animated)",
-                    "The weights of the meta mesh are null! Returning null!");
+                    "The weights of the dataStructures mesh are null! Returning null!");
             return null;
         }
 
@@ -200,7 +200,7 @@ public class MetaMesh {
         if(indices != null) indexBuffer = vao.addIndexBuffer(indices);
         else {
             Logger.warn("Error by creating mesh instance",
-                    "The indices of the meta mesh are null! Returning null!");
+                    "The indices of the dataStructures mesh are null! Returning null!");
             return null;
         }
 
