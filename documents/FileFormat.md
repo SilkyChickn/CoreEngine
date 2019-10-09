@@ -25,7 +25,7 @@ Big Endian
 Size: 1 byte  
 Sometimes a byte is used as boolean, then 0 is false and all greater than 0 is true.
 
-## Grafik
+## Graphic illustration
 
 ![Error showing image](FileFormat.jpg "File Format")
 
