@@ -1,5 +1,6 @@
 # CoreEngine (Java/LWJGL/OpenGL)
 [![maven central][maven-central-img]][maven-central-url]
+![v1.1.0][progress-img]
 [![lwjgl][lwjgl-img]][lwjgl-url]
 [![jbullet][jbullet-img]][jbullet-url]
 [![vecmath][vecmath-img]][vecmath-url]
@@ -74,3 +75,4 @@ All rights reserved.
 [license-img]: https://img.shields.io/badge/license-BSD-blue.svg?style=flat-square
 [maven-central-img]: https://img.shields.io/badge/maven--central-v.1.0.0-red.svg?style=flat-square
 [maven-central-url]: https://search.maven.org/artifact/io.github.suuirad/coreengine/1.0.0/jar
+[progress-img]: https://img.shields.io/badge/v1.1.0-80%25-red.svg?style=flat-square
