@@ -35,7 +35,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
-/**A Material that can be stored into a file<br>
+/**Material data that can be stored into a file<br>
  * A value of null means the default value of a material
  *
  * @author Darius Dinger

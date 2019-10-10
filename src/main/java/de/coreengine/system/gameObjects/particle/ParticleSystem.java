@@ -183,6 +183,16 @@ public class ParticleSystem extends GameObject {
         this.particleMaxMass = max;
     }
 
+    /**Setting the range of new particles size<br>
+     *
+     * @param min Minimum size
+     * @param max Maximum size
+     */
+    public void setSizeRange(float min, float max){
+        this.particleMinSize = min;
+        this.particleMaxSize = max;
+    }
+
     /**@param generationSpeed Speed to generate new particles in seconds
      */
     public void setGenerationSpeed(float generationSpeed) {

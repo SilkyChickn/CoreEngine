@@ -34,7 +34,7 @@ import de.coreengine.util.Logger;
 
 import java.util.Arrays;
 
-/**Meta model file that can be saved in a file
+/**Model data that can be saved in a file
  *
  * @author Darius Dinger
  */

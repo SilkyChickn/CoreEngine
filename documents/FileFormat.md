@@ -1,6 +1,6 @@
 # File format specification
 
-MetaModel files are stored as bytes. Here is the specification of the format. 
+ModelData files are stored as bytes. Here is the specification of the format. 
 
 ## Fundamental Data types
 

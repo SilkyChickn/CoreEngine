@@ -55,22 +55,58 @@
         </repository>
     </distributionManagement>
 
+    <!-- Platform specification -->
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>windows</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>linux</platform>
+            </properties>
+        </profile>
+        <profile>
+            <id>macos</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <platform>macos</platform>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
 
-            <!-- LWJGL Version -->
-            <lwjgl.version>3.2.3</lwjgl.version>
+        <!-- LWJGL Version -->
+        <lwjgl.version>3.2.3</lwjgl.version>
 
-            <!-- Platform to get natives for -->
-            <lwjgl.natives>natives-windows</lwjgl.natives>
-            <!--lwjgl.natives>natives-linux</lwjgl.natives-->
-            <!--lwjgl.natives>natives-macos</lwjgl.natives-->
+        <!-- Platform to get natives for -->
+        <lwjgl.natives>natives-${platform}</lwjgl.natives>
 
     </properties>
 
     <build>
 
-        <!-- Plugin for building jar -->
         <plugins>
+
+            <!-- Plugins for building jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
