@@ -40,7 +40,7 @@
     <scm>
         <connection>scm:git:git://github.com/suuirad/coreengine.git</connection>
         <developerConnection>scm:git:ssh://github.com:suuirad/coreengine.git</developerConnection>
-        <url>http://github.com/suuirad/coreengine/tree/master</url>
+        <url>http://github.com/suuirad/coreengine/</url>
     </scm>
 
     <!-- Deployment Repositories (Maven central) -->
