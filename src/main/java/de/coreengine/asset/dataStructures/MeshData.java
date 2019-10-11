@@ -49,7 +49,7 @@ public class MeshData {
     public MaterialData material = null;
     public String shape = null;
 
-    /**Constructing dataStructures mesh from a byte array.<br>
+    /**Constructing dataStructure mesh from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -66,7 +66,7 @@ public class MeshData {
      * Fourth Sector [CollisionShape]:<br>
      * CollisionShape (String)<br>
      *
-     * @param data Byte array to construct dataStructures mesh from
+     * @param data Byte array to construct dataStructure mesh from
      */
     public void fromBytes(byte[] data){
 
@@ -99,7 +99,7 @@ public class MeshData {
         shape = metaData[8] == 0 ? null : new String(Arrays.copyOfRange(data, counter, counter +metaData[8]));
     }
 
-    /**Converting the dataStructures mesh into a byte array.<br>
+    /**Converting the dataStructure mesh into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -148,7 +148,7 @@ public class MeshData {
                 jointIdsBytes, weightsBytes, indicesBytes, materialBytes, shapeBytes);
     }
 
-    /**Creating new mesh instance of the dataStructures model
+    /**Creating new mesh instance of the dataStructure model
      *
      * @param texPath Path to get mesh textures from
      * @param asResource Load mesh textures from resources

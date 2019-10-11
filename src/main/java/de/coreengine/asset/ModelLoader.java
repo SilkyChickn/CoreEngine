@@ -30,8 +30,9 @@ package de.coreengine.asset;
 
 import de.coreengine.animation.Animation;
 import de.coreengine.animation.Joint;
-import de.coreengine.asset.dataStructures.*;
-import de.coreengine.asset.dataStructures.AnimatedModelDataData;
+import de.coreengine.asset.dataStructures.AnimatedModelData;
+import de.coreengine.asset.dataStructures.MaterialData;
+import de.coreengine.asset.dataStructures.MeshData;
 import de.coreengine.asset.dataStructures.ModelData;
 import de.coreengine.asset.modelLoader.*;
 import de.coreengine.util.Logger;
@@ -112,11 +113,11 @@ public class ModelLoader {
      * @param file Model file to load
      * @param texPath Location of the texture files
      * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
-     * @param asResource Load model from resources
+     * @param asResource Load textures from resources
      */
     public static void loadModelFile(String file, String texPath, boolean asResource, String shape){
         if(AssetDatabase.models.containsKey(file)) return;
-        ModelData modelData = loadModelFileData(file, asResource, shape);
+        ModelData modelData = loadModelFileData(file, shape);
         if(modelData != null) AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
     }
 
@@ -125,22 +126,21 @@ public class ModelLoader {
      * @param file Model file to load
      * @param texPath Location of the texture files
      * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
-     * @param asResource Load model from resources
+     * @param asResource Load textures from resources
      */
     public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, String shape){
         if(AssetDatabase.animatedModels.containsKey(file)) return;
-        AnimatedModelDataData animatedModelData = loadAnimatedModelFileData(file, asResource, shape);
+        AnimatedModelData animatedModelData = loadAnimatedModelFileData(file, shape);
         if(animatedModelData != null) AssetDatabase.animatedModels.put(file, animatedModelData.getInstance(texPath, asResource));
     }
 
     /**Loading a dataStructures model from a file
      *
      * @param file Model file to load
-     * @param asResource Load model from resources
      * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      * @return Meta model with raw model data
      */
-    public static ModelData loadModelFileData(String file, boolean asResource, String shape){
+    public static ModelData loadModelFileData(String file, String shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
@@ -160,11 +160,9 @@ public class ModelLoader {
     /**Loading an dataStructures animated model from a file
      *
      * @param file Model file to load
-     * @param asResource Load model from resources
      * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto generate
      */
-    public static AnimatedModelDataData loadAnimatedModelFileData(String file, boolean asResource,
-                                                                  String shape){
+    public static AnimatedModelData loadAnimatedModelFileData(String file, String shape){
 
         //Load scene
         AIScene aiScene = getScene(file);
@@ -182,7 +180,7 @@ public class ModelLoader {
         Joint skeleton = nodeParser.getSkeleton();
 
         //Create and store model data
-        AnimatedModelDataData animatedModelData = new AnimatedModelDataData();
+        AnimatedModelData animatedModelData = new AnimatedModelData();
         animatedModelData.meshes = meshs;
         animatedModelData.skeleton = skeleton;
         animatedModelData.animations = animations;

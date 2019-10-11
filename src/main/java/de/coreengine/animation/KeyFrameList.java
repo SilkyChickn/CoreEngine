@@ -50,9 +50,15 @@ public class KeyFrameList<Component>{
         keyFrames.add(keyFrame);
     }
 
+    /**@return Keyframes of this list
+     */
+    List<KeyFrame<Component>> getKeyFrames() {
+        return keyFrames;
+    }
+
     /**@return Last timestamp of this list
      */
-    public float getLastTimeStamp(){
+    float getLastTimeStamp(){
         if(keyFrames.isEmpty()) return 0;
         return keyFrames.get(keyFrames.size() -1).getTimestamp();
     }
@@ -64,7 +70,7 @@ public class KeyFrameList<Component>{
      * @param time Current timestamp
      * @return Pair of the previous as key and the next keyframe as value
      */
-    public Pair<KeyFrame<Component>, KeyFrame<Component>> getRelevantKeyFrames(float time){
+    Pair<KeyFrame<Component>, KeyFrame<Component>> getRelevantKeyFrames(float time){
         KeyFrame previous = null, next = null;
 
         if(keyFrames.size() == 0) return new Pair<>(null, null);

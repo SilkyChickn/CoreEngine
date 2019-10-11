@@ -50,7 +50,7 @@ public class MaterialData {
     public Float displacementFactor = null, tiling = null, shininess = null,
             shineDamping = null;
 
-    /**Constructing dataStructures material from a byte array.<br>
+    /**Constructing dataStructure material from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -70,7 +70,7 @@ public class MaterialData {
      * Fourth Sector [Floats]:<br>
      * DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)<br>
      *
-     * @param data Byte array to construct dataStructures material from
+     * @param data Byte array to construct dataStructure material from
      */
     public void fromBytes(byte[] data){
 
@@ -104,7 +104,7 @@ public class MaterialData {
         shineDamping = data[21] > 0 ? null : floats[3];
     }
 
-    /**Converting the dataStructures material into a byte array.<br>
+    /**Converting the dataStructure material into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -187,7 +187,7 @@ public class MaterialData {
                 glowMapBytes, floats);
     }
     
-    /**Getting a new instance of the dataStructures material
+    /**Getting a new instance of the dataStructure material
      *
      * @return New material instance
      */

@@ -43,16 +43,16 @@ public class ModelData {
     //Data
     public MeshData[] meshes = null;
 
-    /**Constructing dataStructures model from a byte array.<br>
+    /**Constructing dataStructure model from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
      * MeshCount (int) | Mesh0Size (int) | Mesh1Size (int) | ...<br>
      * <br>
-     * Second Sector [MeshParser]:<br>
+     * Second Sector [MeshData]:<br>
      * Mesh0 (MeshData) | Mesh1 (MeshData) | ...<br>
      *
-     * @param data Data to construct dataStructures model from
+     * @param data Data to construct dataStructure model from
      */
     public void fromBytes(byte[] data){
 
@@ -79,7 +79,7 @@ public class ModelData {
         }
     }
 
-    /**Converting the dataStructures model into a byte array.<br>
+    /**Converting the dataStructure model into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -99,7 +99,7 @@ public class ModelData {
             for(int i = 0; i < meshes.length; i++){
                 meshDataA[i] = meshes[i].toBytes();
             }
-        }else meshDataA = new byte[0][];
+        } else meshDataA = new byte[0][];
         byte[] meshData = ByteArrayUtils.combine(meshDataA);
 
         //Get dataStructures data
@@ -119,7 +119,7 @@ public class ModelData {
         return ByteArrayUtils.combine(meshCount, meshSizes, meshData);
     }
 
-    /**Creates new model instance of the dataStructures model
+    /**Creates new model instance of the dataStructure model
      *
      * @param texPath Path to get models textures from
      * @param asResource Load model textures from resources

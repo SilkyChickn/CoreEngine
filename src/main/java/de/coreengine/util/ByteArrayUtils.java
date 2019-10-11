@@ -28,6 +28,7 @@
 
 package de.coreengine.util;
 
+import javax.vecmath.Matrix4f;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -128,5 +129,41 @@ public class ByteArrayUtils {
         ShortBuffer shortBuffer = byteBuffer.asShortBuffer();
         shortBuffer.get(out);
         return out;
+    }
+
+    /**Converting a matrix4f array into a byte array
+     *
+     * @param in Matrix4f array to convert
+     * @return Converted byte array
+     */
+    public static byte[] toBytes(Matrix4f[] in){
+        float[] floats = new float[in.length * 16];
+        for(int i = 0; i < in.length; i++) {
+            for(int r = 0; r < 4; r++){
+                for(int c = 0; c < 4; c++){
+                    floats[i*16 +r*4 +c] = in[i].getElement(r, c);
+                }
+            }
+        }
+        return toBytes(floats);
+    }
+
+    /**Converting a byte array into a matrix4f array
+     *
+     * @param in Byte array to convert
+     * @return Converted matrix4f array
+     */
+    public static Matrix4f[] fromBytesm4(byte[] in){
+        float[] floats = fromBytesf(in);
+        Matrix4f[] matrices = new Matrix4f[floats.length / 16];
+        for(int i = 0; i < matrices.length; i++) {
+            matrices[i] = new Matrix4f();
+            for(int r = 0; r < 4; r++){
+                for(int c = 0; c < 4; c++){
+                    matrices[i].setElement(r, c, floats[i*16 +r*4 +c]);
+                }
+            }
+        }
+        return matrices;
     }
 }

@@ -116,7 +116,7 @@ public class AnimationParser {
         }
 
         //Create animation
-        animation = new Animation(positionKeys, rotationKeys, scaleKeys);
+        animation = new Animation(name, positionKeys, rotationKeys, scaleKeys);
     }
 
     /**@return Parsed animation name

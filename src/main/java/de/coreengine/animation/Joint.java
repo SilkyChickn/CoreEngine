@@ -28,8 +28,14 @@
 
 package de.coreengine.animation;
 
+import de.coreengine.util.ByteArrayUtils;
+import javafx.util.Pair;
+
 import javax.vecmath.Matrix4f;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Joint {
@@ -39,6 +45,9 @@ public class Joint {
 
     //Name of this joint
     private String name;
+
+    //Parent joint
+    private Joint parent = null;
 
     //Children joints of this joint
     private List<Joint> children = new ArrayList<>();
@@ -92,7 +101,7 @@ public class Joint {
 
         //Recursive for children joints
         for(Joint child: other.children){
-            children.add(new Joint(child));
+            addChild(new Joint(child));
         }
     }
 
@@ -172,6 +181,7 @@ public class Joint {
      * @param child Child to add
      */
     public void addChild(Joint child){
+        child.parent = this;
         children.add(child);
     }
 
@@ -209,5 +219,112 @@ public class Joint {
      */
     public Matrix4f getPose() {
         return pose;
+    }
+
+    /**Converting recursively this joint and all children into a byte array.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
+     * JointCount (int) | Joint0Size (int) | Joint1Size (int) | ...<br>
+     * <br>
+     * Second Sector [JointData]:<br>
+     * Joint0Index (int) | Joint0ParentIndex (int) | Joint0Name (String) | Joint0InverseBindMatrix (float[]) |
+     * Joint0BindLocalPoseMatrix (float[]) | Joint1Index (int) | ...<br>
+     *
+     * @return Converted byte array
+     */
+    public byte[] toBytes(){
+
+        //Get all joints from the hierarchy
+        List<Joint> allJoints = new ArrayList<>();
+        getAllJoints(allJoints);
+
+        //Get joint data
+        byte[][] jointDataA = new byte[allJoints.size()][];
+        int[] jointNameSizesI = new int[allJoints.size()];
+        for(int i = 0; i < allJoints.size(); i++){
+            Joint joint = allJoints.get(i);
+
+            byte[] indexes = ByteArrayUtils.toBytes(new int[] {
+                    joint.index, joint.parent == null ? -1 : joint.parent.index
+            });
+            byte[] name = joint.name.getBytes();
+            byte[] matrices = ByteArrayUtils.toBytes(new Matrix4f[]{joint.inverseBindMatrix, joint.bindLocalPose});
+
+            jointDataA[i] = ByteArrayUtils.combine(indexes, name, matrices);
+            jointNameSizesI[i] = joint.name.length();
+        }
+        byte[] jointData = ByteArrayUtils.combine(jointDataA);
+
+        //Create meta data
+        byte[] jointNameSizes = ByteArrayUtils.toBytes(jointNameSizesI);
+        byte[] jointCount = ByteArrayUtils.toBytes(new int[] {allJoints.size()});
+
+        //Combine and return
+        return ByteArrayUtils.combine(jointCount, jointNameSizes, jointData);
+    }
+
+    /**Constructing this joint hierarchy from bytes.<br>
+     * <br>
+     * Format:<br>
+     * First Sector [MetaData]:<br>
+     * JointCount (int) | Joint0Size (int) | Joint1Size (int) | ...<br>
+     * <br>
+     * Second Sector [JointData]:<br>
+     * Joint0Index (int) | Joint0ParentIndex (int) | Joint0Name (String) | Joint0InverseBindMatrix (float[]) |
+     * Joint0BindLocalPoseMatrix (float[]) | Joint1Index (int) | ...<br>
+     *
+     * @param data Bytes to construct hierarchy from
+     */
+    public void fromBytes(byte[] data){
+
+        //Get meta data
+        int counter = 0;
+        int jointCount = ByteArrayUtils.fromBytesi(Arrays.copyOfRange(data, counter, counter += 4))[0];
+        int[] jointNameSizes = ByteArrayUtils.fromBytesi(Arrays.copyOfRange(data, counter, counter += (4*jointCount)));
+
+        //Get joint data
+        HashMap<Integer, Pair<Joint, Integer>> allJoints = new HashMap<>();
+        for(int i = 0; i < jointCount; i++){
+
+            int[] jointIndexes = ByteArrayUtils.fromBytesi(Arrays.copyOfRange(data, counter, counter+=8));
+            String name = new String(Arrays.copyOfRange(data, counter, counter += jointNameSizes[i]));
+            Matrix4f[] matrices = ByteArrayUtils.fromBytesm4(Arrays.copyOfRange(data, counter, counter += 128));
+
+            //Check if read joint is root (parent = -1)
+            if(jointIndexes[1] == -1){
+
+                //If its root, setup this joint with data
+                this.index = jointIndexes[0];
+                this.name = name;
+                this.parent = null;
+                this.children.clear();
+                this.inverseBindMatrix.set(matrices[0]);
+                this.localPose.set(matrices[1]);
+                this.bindLocalPose.set(matrices[1]);
+                this.animatedTransform.setIdentity();
+            }else{
+
+                //No root, add to list
+                Joint joint = new Joint(jointIndexes[0], name, matrices[0], matrices[1]);
+                allJoints.put(jointIndexes[0], new Pair<>(joint, jointIndexes[1]));
+            }
+        }
+
+        //Construct hierarchy
+        for(Integer jointId: allJoints.keySet()){
+            Pair<Joint, Integer> curJoint = allJoints.get(jointId);
+            if(curJoint.getValue() == this.index) addChild(curJoint.getKey());
+            else allJoints.get(curJoint.getValue()).getKey().addChild(curJoint.getKey());
+        }
+    }
+
+    /**Adding this and all children joints recursively into a list
+     *
+     * @param listToAdd List to add joints
+     */
+    private void getAllJoints(List<Joint> listToAdd){
+        listToAdd.add(this);
+        for(Joint child: children) child.getAllJoints(listToAdd);
     }
 }
