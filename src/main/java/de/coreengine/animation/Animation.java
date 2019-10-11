@@ -83,7 +83,7 @@ public class Animation {
      * RotationKeyList1KeyCount (int) | ... | ScaleKeyList0KeyCount (int) | ScaleKeyList1KeyCount (int) | ...<br>
      * <br>
      * Second Sector [PositionKeys]:<br>
-     * Name (String)
+     * Name (String)<br>
      * <br>
      * Third Sector [PositionKeys]:<br>
      * PositionKeyList0Time0 (float) | PositionKeyList0Vec0 (float[]) | PositionKeyList0Time1 (float) | 
@@ -174,7 +174,7 @@ public class Animation {
      * RotationKeyList1KeyCount (int) | ... | ScaleKeyList0KeyCount (int) | ScaleKeyList1KeyCount (int) | ...<br>
      * <br>
      * Second Sector [PositionKeys]:<br>
-     * Name (String)
+     * Name (String)<br>
      * <br>
      * Third Sector [PositionKeys]:<br>
      * PositionKeyList0Time0 (float) | PositionKeyList0Vec0 (float[]) | PositionKeyList0Time1 (float) | 

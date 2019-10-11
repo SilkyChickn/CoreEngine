@@ -57,7 +57,7 @@ public class AnimatedModelData extends ModelData {
      * Model (ModelData)<br>
      * <br>
      * Third Sector [Skeleton]:<br>
-     * Skeleton (Skeleton)<br>
+     * Skeleton (Joint)<br>
      * <br>
      * Fourth Sector [Animations]:<br>
      * Animation0 (Animation) | Animation1 (Animation) | ...<br>
@@ -107,7 +107,7 @@ public class AnimatedModelData extends ModelData {
      * Model (ModelData)<br>
      * <br>
      * Third Sector [Skeleton]:<br>
-     * Skeleton (Skeleton)<br>
+     * Skeleton (Joint)<br>
      * <br>
      * Fourth Sector [Animations]:<br>
      * Animation0 (Animation) | Animation1 (Animation) | ...<br>

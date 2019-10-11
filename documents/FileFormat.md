@@ -27,7 +27,21 @@ Sometimes a byte is used as boolean, then 0 is false and all greater than 0 is t
 
 ## Graphic illustration
 
-![Error showing image](FileFormat.jpg "File Format")
+![Error showing image](FileFormat.png "File Format")
+
+## AnimatedModelData
+
+#### First Sector [MetaData]
+ModelSize (int) | SkeletonSize (int) | AnimationCount (int) | Animation0Size (int) | Animation1Size (int) | ...
+
+#### Second Sector [ModelData]
+Model (ModelData)
+
+#### Third Sector [Skeleton]
+Skeleton (Skeleton)
+
+#### Fourth Sector [Animations]
+Animation0 (Animation) | Animation1 (Animation) | ...
 
 ## ModelData
 
@@ -64,3 +78,28 @@ DiffuseMapPath (String) | NormalMapPath (String) | SpecularMapPath (String) | Di
 
 #### Fourth Sector [Floats]
 DisplacementFactor (float) | Tiling (float) | Shininess (float) | ShineDamping (float)
+
+## JointIds
+
+#### First Sector [MetaData]
+JointCount (int) | Joint0Size (int) | Joint1Size (int) | ...
+
+#### Second Sector [JointData]
+Joint0Index (int) | Joint0ParentIndex (int) | Joint0Name (String) | Joint0InverseBindMatrix (float[]) | Joint0BindLocalPoseMatrix (float[]) | Joint1Index (int) | ...
+
+## Animation
+
+#### First Sector [MetaData]
+NameSize (int) | PositionKeyListCount (int) | RotationKeyListCount (int) | ScaleKeyListCount (int) | PositionKeyList0KeyCount (int) | PositionKeyList1KeyCount (int) | ... | RotationKeyList0KeyCount (int) | RotationKeyList1KeyCount (int) | ... | ScaleKeyList0KeyCount (int) | ScaleKeyList1KeyCount (int) | ...
+
+#### Second Sector [PositionKeys]
+Name (String)
+
+#### Third Sector [PositionKeys]
+PositionKeyList0Time0 (float) | PositionKeyList0Vec0 (float[]) | PositionKeyList0Time1 (float) | PositionKeyList0Vec1 (float[]) | ... | PositionKeyList1Time0 (float) | PositionKeyList1Vec0 (float[]) | PositionKeyList1Time1 (float) | PositionKeyList1Vec1 (float[]) | ...
+
+#### Fourth Sector [RotationKeys]
+RotationKeyList0Time0 (float) | RotationKeyList0Vec0 (float[]) | RotationKeyList0Time1 (float) | RotationKeyList0Vec1 (float[]) | ... | RotationKeyList1Time0 (float) | RotationKeyList1Vec0 (float[]) | RotationKeyList1Time1 (float) | RotationKeyList1Vec1 (float[]) | ...
+
+#### Fifth Sector [ScaleKeys]
+ScaleKeyList0Time0 (float) | ScaleKeyList0Vec0 (float[]) | ScaleKeyList0Time1 (float) | ScaleKeyList0Vec1 (float[]) | ... | ScaleKeyList1Time0 (float) | ScaleKeyList1Vec0 (float[]) | ScaleKeyList1Time1 (float) | ScaleKeyList1Vec1 (float[]) | ...

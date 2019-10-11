@@ -225,7 +225,7 @@ public class Joint {
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
-     * JointCount (int) | Joint0Size (int) | Joint1Size (int) | ...<br>
+     * JointCount (int) | Joint0NameSize (int) | Joint1NameSize (int) | ...<br>
      * <br>
      * Second Sector [JointData]:<br>
      * Joint0Index (int) | Joint0ParentIndex (int) | Joint0Name (String) | Joint0InverseBindMatrix (float[]) |
@@ -268,7 +268,7 @@ public class Joint {
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
-     * JointCount (int) | Joint0Size (int) | Joint1Size (int) | ...<br>
+     * JointCount (int) | Joint0NameSize (int) | Joint1NameSize (int) | ...<br>
      * <br>
      * Second Sector [JointData]:<br>
      * Joint0Index (int) | Joint0ParentIndex (int) | Joint0Name (String) | Joint0InverseBindMatrix (float[]) |
