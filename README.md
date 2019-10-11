@@ -1,6 +1,6 @@
 # CoreEngine (Java/LWJGL/OpenGL)
-[![maven central][maven-central-img]][maven-central-url]
 ![v1.1.0][progress-img]
+[![maven central][maven-central-img]][maven-central-url]
 [![lwjgl][lwjgl-img]][lwjgl-url]
 [![jbullet][jbullet-img]][jbullet-url]
 [![vecmath][vecmath-img]][vecmath-url]
@@ -30,7 +30,7 @@ compile group: 'io.github.suuirad', name: 'coreengine', version: '1.1.0'
 
 #### Manual
 
-For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.0). Just download, what you need (javadoc/sources) and add it to your project.
+For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.0/). Just download, what you need (javadoc/sources) and add it to your project.
 
 ### Simple Game
 
