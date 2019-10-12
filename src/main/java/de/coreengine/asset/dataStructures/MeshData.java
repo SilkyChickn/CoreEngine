@@ -183,19 +183,19 @@ public class MeshData {
             return null;
         }
         if(jointIds != null && animated) vao.addVertexBuffer(jointIds, 4, 4);
-        else if(jointIds == null){
+        else if(animated){
             Logger.warn("Error by creating mesh instance (animated)",
                     "The joint ids of the dataStructures mesh are null! Returning null!");
             return null;
         }
         if(weights != null && animated) vao.addVertexBuffer(weights, 4, 5);
-        else if(weights == null){
+        else if(animated){
             Logger.warn("Error by creating mesh instance (animated)",
                     "The weights of the dataStructures mesh are null! Returning null!");
             return null;
         }
 
-        //Create index buffe
+        //Create index buffer
         IndexBuffer indexBuffer = null;
         if(indices != null) indexBuffer = vao.addIndexBuffer(indices);
         else {

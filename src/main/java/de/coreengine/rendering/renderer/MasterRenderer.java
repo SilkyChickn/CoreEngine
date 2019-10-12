@@ -38,6 +38,7 @@ import de.coreengine.rendering.renderable.*;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.light.*;
 import de.coreengine.rendering.renderable.terrain.Terrain;
+import de.coreengine.util.Toolbox;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
@@ -216,7 +217,26 @@ public class MasterRenderer {
         //Render all what should be lighted
         GBUFFER.bind(GL30.GL_COLOR_ATTACHMENT0);
         clear();
-            
+
+            if(Keyboard.isKeyPressed(GLFW.GLFW_KEY_P)) {
+
+                //Setup gl
+                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+                GL11.glLoadMatrixf(Toolbox.matrixToFloatArray(camera.getViewProjectionMatrix()));
+
+                GL11.glBegin(GL11.GL_LINES);
+                GL11.glColor3f(1, 0, 0);
+                GL11.glVertex3f(0, 0, 0);
+                GL11.glVertex3f(1, 0, 0);
+                GL11.glColor3f(0, 1, 0);
+                GL11.glVertex3f(0, 0, 0);
+                GL11.glVertex3f(0, 1, 0);
+                GL11.glColor3f(0, 0, 1);
+                GL11.glVertex3f(0, 0, 0);
+                GL11.glVertex3f(0, 0, 1);
+                GL11.glEnd();
+            }
+
             //Rendring skybox
             if(skybox != null)
                 SKYBOX_RENDERER.render(skybox, camera);

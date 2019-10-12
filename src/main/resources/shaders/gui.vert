@@ -11,7 +11,7 @@ uniform mat4 vpMat;
 
 void main(void){
 	tex_frag_in = position * vec2(0.5, -0.5) +0.5;
-	norm_frag_in = normalize((transMat * vec4(0, 0, -1, 1)).xyz);
+	norm_frag_in = normalize((transMat * vec4(0, 0, 1, 1)).xyz);
 	
 	pos_frag_in = (transMat * vec4(position, 0, 1)).xyz;
 	
