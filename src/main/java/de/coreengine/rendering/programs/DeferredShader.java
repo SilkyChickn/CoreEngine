@@ -134,7 +134,7 @@ public class DeferredShader extends Shader{
     public void setShadowLight(ShadowLight light){
 
         if(light != null){
-            bindTexture(light.getShadowMap().getColorAttachment0(), shadowMapUnit, GL11.GL_TEXTURE_2D);
+            bindTexture(light.getShadowMap().getDepthAttachment(), shadowMapUnit, GL11.GL_TEXTURE_2D);
             setUniform(toShadowMapSpaceLoc, Toolbox.matrixToFloatArray(light.getVpMat()));
         }
 

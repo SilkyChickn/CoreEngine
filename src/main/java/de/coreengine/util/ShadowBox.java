@@ -42,29 +42,15 @@ public class ShadowBox {
     /**Aligning shadow box to camera view frustum.
      *
      * @param cam Camera to align to
-     * @param lightDir Direction vector of the light
+     * @param light Camera of the lights view
      */
-    public void alignTo(Camera cam, Vector3f lightDir){
-        Matrix4f inverseCamLightMat = getInverseCamLightMat(cam, lightDir);
+    public void alignTo(Camera cam, Camera light){
+        /*
+        Matrix4f inverseCamLightMat = getInverseCamLightMat(cam, light);
         Vector4f[] corners = transformNDCCube(inverseCamLightMat);
-
-        //DEBUG
-        Matrix4f invProjMat = new Matrix4f();
-        invProjMat.invert(cam.getProjectionMatrix());
-        Vector4f[] temp = transformNDCCube(invProjMat);
-
-        Matrix4f invCamMat = new Matrix4f();
-        invCamMat.invert(cam.getViewMatrix());
-
-        for(Vector4f vec: temp){
-            float t = vec.w;
-            vec.w = vec.z;
-            vec.z = t;
-            invCamMat.transform(vec);
-        }
-        //DEBUG
-
-        recalcVPMatrix(temp);
+        recalcVPMatrix(corners);
+        vpMat.mul(light.getViewMatrix());
+         */
     }
 
     /**Transform the 8 corners of the opengl ndc cube with the given matrix.
@@ -115,30 +101,29 @@ public class ShadowBox {
      * in shadow map space.
      *
      * @param cam Camera to get VP matrix from
-     * @param lightDir Direction of the light
+     * @param light Camera of the lights view
      * @return Product of the inverse camera view projection matrix and the lights direction world matrix
      */
-    private Matrix4f getInverseCamLightMat(Camera cam, Vector3f lightDir){
+    private Matrix4f getInverseCamLightMat(Camera cam, Camera light){
 
         //Get inverse camera vp mat
         Matrix4f inverseCamVPMat = new Matrix4f();
         inverseCamVPMat.invert(cam.getViewProjectionMatrix());
 
         //Get light inverse world matrix
-        Matrix4f inverseLightWMat = new Matrix4f();
-        //TODO: Get lights inverse world matrix
-        inverseLightWMat.setIdentity();
+        light.updateViewMatrix();
+        Matrix4f inverseLightWMat = new Matrix4f(light.getViewMatrix());
         inverseLightWMat.invert();
 
         //Combine inverse camera and light matrix
         Matrix4f inverseCamLightMat = new Matrix4f();
-        inverseCamLightMat.mul(inverseCamVPMat, inverseLightWMat);
+        inverseCamLightMat.mul(inverseLightWMat, inverseCamVPMat);
 
         return inverseCamLightMat;
     }
 
     /**Calculate ABB bounding box of the 8 shadow map space corners. Then creating the orthographic projection matrix
-     * from the AABB box and storeit into the vpMat variable.
+     * from the AABB box and store it into the vpMat variable.
      *
      * @param corners 8 shadow map space corners
      */
@@ -160,14 +145,20 @@ public class ShadowBox {
         float aabbMaxZ = Toolbox.max(corners[0].z, corners[1].z, corners[2].z, corners[3].z,
                 corners[4].z, corners[5].z, corners[6].z, corners[7].z);
 
+        float width = aabbMaxX -aabbMinX;
+        float height = aabbMaxY -aabbMinY;
+
+        System.out.println("\nData:");
+        System.out.println(width);
+        System.out.println(height);
+        System.out.println(aabbMinZ);
+        System.out.println(aabbMaxZ);
+
         vpMat.setIdentity();
-        vpMat.m00 = 2.0f / (aabbMaxX -aabbMinX);
-        vpMat.m11 = 2.0f / (aabbMaxY -aabbMinY);
+        vpMat.m00 = 1.0f / width;
+        vpMat.m11 = 1.0f / height;
         vpMat.m22 = -2.0f / (aabbMaxZ -aabbMinZ);
-        vpMat.m03 = -1.0f * (aabbMaxX +aabbMinX) / (aabbMaxX -aabbMinX);
-        vpMat.m13 = -1.0f * (aabbMaxY +aabbMinY) / (aabbMaxY -aabbMinY);
-        vpMat.m23 = -1.0f * (aabbMaxZ +aabbMinZ) / (aabbMaxZ -aabbMinZ);
-        vpMat.setIdentity();
+        vpMat.m23 = -(aabbMaxZ +aabbMinZ) / (aabbMaxZ -aabbMinZ);
     }
 
     /**Getting shadow map view projection matrix (toShadowMapSpaceMatrix).

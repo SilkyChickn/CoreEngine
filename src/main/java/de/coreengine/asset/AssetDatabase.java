@@ -39,7 +39,7 @@ import java.util.HashMap;
 public class AssetDatabase {
 
     //Databases
-    static HashMap<String, Integer> textures = new HashMap<>();
+    public static HashMap<String, Integer> textures = new HashMap<>();
     static HashMap<String, Font> fonts = new HashMap<>();
     static HashMap<String, Integer> sounds = new HashMap<>();
     static HashMap<String, Model> models = new HashMap<>();

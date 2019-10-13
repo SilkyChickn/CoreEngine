@@ -51,6 +51,7 @@ public class ShadowMapRenderer {
      * @param shadowLight Shadow Light to render from
      */
     void render(HashMap<Mesh, List<Entity>> entities, List<GUIPane> guis, ShadowLight shadowLight){
+        GL11.glCullFace(GL11.GL_FRONT);
         shadowLight.getShadowMap().bind(GL30.GL_COLOR_ATTACHMENT0);
         GL11.glClearColor(0, 0, 0, 1);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
@@ -84,5 +85,6 @@ public class ShadowMapRenderer {
 
         shader.stop();
         shadowLight.getShadowMap().unbind();
+        GL11.glCullFace(GL11.GL_BACK);
     }
 }

@@ -40,18 +40,28 @@ import javax.vecmath.Matrix4f;
  *
  * @author Darius Dinger
  */
-public class ShadowLight extends DirectionalLight{
+public class ShadowLight {
     private static final float DEFAULT_QUALITY =
             Configuration.getValuef("SHADOW_DEFAULT_QUALITY");
+    private static final float[] DEFAULT_DIMENSION =
+            Configuration.getValuefa("SHADOW_DEFAULT_FRUSTUM_DIMENSION");
 
     //Fbo that stores the actual shadow map from lights position
     private FrameBufferObject shadowMap;
 
-    //Box to render shadows in
-    private ShadowBox shadowBox = new ShadowBox();
+    //Camera of the lights view
+    private Camera lightsView = new Camera();
 
     //Quality of the shadows
     private float quality = DEFAULT_QUALITY;
+
+    //View projection matrix of the light
+    private Matrix4f vpMat = new Matrix4f();
+
+    //Dimensions of the shadow lights view frustum
+    private float width = DEFAULT_DIMENSION[0];
+    private float height = DEFAULT_DIMENSION[1];
+    private float far = DEFAULT_DIMENSION[2];
 
     /**Creating new shadow light.
      * Create shadow map fbo and recreating every window resize
@@ -68,23 +78,56 @@ public class ShadowLight extends DirectionalLight{
                 (int)(Window.getHeight() * quality), false);
     }
 
-    /**Setting view projection matrix frustum to bounding box of perspective view matrix frustum.
+    /**Setting the quality of the shadows
      *
-     * @param cam Camera to align vpMat for
+     * @param quality New shadow quality
      */
-    public void alignTo(Camera cam){
-        shadowBox.alignTo(cam, getDirection());
+    public void setQuality(float quality) {
+        this.quality = quality;
+        recreateFbo();
+    }
+
+    /**Getting the view camera of the shadow light
+     *
+     * @return Read/Writeable camera of the lights view
+     */
+    public Camera getLightsView() {
+        return lightsView;
+    }
+
+    /**Updating shadow maps view projection matrix
+     */
+    public void updateVpMat(){
+        vpMat.setIdentity();
+        vpMat.m00 = 2.0f / width;
+        vpMat.m11 = 2.0f / height;
+        vpMat.m22 = -2.0f / far;
+
+        lightsView.updateViewMatrix();
+        vpMat.mul(lightsView.getViewMatrix());
     }
 
     /**@return View projection matrix of the shadow light
      */
     public Matrix4f getVpMat() {
-        return shadowBox.getVpMat();
+        return vpMat;
     }
 
     /**@return Fbo that stores the actual shadow map from lights position
      */
     public FrameBufferObject getShadowMap() {
         return shadowMap;
+    }
+
+    /**Changes the dimension of the shadow lights view frustum
+     *
+     * @param w Width of the frustum
+     * @param h Height of the frustum
+     * @param f Far plane/Length of the frustum
+     */
+    public void setDimension(float w, float h, float f){
+        this.width = w;
+        this.height = h;
+        this.far = f;
     }
 }
