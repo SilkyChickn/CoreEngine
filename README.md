@@ -1,5 +1,5 @@
 # CoreEngine (Java/LWJGL/OpenGL)
-![v1.1.0][progress-img]
+![v1.2.0][progress-img]
 [![maven central][maven-central-img]][maven-central-url]
 [![lwjgl][lwjgl-img]][lwjgl-url]
 [![jbullet][jbullet-img]][jbullet-url]
@@ -19,18 +19,18 @@ CoreEngine is available at maven central repository.  So the easiest way ist to 
 <dependency>
 	<groupId>io.github.suuirad</groupId>
 	<artifactId>coreengine</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 </dependency>
 ```
 
 #### Gradle
 ```gradle
-compile group: 'io.github.suuirad', name: 'coreengine', version: '1.1.0'
+compile group: 'io.github.suuirad', name: 'coreengine', version: '1.1.1'
 ```
 
 #### Manual
 
-For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.0/). Just download, what you need (javadoc/sources) and add it to your project.
+For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.1/). Just download, what you need (javadoc/sources) and add it to your project.
 
 ### Simple Game
 
@@ -73,6 +73,6 @@ All rights reserved.
 [vecmath-img]: https://img.shields.io/badge/vecmath-v.1.5.2-green.svg?style=flat-square
 [vecmath-url]: https://mvnrepository.com/artifact/javax.vecmath/vecmath/1.5.2
 [license-img]: https://img.shields.io/badge/license-BSD-blue.svg?style=flat-square
-[maven-central-img]: https://img.shields.io/badge/maven--central-v.1.1.0-red.svg?style=flat-square
-[maven-central-url]: https://mvnrepository.com/artifact/io.github.suuirad/coreengine/1.1.0
-[progress-img]: https://img.shields.io/badge/v1.1.0-100%25-red.svg?style=flat-square
+[maven-central-img]: https://img.shields.io/badge/maven--central-v.1.1.1-red.svg?style=flat-square
+[maven-central-url]: https://mvnrepository.com/artifact/io.github.suuirad/coreengine/1.1.1
+[progress-img]: https://img.shields.io/badge/v1.2.0-0%25-red.svg?style=flat-square
