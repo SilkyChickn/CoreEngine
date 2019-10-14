@@ -85,7 +85,7 @@ public class TextField extends GameObject {
     /**@param parent Parent pane of the text field
      * @param font Initial font of the text field
      */
-    public TextField(GUIPane parent, Font font) {
+    public TextField(GUIPane parent, String font) {
         this.pane = new GUIPane(parent);
         this.pane.getText().setFont(font);
         this.pane.getText().setText(cursor);

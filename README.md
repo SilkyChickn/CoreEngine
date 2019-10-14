@@ -58,6 +58,8 @@ Now you are ready to go, to create any game you want!
 
 > JavaDoc: [https://suuirad.github.io/CoreEngine/](https://suuirad.github.io/CoreEngine/)
 
+> Snapshots: [https://oss.sonatype.org/content/repositories/snapshots/io/github/suuirad/coreengine/](https://oss.sonatype.org/content/repositories/snapshots/io/github/suuirad/coreengine/)
+
 ## License
 
 **BSD 2-Clause License**

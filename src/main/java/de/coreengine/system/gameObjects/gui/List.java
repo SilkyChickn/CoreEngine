@@ -64,7 +64,7 @@ public class List extends GameObject{
     //Item settings
     private float itemScale = DEFAULT_ITEM_SCALE;
     private float fontSize = DEFAULT_FONT_SIZE;
-    private Font font;
+    private String font;
     
     //Colors
     private Color selectedColor = new Color(DEFAULT_SELECTED_COLOR[0],
@@ -93,7 +93,7 @@ public class List extends GameObject{
     /**@param parent Parent pane of the list or null
      * @param font Font of the list
      */
-    public List(GUIPane parent, Font font){
+    public List(GUIPane parent, String font){
         this.font = font;
         background = new GUIPane(parent);
         background.getColor().set(DEFAULT_BACKGROUND_COLOR[0], 

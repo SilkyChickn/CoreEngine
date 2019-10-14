@@ -27,9 +27,9 @@
  */
 package de.coreengine.rendering.renderable.gui;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.rendering.model.Character;
 import de.coreengine.rendering.model.Color;
-import de.coreengine.rendering.model.Font;
 import de.coreengine.util.Configuration;
 import de.coreengine.util.Logger;
 
@@ -50,7 +50,7 @@ public class GUIText {
     private String text = "";
     
     //Font of the text
-    private Font font;
+    private String font;
     
     //Size of the font
     private float fontSize = DEFAULT_FONT_SIZE;
@@ -89,7 +89,7 @@ public class GUIText {
      * 
      * @param font New font of the text
      */
-    public void setFont(Font font) {
+    public void setFont(String font) {
         this.font = font;
         recreateChars();
     }
@@ -120,7 +120,7 @@ public class GUIText {
                     lineChar.getOffset().x -= cursor / 2.0f;
                 }
                 
-                line -= font.getLineHeight() * fontSize;
+                line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
                 cursor = 0;
                 
                 lineChars.clear();
@@ -128,7 +128,7 @@ public class GUIText {
                 if(ascii == 10) continue;
             }
 
-            Character c = font.getCharacter(ascii);
+            Character c = AssetDatabase.getFont(font).getCharacter(ascii);
             
             //Check if char exist in font
             if(c == null){
@@ -154,7 +154,7 @@ public class GUIText {
         }
         
         //Center all chars vertical
-        line -= font.getLineHeight() * fontSize;
+        line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
         chars = new GUIChar[textChars.size()];
         for(int i = 0; i < textChars.size(); i++){
             textChars.get(i).getOffset().y -= line / 2.0f;
@@ -164,7 +164,7 @@ public class GUIText {
     
     /**@return Font of the text
      */
-    public Font getFont() {
+    public String getFont() {
         return font;
     }
     

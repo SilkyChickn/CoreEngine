@@ -27,6 +27,7 @@
  */
 package de.coreengine.rendering.renderer;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.framework.Window;
 import de.coreengine.rendering.programs.FontShader;
 import de.coreengine.rendering.renderable.Camera;
@@ -59,8 +60,8 @@ public class FontRenderer {
         
         panesWithText.forEach(t -> {
             if(t.renderText() && t.getText().getFont() != null){
-                t.getText().getFont().getVao().bind();
-                t.getText().getFont().getVao().enableAttributes();
+                AssetDatabase.getFont(t.getText().getFont()).getVao().bind();
+                AssetDatabase.getFont(t.getText().getFont()).getVao().enableAttributes();
                 
                 shader.prepareText(t);
                 
@@ -74,9 +75,9 @@ public class FontRenderer {
                     
                     c.getIndex().unbind();
                 }
-                
-                t.getText().getFont().getVao().disableAttributes();
-                t.getText().getFont().getVao().unbind();
+
+                AssetDatabase.getFont(t.getText().getFont()).getVao().disableAttributes();
+                AssetDatabase.getFont(t.getText().getFont()).getVao().unbind();
             }
         });
         

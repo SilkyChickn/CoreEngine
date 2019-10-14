@@ -66,7 +66,7 @@ public class NumericUpDown extends GameObject{
      * @param parent Parent gui or null
      * @param font Font of the numeric
      */
-    public NumericUpDown(GUIPane parent, Font font) {
+    public NumericUpDown(GUIPane parent, String font) {
         pane = new GUIPane(parent);
         textField = new TextField(pane, font);
         upBt = new Button(pane);
