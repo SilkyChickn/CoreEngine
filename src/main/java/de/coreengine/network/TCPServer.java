@@ -129,7 +129,7 @@ public class TCPServer implements Runnable{
             Socket socket, String name){
         for(int i = 0; i < maxPlayers; i++){
             if(clients[i] == null){
-                writer.println(NetworkMessenger.HANDSHAKE_ACCEPTED);
+                writer.println(Protocol.HANDSHAKE_ACCEPTED);
                 writer.flush();
                 
                 try {
@@ -137,8 +137,8 @@ public class TCPServer implements Runnable{
                 } catch (SocketException ex) {
                     Logger.warn("Error by setting timeout", "The timeout for a "
                             + "client could not be setted!");
-                    writer.println(NetworkMessenger.KICKED_BANNER + 
-                    NetworkMessenger.SEPERATOR + "Server error");
+                    writer.println(Protocol.KICKED_BANNER +
+                    Protocol.SEPERATOR + "Server error");
                     writer.flush();
                 }
                 
@@ -152,8 +152,8 @@ public class TCPServer implements Runnable{
                     } catch (IllegalAccessException | InstantiationException ex) {
                         Logger.warn("Error adding player", "Error by instancing "
                                 + "players object in the server!");
-                        writer.println(NetworkMessenger.KICKED_BANNER + 
-                        NetworkMessenger.SEPERATOR + "Server error");
+                        writer.println(Protocol.KICKED_BANNER +
+                        Protocol.SEPERATOR + "Server error");
                         writer.flush();
                         return;
                     }
@@ -162,13 +162,13 @@ public class TCPServer implements Runnable{
                 TCPServerClient client = new TCPServerClient(reader, writer, 
                         socket, name, player);
                 
-                sendToAll(NetworkMessenger.JOINED_BANNER + 
-                        NetworkMessenger.SEPERATOR + client.getPrefix());
+                sendToAll(Protocol.JOINED_BANNER +
+                        Protocol.SEPERATOR + client.getPrefix());
                 
                 for(TCPServerClient t: clients){
                     if(t != null){
-                        writer.println(NetworkMessenger.JOINED_BANNER + 
-                                NetworkMessenger.SEPERATOR + t.getPrefix());
+                        writer.println(Protocol.JOINED_BANNER +
+                                Protocol.SEPERATOR + t.getPrefix());
                         writer.flush();
                     }
                 }
@@ -208,8 +208,8 @@ public class TCPServer implements Runnable{
     public static void banClient(int id, String message){
         if(clients[id] != null){
             bannedAddresses.add(clients[id].getAddress());
-            clients[id].stop(NetworkMessenger.BANNED_BANNER + 
-                    NetworkMessenger.SEPERATOR + message);
+            clients[id].stop(Protocol.BANNED_BANNER +
+                    Protocol.SEPERATOR + message);
             clients[id] = null;
         }
     }
@@ -221,8 +221,8 @@ public class TCPServer implements Runnable{
      */
     public static void kickClient(int id, String message){
         if(clients[id] != null){
-            clients[id].stop(NetworkMessenger.KICKED_BANNER + 
-                    NetworkMessenger.SEPERATOR + message);
+            clients[id].stop(Protocol.KICKED_BANNER +
+                    Protocol.SEPERATOR + message);
             clients[id] = null;
         }
     }
@@ -321,20 +321,20 @@ public class TCPServer implements Runnable{
                 //Await handshake from client
                 String handshake = reader.readLine();
                 
-               String name = NetworkMessenger.
+               String name = Protocol.
                         checkHandShakeMessage(handshake, password);
                 
                 if(bannedAddresses.contains(client.getInetAddress())){
-                    writer.println(NetworkMessenger.HANDSHAKE_BANNED);
+                    writer.println(Protocol.HANDSHAKE_BANNED);
                     writer.flush();
                 }else if(isFull()){
-                    writer.println(NetworkMessenger.HANDSHAKE_FULL);
+                    writer.println(Protocol.HANDSHAKE_FULL);
                     writer.flush();
                 }else if(name == null){
-                    writer.println(NetworkMessenger.HANDSHAKE_WRONG_PASSWORD);
+                    writer.println(Protocol.HANDSHAKE_WRONG_PASSWORD);
                     writer.flush();
                 }else if(!nameAvailable(name)){
-                    writer.println(NetworkMessenger.HANDSHAKE_NAME_NOT_AVAILABLE);
+                    writer.println(Protocol.HANDSHAKE_NAME_NOT_AVAILABLE);
                     writer.flush();
                 }else{
                     addClient(reader, writer, client, name);
@@ -354,6 +354,6 @@ public class TCPServer implements Runnable{
                         + "by accepting a client!");
             }
         }
-        stop(NetworkMessenger.SERVER_CLOSED);
+        stop(Protocol.SERVER_CLOSED);
     }
 }

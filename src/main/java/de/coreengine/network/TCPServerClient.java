@@ -73,7 +73,7 @@ public class TCPServerClient implements Runnable{
     
     /**@return Host address of the client
      */
-    InetAddress getAddress() {
+    public InetAddress getAddress() {
         if(socket != null) return socket.getInetAddress();
         else return null;
     }
@@ -102,7 +102,7 @@ public class TCPServerClient implements Runnable{
     
     /**@return Get player prefix/id to identify the player in the network
      */
-    String getPrefix() {
+    public String getPrefix() {
         return prefix;
     }
     
@@ -118,8 +118,8 @@ public class TCPServerClient implements Runnable{
         writer.flush();
         
         if(player != null) player.onDisconnect();
-        TCPServer.sendToAll(NetworkMessenger.LEFT_BANNER + 
-                NetworkMessenger.SEPERATOR + getPrefix());
+        TCPServer.sendToAll(Protocol.LEFT_BANNER +
+                Protocol.SEPERATOR + getPrefix());
         
         try {
             
@@ -150,13 +150,13 @@ public class TCPServerClient implements Runnable{
             //Clients stream has ended
             Logger.warn("Client stream ended", "The stream of a client has been "
                     + "ended!");
-            stop(NetworkMessenger.STREAM_ENDED);
+            stop(Protocol.STREAM_ENDED);
         } catch (IOException ex) {
             if(running){
                 
                 //Client timeout expired
                 Logger.warn("Client timeout", "A clients timeout expired!");
-                stop(NetworkMessenger.TIMEOUT_EXPIRED);
+                stop(Protocol.TIMEOUT_EXPIRED);
             }
         }
     }

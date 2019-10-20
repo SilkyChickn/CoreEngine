@@ -108,31 +108,31 @@ public class TCPClient implements Runnable{
             writer = new PrintWriter(socket.getOutputStream());
             
             //Request handshake
-            String handshakeMsg = NetworkMessenger.HANDSHAKE_BANNER + 
-                    NetworkMessenger.SEPERATOR + playerName + 
-                    NetworkMessenger.SEPERATOR + password;
+            String handshakeMsg = Protocol.HANDSHAKE_BANNER +
+                    Protocol.SEPERATOR + playerName +
+                    Protocol.SEPERATOR + password;
             writer.println(handshakeMsg);
             writer.flush();
             
             //Await response
             try{
                 String answer = reader.readLine();
-                String[] args = answer.split(NetworkMessenger.SEPERATOR);
+                String[] args = answer.split(Protocol.SEPERATOR);
                 
                 switch (args[0]) {
-                    case NetworkMessenger.HANDSHAKE_ACCEPTED:
+                    case Protocol.HANDSHAKE_ACCEPTED:
                         
                         //Setting timeout
                         socket.setSoTimeout(TIMEOUT);
                         
                         return HandshakeResult.ACCEPTED;
-                    case NetworkMessenger.HANDSHAKE_FULL:
+                    case Protocol.HANDSHAKE_FULL:
                         return HandshakeResult.FULL;
-                    case NetworkMessenger.HANDSHAKE_WRONG_PASSWORD:
+                    case Protocol.HANDSHAKE_WRONG_PASSWORD:
                         return HandshakeResult.WRONG_PASSWORD;
-                    case NetworkMessenger.HANDSHAKE_BANNED:
+                    case Protocol.HANDSHAKE_BANNED:
                         return HandshakeResult.BANNED;
-                    case NetworkMessenger.HANDSHAKE_NAME_NOT_AVAILABLE:
+                    case Protocol.HANDSHAKE_NAME_NOT_AVAILABLE:
                         return HandshakeResult.NAME_TAKEN;
                     default:
                         Logger.warn("Response not readable", "The response of the "
@@ -206,7 +206,7 @@ public class TCPClient implements Runnable{
             
             //Closing connection and reset state
             if(NetworkManager.getState() == NetworkManager.NetworkState.HOSTER
-                    && TCPServer.isRunning()) TCPServer.stop(NetworkMessenger.HOSTER_CLOSED);
+                    && TCPServer.isRunning()) TCPServer.stop(Protocol.HOSTER_CLOSED);
             socket.close();
             NetworkManager.setState(NetworkManager.NetworkState.SINGLEPLAYER);
         } catch (IOException ex) {
@@ -243,7 +243,7 @@ public class TCPClient implements Runnable{
         } catch (InstantiationException | IllegalAccessException ex) {
             Logger.warn("Error by creating player", "Error by "
                     + "creating player game object!");
-            stop(NetworkMessenger.LEFT_BANNER);
+            stop(Protocol.LEFT_BANNER);
             return;
         }
         
@@ -258,10 +258,10 @@ public class TCPClient implements Runnable{
             //Read from clients stream while alive
             while((line = reader.readLine()) != null){
                 if(NetworkManager.getState() == NetworkManager.NetworkState.CLIENT &&
-                        line.startsWith(NetworkMessenger.JOINED_BANNER)){
+                        line.startsWith(Protocol.JOINED_BANNER)){
                     
                     //Player connecting to server
-                    String[] args = line.split(NetworkMessenger.SEPERATOR);
+                    String[] args = line.split(Protocol.SEPERATOR);
                     
                     try {
                         PlayerGameObject newPlayer = playerClass.newInstance();
@@ -276,10 +276,10 @@ public class TCPClient implements Runnable{
                     }
 
                 }else if(NetworkManager.getState() == NetworkManager.NetworkState.CLIENT &&
-                        line.startsWith(NetworkMessenger.LEFT_BANNER)){
+                        line.startsWith(Protocol.LEFT_BANNER)){
                     
                     //Player disconnects from server
-                    String[] args = line.split(NetworkMessenger.SEPERATOR);
+                    String[] args = line.split(Protocol.SEPERATOR);
                     players.get(args[1]).onDisconnect();
                     players.remove(args[1]);
                     
@@ -289,13 +289,13 @@ public class TCPClient implements Runnable{
             //Clients stream has ended
             Logger.warn("Stream ended", "The stream to the server has been "
                     + "ended!");
-            stop(NetworkMessenger.LEFT_BANNER);
+            stop(Protocol.LEFT_BANNER);
         } catch (IOException ex) {
             if(isRunning()){
                 
                 //Client timeout expired
                 Logger.warn("Server timeout", "The servers timeout expired!");
-                stop(NetworkMessenger.LEFT_BANNER);
+                stop(Protocol.LEFT_BANNER);
             }
         }
     }

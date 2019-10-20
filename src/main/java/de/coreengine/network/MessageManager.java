@@ -68,8 +68,8 @@ class MessageManager {
         
         //Iterate syncs of ACTUAL_SYNCS and adding to syncronizer
         MSG_LIST.forEach((msg) -> {
-            String[] args = msg.split(NetworkMessenger.SEPERATOR);
-            if(args.length > 2 && args[0].equals(NetworkMessenger.TAGGED_BANNER)){
+            String[] args = msg.split(Protocol.SEPERATOR);
+            if(args.length > 2 && args[0].equals(Protocol.TAGGED_BANNER)){
                 
                 //Get tag and data of sync
                 String tag = args[1];
@@ -88,8 +88,8 @@ class MessageManager {
      * @param data Data to tag
      */
     static void sendTaggedData(String tag, String data){
-        String msg = NetworkMessenger.TAGGED_BANNER + NetworkMessenger.SEPERATOR + 
-                tag + NetworkMessenger.SEPERATOR + data;
+        String msg = Protocol.TAGGED_BANNER + Protocol.SEPERATOR +
+                tag + Protocol.SEPERATOR + data;
         NetworkManager.sendToNetwork(msg);
     }
     

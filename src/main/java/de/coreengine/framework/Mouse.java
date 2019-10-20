@@ -38,7 +38,22 @@ import org.lwjgl.glfw.GLFWScrollCallbackI;
  */
 public class Mouse {
     private static final int MAX_MOUSE_BUTTONS = 16;
-    
+
+    //Button codes (From GLFW)
+    public static final int
+        MOUSE_BUTTON_1      = 0,
+        MOUSE_BUTTON_2      = 1,
+        MOUSE_BUTTON_3      = 2,
+        MOUSE_BUTTON_4      = 3,
+        MOUSE_BUTTON_5      = 4,
+        MOUSE_BUTTON_6      = 5,
+        MOUSE_BUTTON_7      = 6,
+        MOUSE_BUTTON_8      = 7,
+        MOUSE_BUTTON_LAST   = MOUSE_BUTTON_8,
+        MOUSE_BUTTON_LEFT   = MOUSE_BUTTON_1,
+        MOUSE_BUTTON_RIGHT  = MOUSE_BUTTON_2,
+        MOUSE_BUTTON_MIDDLE = MOUSE_BUTTON_3;
+
     //Listeners, when mouse moved or mouse button is clicked
     static final MouseButtonListener MOUSE_BUTTON_LISTENER = new MouseButtonListener();
     static final MouseMovedListener MOUSE_MOVED_LISTENER = new MouseMovedListener();

@@ -31,7 +31,7 @@ package de.coreengine.network;
  *
  * @author Darius Dinger
  */
-public class NetworkMessenger {
+public class Protocol {
     
     static final String HANDSHAKE_BANNER = "handshake";
     static final String SEPERATOR = ";";

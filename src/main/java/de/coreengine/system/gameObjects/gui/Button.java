@@ -59,7 +59,7 @@ public class Button extends GameObject{
     private String pressedTexture = Material.TEXTURE_BLACK;
     private String texture = Material.TEXTURE_WHITE;
     
-    /**Creating new Button and setting ts parent or null, if no parent gui
+    /**Creating new Button and setting its parent or null, if no parent gui
      * exist
      * 
      * @param parent Parent gui or null
@@ -83,7 +83,7 @@ public class Button extends GameObject{
             mouseLeaved = !newOver;
             mouseOver = newOver;
         }
-        
+
         //Check if button gets pressed
         if(mouseOver &&  Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)){
             if(!pressed && clickAble){

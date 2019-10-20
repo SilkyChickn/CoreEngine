@@ -31,10 +31,8 @@ package de.coreengine.asset;
 import de.coreengine.asset.dataStructures.AnimatedModelData;
 import de.coreengine.util.Logger;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 
 /**Class that can load cea (Core Engine Animated Model) files (see de.coreengine.asset.dataStructures)
  *
@@ -91,8 +89,15 @@ public class CeaLoader {
 
         try {
 
+            File f;
+            if(asResource) {
+                URL url = Thread.currentThread().getContextClassLoader().getResource(file);
+                assert url != null;
+                f = new File(url.getFile());
+            }else f = new File(file);
+
             //Read bytes from file
-            FileInputStream fis = new FileInputStream(file);
+            FileInputStream fis = new FileInputStream(f);
             byte[] data = new byte[fis.available()];
             fis.read(data);
             fis.close();

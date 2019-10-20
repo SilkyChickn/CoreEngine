@@ -42,13 +42,13 @@ public class BufferUtils {
      * 
      * @param resource Resource path
      * @param bufferSize Initial buffer size
-     * @return Resource as ByteBuffer
+     * @return Resource as ByteBuffer or null, if resource not found
      * @throws IOException If an IO Error occurs
      */
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
         URL url = Thread.currentThread().getContextClassLoader().getResource(resource);
-        assert url != null;
+        if(url == null) return null;
         File file = new File(url.getFile());
         if (file.isFile()) {
             try (FileInputStream fis = new FileInputStream(file); 

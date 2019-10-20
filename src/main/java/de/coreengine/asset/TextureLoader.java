@@ -86,9 +86,13 @@ public class TextureLoader {
             if(asResource){
                 
                 //Load resource
-                ByteBuffer buffer = BufferUtils.
-                        ioResourceToByteBuffer(textureFile, 8 * 1024);
-                
+                ByteBuffer buffer = BufferUtils.ioResourceToByteBuffer(textureFile, 8 * 1024);
+                if(buffer == null) {
+                    Logger.warn("Error by loading TextureData", "The TextureData file " + textureFile +
+                            " could not be found! Returning null!");
+                    return null;
+                }
+
                 //Load TextureData and throw exception at error
                 textureData = STBImage.stbi_load_from_memory(buffer, w, h, comp, 4);
             }else{
