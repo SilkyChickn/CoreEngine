@@ -103,7 +103,6 @@ public class Game {
             scenesSem.acquire();
             scenes.add(scene);
             scenesSem.release();
-            scene.init();
             return scenes.indexOf(scene);
         } catch (InterruptedException ex) {
             Logger.err("Interrupt exception", "An Interrupt exception occurs by "

@@ -42,12 +42,11 @@ public class Scene {
     
     //Root game object of the scene, contains all scene game objects
     private final GameObject rootGameObject = new GameObject() {};
-    
-    /**Initialize scene
+
+    /**Initialize root GameObject
      */
-    public void init(){
+    public Scene(){
         rootGameObject.setScene(this);
-        rootGameObject.onInit();
     }
     
     /**Syncronize scene with network

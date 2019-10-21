@@ -1,13 +1,16 @@
-# Controls
-Every demo has its own functionality, so just feel free try it out.
+# Info
+Every demo has its own functionality, so just feel free trying it out. Don't forget to also get the "res" folder next to the jar, to don't miss some resources.
 
-## Demo
+## Controls
+
+#### Demo
 Key/Button | Action
 --- | ---
-1-9 | Demo functions
+F1-F12 | Switch between demos
+0-9 | Demo specified actions
 P | Show Polygons / Bones / Joints
 
-## Camera
+#### Camera
 Key/Button | Action
 --- | ---
 Mouse Left | Rotate Camera

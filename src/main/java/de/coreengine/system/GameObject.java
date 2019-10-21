@@ -54,29 +54,23 @@ public abstract class GameObject {
     //Is the game object initialized
     private boolean initialized = false;
     
-    /**Getting called when the object getting initialized
+    /**This method gets called once in the GameObject life cycle. Even if the GameObject gets removed and readded,
+     * this method dont gets called again. Its like an additional constructor, except that its not gets called when
+     * the GameObject gets created, but when its first has to action.
      */
     public void onInit(){
-        try {
-            childsSem.acquire();
-            childs.forEach((child) -> {
-                child.onInit();
-                child.initialized = true;
-            });
-            childsSem.release();
-        } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while initialize childs!");
-        }
+        initialized = true;
     }
     
-    /**Getting called when the object should syncronize with network
+    /**This method gets called, every time a network update occurs. Here the GameObject has to syncronize all used
+     * network variables, like SyncFloats, SimpleEvents, ChatEvents, SyncMatrices, ...
      */
     public void onSyncronize(){
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-                if(child.initialized) child.onSyncronize();
+                if(!child.initialized) child.onInit();
+                child.onSyncronize();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -85,18 +79,15 @@ public abstract class GameObject {
         }
     }
     
-    /**Getting called when the object getting updated
+    /**This method gets called every frame before the render method. Here is place for the GameObject logic updates,
+     * e.g. input handling, physics, actions, ...
      */
     public void onUpdate(){
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-            if(child.initialized) child.onUpdate();
-                else{
-                    child.onInit();
-                    child.initialized = true;
-                    child.onUpdate();
-                }
+                if(!child.initialized) child.onInit();
+                child.onUpdate();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -106,13 +97,15 @@ public abstract class GameObject {
         
     }
     
-    /**Getting called when the object getting rendered
+    /**In this method the GameObject gets rendered onto the screen (if it has an graphical representation).
+     * Its primary used for MasterRenderer calls.
      */
     public void onRender(){
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-                if(child.initialized) child.onRender();
+                if(!child.initialized) child.onInit();
+                child.onRender();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -120,22 +113,33 @@ public abstract class GameObject {
                     + "while rendering childs!");
         }
     }
-    
-    /**Getting called when the object getting deleted
+
+    /**This method gets called once, when the GameObject is added to a scene, or to another GameObject as child.
+     * If the GameObject gets removed and readded, the method will be called again.
      */
-    public void onDelete(){
-        try {
-            childsSem.acquire();
-            childs.forEach((child) -> {
-                if(child.initialized) child.onDelete();
-            });
-            childsSem.release();
-        } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while deleting childs!");
-        }
+    private void onAdd(){}
+
+    /**This method gets called once, when the GameObject gets removed from a scene or its parent GameObject
+     * (if it had one). If the GameObject gets added and removed again, the method will be called again.
+     */
+    private void onRemove(){}
+
+    /**This method gets called asynchronous, when the game wants the GameObject to save its current state. If you have
+     * to save your current state, convert the relevant data into bytes and return them in this method.
+     *
+     * @return Current state in bytes
+     */
+    public byte[] onSave(){
+        return null;
     }
-    
+
+    /**This method gets called asynchronous, when the game wants to GameObject to recreate its state from saved data.
+     * This method passing a byte array, which contains the data, the GameObject saved/returned with the onSave method.
+     *
+     * @param state Loaded state in bytes
+     */
+    public void onLoad(byte[] state){}
+
     /**Adding a new child game object to the childs and setting this as parent
      * 
      * @param child Child to add
@@ -146,6 +150,7 @@ public abstract class GameObject {
             childs.add(child);
             childsSem.release();
             child.parent = this;
+            child.onAdd();
         } catch (InterruptedException ex) {
             Logger.err("Interrupted Exception", "An Interrupted exception occurs "
                     + "while adding a new child!");
@@ -161,6 +166,8 @@ public abstract class GameObject {
             childsSem.acquire();
             childs.remove(child);
             childsSem.release();
+            child.parent = null;
+            child.onRemove();
         } catch (InterruptedException ex) {
             Logger.err("Interrupted Exception", "An Interrupted exception occurs "
                     + "while removing a child!");
