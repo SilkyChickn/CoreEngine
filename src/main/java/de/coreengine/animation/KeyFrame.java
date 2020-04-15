@@ -30,29 +30,32 @@ package de.coreengine.animation;
 
 public class KeyFrame<Component> {
 
-    //Time stamp of the keyframe in the animation
+    // Time stamp of the keyframe in the animation
     private float timestamp;
 
-    //Transformation of the joint at this specific keyframe
+    // Transformation of the joint at this specific keyframe
     private Component status;
 
-    /**Creating new keyframe for an animation
+    /**
+     * Creating new keyframe for an animation
      *
      * @param timestamp Time stamp of the keyframe in the animation
-     * @param status Components status at this keyframe
+     * @param status    Components status at this keyframe
      */
     public KeyFrame(float timestamp, Component status) {
         this.timestamp = timestamp;
         this.status = status;
     }
 
-    /**@return Time stamp of the keyframe in the animation
+    /**
+     * @return Time stamp of the keyframe in the animation
      */
     public float getTimestamp() {
         return timestamp;
     }
 
-    /**@return Components status at this keyframe
+    /**
+     * @return Components status at this keyframe
      */
     public Component getStatus() {
         return status;

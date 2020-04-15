@@ -46,85 +46,83 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-/**Class that manage the whole game
+/**
+ * Class that manage the whole game
  *
  * @author Darius Dinger
  */
 public class Game {
-    private static final float SYNC_INTERVAL = 
-            Configuration.getValuef("SYNC_INTERVAL");
-    
-    //Time since last sync
+    private static final float SYNC_INTERVAL = Configuration.getValuef("SYNC_INTERVAL");
+
+    // Time since last sync
     private static float tsls = 0;
-    
-    //Scenes of the game
-    private static  List<Scene> scenes = new LinkedList<>();
+
+    // Scenes of the game
+    private static List<Scene> scenes = new LinkedList<>();
     private static Semaphore scenesSem = new Semaphore(1);
     private static int currentScene = 0;
-    
-    /**Initializing the game and all relevant libraries
+
+    /**
+     * Initializing the game and all relevant libraries
      * 
-     * @param windowWidth Initial width of the game window
-     * @param windowHeight Initial height of the game window
-     * @param windowTitle Initial title of the game window
+     * @param windowWidth     Initial width of the game window
+     * @param windowHeight    Initial height of the game window
+     * @param windowTitle     Initial title of the game window
      * @param startFullscreen Should game window start in fullscreen
      */
-    public static void init(int windowWidth, int windowHeight, String windowTitle, 
-            boolean startFullscreen){
-        
-        //Init glfw and create window
+    public static void init(int windowWidth, int windowHeight, String windowTitle, boolean startFullscreen) {
+
+        // Init glfw and create window
         GLFW.init();
         Window.create(windowWidth, windowHeight, windowTitle, startFullscreen);
-        
-        //Init GL
+
+        // Init GL
         GL.createCapabilities();
-        
-        //Init AL
+
+        // Init AL
         AL.init();
-        
-        //Check shader support
-        if(!GL.getCapabilities().OpenGL40) Logger.err(
-                "OpenGL version not supported", 
-                "A minimum opengl version of 4.0 is required!"
-        );
-        
-        //Init engine
+
+        // Check shader support
+        if (!GL.getCapabilities().OpenGL40)
+            Logger.err("OpenGL version not supported", "A minimum opengl version of 4.0 is required!");
+
+        // Init engine
         MasterRenderer.init();
         PostProcesser.init();
     }
-    
-    /**Register scene in the game
+
+    /**
+     * Register scene in the game
      * 
      * @param scene Scene to register
      * @return Id of the scene
      */
-    public static int registerScene(Scene scene){
+    public static int registerScene(Scene scene) {
         try {
             scenesSem.acquire();
             scenes.add(scene);
             scenesSem.release();
             return scenes.indexOf(scene);
         } catch (InterruptedException ex) {
-            Logger.err("Interrupt exception", "An Interrupt exception occurs by "
-                    + "register scene!");
+            Logger.err("Interrupt exception", "An Interrupt exception occurs by " + "register scene!");
             Game.exit(1);
         }
         return 0;
     }
-    
-    public static void removeScene(int id){
+
+    public static void removeScene(int id) {
         try {
             scenesSem.acquire();
             scenes.remove(id);
             scenesSem.release();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupt exception", "An Interrupt exception occurs by "
-                    + "removing scene!");
+            Logger.err("Interrupt exception", "An Interrupt exception occurs by " + "removing scene!");
             Game.exit(1);
         }
     }
-    
-    /**@return Current scene or null if no scene set
+
+    /**
+     * @return Current scene or null if no scene set
      */
     public static Scene getCurrentScene() {
         try {
@@ -133,79 +131,80 @@ public class Game {
             scenesSem.release();
             return result;
         } catch (InterruptedException ex) {
-            Logger.err("Interrupt exception", "An Interrupt exception occurs by "
-                    + "getting current scene!");
+            Logger.err("Interrupt exception", "An Interrupt exception occurs by " + "getting current scene!");
             Game.exit(1);
         } catch (IndexOutOfBoundsException ex) {
-            if(scenes.size() == 0){
+            if (scenes.size() == 0) {
                 Logger.err("Error getting scene", "No scene registered!");
-            }else{
+            } else {
                 Logger.err("Error getting scene", "Scene with id " + currentScene + " doesn't exist!");
             }
             Game.exit(1);
         }
         return null;
     }
-    
-    /**Going to specific scene
+
+    /**
+     * Going to specific scene
      * 
      * @param id Id of the scene to enter
      */
-    public static void gotoScene(int id){
+    public static void gotoScene(int id) {
         currentScene = id;
     }
-    
-    /**Updating inputs handlers, window and executing master renderers render 
-     * call to render all stuff
+
+    /**
+     * Updating inputs handlers, window and executing master renderers render call
+     * to render all stuff
      */
-    public static void tick(){
+    public static void tick() {
         Scene curScene = getCurrentScene();
 
-        //Tick current scene
-        if(curScene != null){
-            
-            //Only syncing, when multiplayer
-            if(NetworkManager.getState() != NetworkManager.NetworkState.SINGLEPLAYER){
+        // Tick current scene
+        if (curScene != null) {
+
+            // Only syncing, when multiplayer
+            if (NetworkManager.getState() != NetworkManager.NetworkState.SINGLEPLAYER) {
                 tsls += FrameTimer.getTslf();
-                
-                //Is it time for new sync
-                if(tsls >= SYNC_INTERVAL){
+
+                // Is it time for new sync
+                if (tsls >= SYNC_INTERVAL) {
                     tsls = 0;
-                    
-                    //Syncronize
+
+                    // Syncronize
                     NetworkManager.sync();
                     curScene.syncronize();
                 }
             }
-            
+
             curScene.update();
             curScene.render();
         }
-        
+
         MasterRenderer.render();
-        
+
         Keyboard.update();
         Mouse.update();
         FrameTimer.update();
-        
+
         Window.update();
     }
-    
-    /**Exiting the game and dumping all reserved memory
+
+    /**
+     * Exiting the game and dumping all reserved memory
      * 
      * @param code Exit code (0 == Success, else Errror)
      */
-    public static void exit(int code){
+    public static void exit(int code) {
         MemoryDumper.dumpMemory();
         GLFW.deinit();
         AL.deinit();
-        
-        if(code != 0){
+
+        if (code != 0) {
             Logger.saveLog();
-            JOptionPane.showMessageDialog(null,
-                    "Game crashed! See error log for more information.");
+            JOptionPane.showMessageDialog(null, "Game crashed! See error log for more information.");
         }
-        
+
         System.exit(code);
     }
 }

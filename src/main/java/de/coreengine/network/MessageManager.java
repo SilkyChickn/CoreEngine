@@ -30,31 +30,34 @@ package de.coreengine.network;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-/**Class that handles syncronizing methods
+/**
+ * Class that handles syncronizing methods
  *
  * @author Darius Dinger
  */
 class MessageManager {
-    
-    //All new syncs
+
+    // All new syncs
     private static final LinkedList<String> MSG_LIST = new LinkedList<>();
     private static final HashMap<String, String> TAGGED_MAP = new HashMap<>();
-    
-    /**Reloading syncrozed messanges from the server
+
+    /**
+     * Reloading syncrozed messanges from the server
      */
-    static void reloadMsgs(){
+    static void reloadMsgs() {
         MSG_LIST.clear();
         TAGGED_MAP.clear();
-        
-        //Getting all updates
-        switch (NetworkManager.getState()){
-            case SINGLEPLAYER: break;
+
+        // Getting all updates
+        switch (NetworkManager.getState()) {
+            case SINGLEPLAYER:
+                break;
             case HOSTER:
                 TCPClient.getMsgList().get(MSG_LIST);
                 TCPClient.getMsgList().clear();
             case DEDICATED_SERVER:
-                for(TCPServerClient t: TCPServer.getClients()){
-                    if(t != null){
+                for (TCPServerClient t : TCPServer.getClients()) {
+                    if (t != null) {
                         t.getMsgList().get(MSG_LIST);
                         t.getMsgList().clear();
                     }
@@ -65,40 +68,42 @@ class MessageManager {
                 TCPClient.getMsgList().clear();
                 break;
         }
-        
-        //Iterate syncs of ACTUAL_SYNCS and adding to syncronizer
+
+        // Iterate syncs of ACTUAL_SYNCS and adding to syncronizer
         MSG_LIST.forEach((msg) -> {
             String[] args = msg.split(Protocol.SEPERATOR);
-            if(args.length > 2 && args[0].equals(Protocol.TAGGED_BANNER)){
-                
-                //Get tag and data of sync
+            if (args.length > 2 && args[0].equals(Protocol.TAGGED_BANNER)) {
+
+                // Get tag and data of sync
                 String tag = args[1];
                 StringBuilder data = new StringBuilder();
-                
-                //Adding sync to syncs
-                for (int i = 2; i < args.length; i++) data.append(args[i]);
+
+                // Adding sync to syncs
+                for (int i = 2; i < args.length; i++)
+                    data.append(args[i]);
                 TAGGED_MAP.put(tag, data.toString());
             }
         });
     }
-    
-    /**Send tagged data to the network
+
+    /**
+     * Send tagged data to the network
      * 
-     * @param tag Tag of the data
+     * @param tag  Tag of the data
      * @param data Data to tag
      */
-    static void sendTaggedData(String tag, String data){
-        String msg = Protocol.TAGGED_BANNER + Protocol.SEPERATOR +
-                tag + Protocol.SEPERATOR + data;
+    static void sendTaggedData(String tag, String data) {
+        String msg = Protocol.TAGGED_BANNER + Protocol.SEPERATOR + tag + Protocol.SEPERATOR + data;
         NetworkManager.sendToNetwork(msg);
     }
-    
-    /**Syncronize data with network
+
+    /**
+     * Syncronize data with network
      * 
      * @param tag Tag of the syncronized data
      * @return Syncronized data or null, if no update exist
      */
-    static String getTaggedData(String tag){
+    static String getTaggedData(String tag) {
         return TAGGED_MAP.get(tag);
     }
 }

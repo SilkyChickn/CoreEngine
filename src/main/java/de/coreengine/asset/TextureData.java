@@ -34,79 +34,87 @@ import org.lwjgl.opengl.*;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
-/**Class that stores image data and represent and drive image
+/**
+ * Class that stores image data and represent and drive image
  *
  * @author Darius Dinger
  */
-public class TextureData implements Serializable{
+public class TextureData implements Serializable {
     private static final float MIPMAP_LEVEL = Configuration.getValuef("MIPMAP_LEVEL");
 
-    //Data
+    // Data
     public ByteBuffer data = null;
     public Integer width = null, height = null;
     public String key = null;
 
-    /**Generating key to acces texture in asset database
+    /**
+     * Generating key to acces texture in asset database
      *
-     * @param key Name of the key to generate (If key exist, this method returns)
+     * @param key       Name of the key to generate (If key exist, this method
+     *                  returns)
      * @param genMipmap Generate mipmap
      * @param filtering Filtering
      */
-    public void generateKey(String key, boolean genMipmap, int filtering){
-        if(this.key != null) return;
+    public void generateKey(String key, boolean genMipmap, int filtering) {
+        if (this.key != null)
+            return;
 
-        //Gen gl texture
+        // Gen gl texture
         int tex = GL11.glGenTextures();
         MemoryDumper.addTexture(tex);
 
-        //Bind and fill data
+        // Bind and fill data
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
-        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0,
-                GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data);
+        GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE,
+                data);
 
-        //Generate mip map and anisotropic filtering if enabled
-        if(genMipmap){
+        // Generate mip map and anisotropic filtering if enabled
+        if (genMipmap) {
             GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
             GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, MIPMAP_LEVEL);
 
-            if(GL.getCapabilities().GL_EXT_texture_filter_anisotropic){
+            if (GL.getCapabilities().GL_EXT_texture_filter_anisotropic) {
                 float[] aniso = new float[1];
                 GL11.glGetFloatv(GL46.GL_MAX_TEXTURE_MAX_ANISOTROPY, aniso);
                 float amount = Float.min(4.0f, aniso[0]);
                 GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL46.GL_TEXTURE_MAX_ANISOTROPY, amount);
             }
-        }else{
+        } else {
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, filtering);
             GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, filtering);
         }
 
-        //Unbind texture
+        // Unbind texture
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
-        //Load to asset database
+        // Load to asset database
         AssetDatabase.textures.put(key, tex);
     }
 
-    /**@return Texture width in pixels
+    /**
+     * @return Texture width in pixels
      */
     public Integer getWidth() {
         return width;
     }
 
-    /**@return Texture height in pixels
+    /**
+     * @return Texture height in pixels
      */
     public Integer getHeight() {
         return height;
     }
 
-    /**@return Texture data
+    /**
+     * @return Texture data
      */
     public ByteBuffer getData() {
         return data;
     }
 
-    /**@return Texture key in asset database or null, if no loaded
+    /**
+     * @return Texture key in asset database or null, if no loaded
      */
     public String getKey() {
         return key;

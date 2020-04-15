@@ -32,15 +32,17 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-/**Buffer utilities
+/**
+ * Buffer utilities
  *
  * @author Darius Dinger
  */
 public class BufferUtils {
 
-    /**Getting a resource as bytebuffer
+    /**
+     * Getting a resource as bytebuffer
      * 
-     * @param resource Resource path
+     * @param resource   Resource path
      * @param bufferSize Initial buffer size
      * @return Resource as ByteBuffer or null, if resource not found
      * @throws IOException If an IO Error occurs
@@ -48,11 +50,11 @@ public class BufferUtils {
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
         URL url = Thread.currentThread().getContextClassLoader().getResource(resource);
-        if(url == null) return null;
+        if (url == null)
+            return null;
         File file = new File(url.getFile());
         if (file.isFile()) {
-            try (FileInputStream fis = new FileInputStream(file); 
-                    FileChannel fc = fis.getChannel()) {
+            try (FileInputStream fis = new FileInputStream(file); FileChannel fc = fis.getChannel()) {
                 buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
             }
         } else {
@@ -80,10 +82,11 @@ public class BufferUtils {
         }
         return buffer;
     }
-    
-    /**Resizing buffer
+
+    /**
+     * Resizing buffer
      * 
-     * @param buffer Buffer to resize
+     * @param buffer      Buffer to resize
      * @param newCapacity New capacity
      * @return Resized buffer
      */

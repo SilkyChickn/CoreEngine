@@ -42,87 +42,95 @@ import java.util.Set;
 
 public class Animated extends GameObject {
 
-    //Animated entity to play animation on
+    // Animated entity to play animation on
     private AnimatedEntity animatedEntity = null;
 
-    //Current playing animation name
+    // Current playing animation name
     private String currentAnimation = null;
 
-    //Speed of the animation
+    // Speed of the animation
     private float animationSpeed = 1.0f;
 
-    //Current time of the animation
+    // Current time of the animation
     private float currentTime = 0;
 
-    //Should the animation looping
+    // Should the animation looping
     private boolean loop = true;
 
-    //Is the animation paused
+    // Is the animation paused
     private boolean pause = true;
 
-    /**Play / resume the animation
+    /**
+     * Play / resume the animation
      */
-    public void play(){
+    public void play() {
         pause = false;
     }
 
-    /**Stop the animation and jump to beginning
+    /**
+     * Stop the animation and jump to beginning
      */
-    public void stop(){
+    public void stop() {
         currentTime = 0;
         pause();
         reposeSkeleton();
     }
 
-    /**Pause the animation
+    /**
+     * Pause the animation
      */
-    public void pause(){
+    public void pause() {
         pause = true;
     }
 
-    /**Reposing the skeleton to the current animation pose
+    /**
+     * Reposing the skeleton to the current animation pose
      */
-    private void reposeSkeleton(){
-        if(currentAnimation == null) return;
+    private void reposeSkeleton() {
+        if (currentAnimation == null)
+            return;
         Animator.applyAnimation(animatedEntity.getSkeleton(), getCurrentAnimation(), currentTime);
     }
 
     @Override
     public void onUpdate() {
 
-        //If animation is paused or no animation or entity set, update children and return
-        if(pause || animatedEntity == null || currentAnimation == null) {
+        // If animation is paused or no animation or entity set, update children and
+        // return
+        if (pause || animatedEntity == null || currentAnimation == null) {
             super.onUpdate();
             return;
         }
 
-        //Increase animation time
+        // Increase animation time
         currentTime += FrameTimer.getTslf() * animationSpeed;
 
-        //Is animation finished
+        // Is animation finished
         Animation curAnimation = getCurrentAnimation();
-        if(currentTime >= curAnimation.getLength()){
-            if(loop) currentTime %= curAnimation.getLength();
+        if (currentTime >= curAnimation.getLength()) {
+            if (loop)
+                currentTime %= curAnimation.getLength();
             else {
                 currentTime = curAnimation.getLength();
                 pause();
             }
         }
 
-        //Animate skeleton of the entity
+        // Animate skeleton of the entity
         reposeSkeleton();
 
         super.onUpdate();
     }
 
-    /**@return Current playing animation or null, if no animation selected
+    /**
+     * @return Current playing animation or null, if no animation selected
      */
-    private Animation getCurrentAnimation(){
+    private Animation getCurrentAnimation() {
         return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().get(currentAnimation);
     }
 
-    /**Setting the speed of the animation.
-     * (curFrame += frameTime * animationSpeed)
+    /**
+     * Setting the speed of the animation. (curFrame += frameTime * animationSpeed)
      *
      * @param animationSpeed New animation speed
      */
@@ -130,11 +138,14 @@ public class Animated extends GameObject {
         this.animationSpeed = animationSpeed;
     }
 
-    /**@return All available animations
+    /**
+     * @return All available animations
      */
-    public Set<String> getAnimations(){
-        if(animatedEntity == null) return new HashSet<>();
-        else return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().keySet();
+    public Set<String> getAnimations() {
+        if (animatedEntity == null)
+            return new HashSet<>();
+        else
+            return AssetDatabase.getAnimatedModel(animatedEntity.getModel()).getAnimations().keySet();
     }
 
     @Override
@@ -143,7 +154,8 @@ public class Animated extends GameObject {
         super.onRender();
     }
 
-    /**Should the animation loop, when its over
+    /**
+     * Should the animation loop, when its over
      *
      * @param loop Should the animation loop, when its over
      */
@@ -151,7 +163,8 @@ public class Animated extends GameObject {
         this.loop = loop;
     }
 
-    /**Setting the current time of the animation
+    /**
+     * Setting the current time of the animation
      *
      * @param currentTime Current time of the animation
      */
@@ -160,7 +173,8 @@ public class Animated extends GameObject {
         reposeSkeleton();
     }
 
-    /**Setting the entity, that should be animated. Unset the current set animation.
+    /**
+     * Setting the entity, that should be animated. Unset the current set animation.
      *
      * @param animatedEntity Entity to animate
      */
@@ -170,21 +184,25 @@ public class Animated extends GameObject {
         stop();
     }
 
-    /**Setting the animation, that should be played. If the animation doesnt exist or the anmated entity isnt set,
-     * animation will not be setted and this method returns false. Pass null to unset animation
+    /**
+     * Setting the animation, that should be played. If the animation doesnt exist
+     * or the anmated entity isnt set, animation will not be setted and this method
+     * returns false. Pass null to unset animation
      *
      * @param animation Animation to play
      */
     public boolean setAnimation(String animation) {
         AnimatedModel model = AssetDatabase.getAnimatedModel(animatedEntity.getModel());
-        if(animatedEntity != null && model.getAnimations().containsKey(animation)){
+        if (animatedEntity != null && model.getAnimations().containsKey(animation)) {
             this.currentAnimation = animation;
             stop();
             return true;
-        }else return false;
+        } else
+            return false;
     }
 
-    /**@return Current set entity
+    /**
+     * @return Current set entity
      */
     public AnimatedEntity getEntity() {
         return animatedEntity;

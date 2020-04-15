@@ -1,0 +1,39 @@
+#version 400 core
+
+layout (vertices = 3) out;
+
+in vec2 pos_tcs_in[];
+in vec2 tex_tcs_in[];
+
+out vec2 pos_tes_in[];
+out vec2 tex_tes_in[];
+
+uniform vec3 camPos;
+uniform mat4 mMat;
+
+uniform vec3 tessArea;
+
+float getTessLevel(float d0, float d1){
+    float avgDistance = (d0 + d1) / 2.0;
+    return max(1.0, tessArea.x * exp(-pow((tessArea.y * avgDistance), tessArea.z))); //-- t(x) = tessFactor * e^-(tessDensity * x)^tessGradient
+}
+
+void main(void){
+    
+    // Set the control points of the output patch
+    pos_tes_in[gl_InvocationID] = pos_tcs_in[gl_InvocationID];
+    tex_tes_in[gl_InvocationID] = tex_tcs_in[gl_InvocationID];
+	
+    //Calculate Distance From CPs To Camera
+    float camDistance0 = distance(camPos.xz, pos_tcs_in[0] * mMat[0][0]);
+    float camDistance1 = distance(camPos.xz, pos_tcs_in[1] * mMat[0][0]);
+    float camDistance2 = distance(camPos.xz, pos_tcs_in[2] * mMat[0][0]);
+    
+    //Set Edge (Outer) Tesselation Levels
+    gl_TessLevelOuter[0] = getTessLevel(camDistance1, camDistance2);
+    gl_TessLevelOuter[1] = getTessLevel(camDistance2, camDistance0);
+    gl_TessLevelOuter[2] = getTessLevel(camDistance0, camDistance1);
+    
+    //Set Inner Tesselation Levels
+    gl_TessLevelInner[0] = gl_TessLevelOuter[0];
+}

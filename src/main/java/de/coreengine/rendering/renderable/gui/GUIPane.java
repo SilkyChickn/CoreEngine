@@ -36,279 +36,327 @@ import de.coreengine.util.Toolbox;
 import java.util.LinkedList;
 import java.util.List;
 
-/**Class that represent a pane for a gui
+/**
+ * Class that represent a pane for a gui
  *
  * @author Darius Dinger
  */
 public class GUIPane {
-    
-    //Childrens of this pane
+
+    // Childrens of this pane
     private final List<GUIPane> components = new LinkedList<>();
-    
-    //Parent pane
+
+    // Parent pane
     private GUIPane parent;
-    
-    //Text of the pane
+
+    // Text of the pane
     private GUIText text = new GUIText();
-    
-    //Transformation of the gui
+
+    // Transformation of the gui
     private Transformation transform = new Transformation();
-    
-    //Color and texture of the pane
+
+    // Color and texture of the pane
     private Color color = new Color();
     private String texture = Material.TEXTURE_BLACK;
-    
-    //Mouse picking
+
+    // Mouse picking
     private final Color pickColor;
-    
-    //Rendering text of the pane?
+
+    // Rendering text of the pane?
     private boolean renderText = false;
-    
-    /**Creating new GUI Pane and setting its parent
-     * or null, if no parent gui exist
+
+    /**
+     * Creating new GUI Pane and setting its parent or null, if no parent gui exist
      * 
      * @param parent Parent GUI or null
      */
     public GUIPane(GUIPane parent) {
-        
-        //Add to parent if exist
+
+        // Add to parent if exist
         this.parent = parent;
-        if(parent != null) parent.components.add(this);
-        
+        if (parent != null)
+            parent.components.add(this);
+
         pickColor = Toolbox.generateRandomColor();
     }
-    
-    /**Enable text of the pane
+
+    /**
+     * Enable text of the pane
      */
-    public void enableText(){
+    public void enableText() {
         renderText = true;
     }
-    
-    /**Disable text of the pane
+
+    /**
+     * Disable text of the pane
      */
-    public void disableText(){
+    public void disableText() {
         renderText = false;
     }
-    
-    /**@return Rendering text of the pane?
+
+    /**
+     * @return Rendering text of the pane?
      */
-    public boolean renderText(){
+    public boolean renderText() {
         return renderText;
     }
-    
-    /**@return Read/Writeable color of the pane
+
+    /**
+     * @return Read/Writeable color of the pane
      */
     public Color getColor() {
         return color;
     }
-    
-    /**@return TextureData of the pane
+
+    /**
+     * @return TextureData of the pane
      */
     public String getTexture() {
         return texture;
     }
-    
-    /**@param texture New texture of the pane
+
+    /**
+     * @param texture New texture of the pane
      */
     public void setTexture(String texture) {
         this.texture = texture;
     }
-    
-    /**@return Count of children/components
+
+    /**
+     * @return Count of children/components
      */
-    public int getComponentCount(){
+    public int getComponentCount() {
         return components.size();
     }
-    
-    /**@param id ID of the child (between 0 and componentCount)
+
+    /**
+     * @param id ID of the child (between 0 and componentCount)
      * @return Child with the ID id
      */
-    public GUIPane getComponent(int id){
+    public GUIPane getComponent(int id) {
         return components.get(id);
     }
-    
-    /**Setting vertical scale of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting vertical scale of the pane relative to the parent pane.<br>
      * scaleX = scaleX * parent.scaleX
      * 
      * @param scaleX Vertical scale
      */
     public void setScaleX(float scaleX) {
-        if(parent == null) transform.setScaleX(scaleX);
-        else transform.setScaleX(scaleX * parent.getScaleX());
+        if (parent == null)
+            transform.setScaleX(scaleX);
+        else
+            transform.setScaleX(scaleX * parent.getScaleX());
         text.setLineWidth(transform.getScaleX() * 2.0f);
     }
-    
-    /**Setting horizontal scale of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting horizontal scale of the pane relative to the parent pane.<br>
      * scaleY = scaleY * parent.scaleY
      * 
      * @param scaleY Horizontal scale
      */
     public void setScaleY(float scaleY) {
-        if(parent == null) transform.setScaleY(scaleY);
-        else transform.setScaleY(scaleY * parent.getScaleY());
+        if (parent == null)
+            transform.setScaleY(scaleY);
+        else
+            transform.setScaleY(scaleY * parent.getScaleY());
     }
-    
-    /**Getting vertical scale of the pane relative to the parent pane.
+
+    /**
+     * Getting vertical scale of the pane relative to the parent pane.
      * 
      * @return Vertical scale
      */
     public float getScaleX() {
         return transform.getScaleX();
     }
-    
-    /**Getting horizontal scale of the pane relative to the parent pane.
+
+    /**
+     * Getting horizontal scale of the pane relative to the parent pane.
      * 
      * @return Horizontal scale
      */
     public float getScaleY() {
         return transform.getScaleY();
     }
-    
-    /**Getting Z scale of the pane relative to the parent pane.
+
+    /**
+     * Getting Z scale of the pane relative to the parent pane.
      * 
      * @return Z scale
      */
     public float getScaleZ() {
         return transform.getScaleZ();
     }
-    
-    /**Setting x pos of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting x pos of the pane relative to the parent pane.<br>
      * posX = posX + parent.posX
      * 
      * @param posX X pos
      */
     public void setPosX(float posX) {
-        if(parent == null) transform.setPosX(posX);
-        else transform.setPosX(parent.getScaleX() * posX +parent.getPosX());
+        if (parent == null)
+            transform.setPosX(posX);
+        else
+            transform.setPosX(parent.getScaleX() * posX + parent.getPosX());
     }
-    
-    /**Setting y pos of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting y pos of the pane relative to the parent pane.<br>
      * posY = posY + parent.posY
      * 
      * @param posY Y pos
      */
     public void setPosY(float posY) {
-        if(parent == null) transform.setPosY(posY);
-        else transform.setPosY(parent.getScaleY() * posY +parent.getPosY());
+        if (parent == null)
+            transform.setPosY(posY);
+        else
+            transform.setPosY(parent.getScaleY() * posY + parent.getPosY());
     }
-    
-    /**Setting z pos of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting z pos of the pane relative to the parent pane.<br>
      * posZ = posZ + parent.posZ
      * 
      * @param posZ Z pos
      */
     public void setPosZ(float posZ) {
-        if(parent == null) transform.setPosZ(posZ);
-        else transform.setPosZ(parent.getScaleZ() * posZ +parent.getPosZ());
+        if (parent == null)
+            transform.setPosZ(posZ);
+        else
+            transform.setPosZ(parent.getScaleZ() * posZ + parent.getPosZ());
     }
-    
-    /**Setting x rotation of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting x rotation of the pane relative to the parent pane.<br>
      * rotX = rotX + parent.rotX
      * 
      * @param rotX X rotation
      */
     public void setRotX(float rotX) {
-        if(parent == null) transform.setRotX(rotX);
-        else transform.setRotX(rotX +parent.getRotX());
+        if (parent == null)
+            transform.setRotX(rotX);
+        else
+            transform.setRotX(rotX + parent.getRotX());
     }
-    
-    /**Setting y rotation of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting y rotation of the pane relative to the parent pane.<br>
      * rotY = rotY + parent.rotY
      * 
      * @param rotY Y rotation
      */
     public void setRotY(float rotY) {
-        if(parent == null) transform.setRotY(rotY);
-        else transform.setRotY(rotY +parent.getRotY());
+        if (parent == null)
+            transform.setRotY(rotY);
+        else
+            transform.setRotY(rotY + parent.getRotY());
     }
-    
-    /**Setting z rotation of the pane relative to the parent pane.<br>
+
+    /**
+     * Setting z rotation of the pane relative to the parent pane.<br>
      * rotZ = rotZ + parent.rotZ
      * 
      * @param rotZ Z rotation
      */
     public void setRotZ(float rotZ) {
-        if(parent == null) transform.setRotY(rotZ);
-        else transform.setRotZ(rotZ +parent.getRotZ());
+        if (parent == null)
+            transform.setRotY(rotZ);
+        else
+            transform.setRotZ(rotZ + parent.getRotZ());
     }
-    
-    /**Getting x rotation of the pane relative to the parent pane.
+
+    /**
+     * Getting x rotation of the pane relative to the parent pane.
      * 
      * @return X rotation
      */
     public float getRotX() {
         return transform.getRotX();
     }
-    
-    /**Getting y rotation of the pane relative to the parent pane.
+
+    /**
+     * Getting y rotation of the pane relative to the parent pane.
      * 
      * @return Y rotation
      */
     public float getRotY() {
         return transform.getRotY();
     }
-    
-    /**Getting z rotation of the pane relative to the parent pane.
+
+    /**
+     * Getting z rotation of the pane relative to the parent pane.
      * 
      * @return Z rotation
      */
     public float getRotZ() {
         return transform.getRotZ();
     }
-    
-    /**Getting x pos of the pane relative to the parent pane.
+
+    /**
+     * Getting x pos of the pane relative to the parent pane.
      * 
      * @return X pos
      */
     public float getPosX() {
         return transform.getPosX();
     }
-    
-    /**Getting y pos of the pane relative to the parent pane.
+
+    /**
+     * Getting y pos of the pane relative to the parent pane.
      * 
      * @return Y pos
      */
     public float getPosY() {
         return transform.getPosY();
     }
-    
-    /**Getting z pos of the pane relative to the parent pane.
+
+    /**
+     * Getting z pos of the pane relative to the parent pane.
      * 
      * @return Z pos
      */
     public float getPosZ() {
         return transform.getPosZ();
     }
-    
-    /**Returns true if mouse is over gui pane. <br>
+
+    /**
+     * Returns true if mouse is over gui pane. <br>
      * 
      * <b>Only works, if picking is enabled!!!</b>
      * 
      * @return Is mouse over gui
      */
-    public boolean isMouseOver(){
+    public boolean isMouseOver() {
         return pickColor.compare(MasterRenderer.getPickedColor());
     }
-    
-    /**@return Transformation matrix of the gui
+
+    /**
+     * @return Transformation matrix of the gui
      */
-    public float[] getTransMat(){
+    public float[] getTransMat() {
         return transform.getTransMatArr();
     }
-    
-    /**@return Rotation and position matrix of the gui
+
+    /**
+     * @return Rotation and position matrix of the gui
      */
-    public float[] getRotPosMat(){
+    public float[] getRotPosMat() {
         return Toolbox.matrixToFloatArray(transform.getRotPosMat());
     }
-    
-    /**@return Picking color for this gui
+
+    /**
+     * @return Picking color for this gui
      */
     public Color getPickColor() {
         return pickColor;
     }
-    
-    /**@return Get the ext for the gui pane
+
+    /**
+     * @return Get the ext for the gui pane
      */
     public GUIText getText() {
         return text;

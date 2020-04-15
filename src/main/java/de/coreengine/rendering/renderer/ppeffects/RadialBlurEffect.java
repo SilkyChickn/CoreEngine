@@ -34,79 +34,81 @@ import de.coreengine.util.Configuration;
 import javax.vecmath.Vector2f;
 import java.util.List;
 
-/**Effect that can apply an radial blur to the post processing process
+/**
+ * Effect that can apply an radial blur to the post processing process
  *
  * @author Darius Dinger
  */
-public class RadialBlurEffect extends PostProcessingEffect{
-    private static final float DEFAULT_INTENSITY = 
-            Configuration.getValuef("RADIAL_BLUR_DEFAULT_INTENSITY");
-    private static final float DEFAULT_BRIGHTNESS = 
-            Configuration.getValuef("RADIAL_BLUR_DEFAULT_BRIGHTNESS");
-    private static final int DEFAULT_QUALITY = 
-            Configuration.getValuei("RADIAL_BLUR_DEFAULT_QUALITY");
-    
-    //Intensity of the blur
+public class RadialBlurEffect extends PostProcessingEffect {
+    private static final float DEFAULT_INTENSITY = Configuration.getValuef("RADIAL_BLUR_DEFAULT_INTENSITY");
+    private static final float DEFAULT_BRIGHTNESS = Configuration.getValuef("RADIAL_BLUR_DEFAULT_BRIGHTNESS");
+    private static final int DEFAULT_QUALITY = Configuration.getValuei("RADIAL_BLUR_DEFAULT_QUALITY");
+
+    // Intensity of the blur
     private float intensity = DEFAULT_INTENSITY;
-    
-    //Brightness changing of the blur
+
+    // Brightness changing of the blur
     private float bightness = DEFAULT_BRIGHTNESS;
-    
-    //Origin of the blur
+
+    // Origin of the blur
     private Vector2f origin = new Vector2f(0.5f, 0.5f);
-    
-    //Quality of the blur
+
+    // Quality of the blur
     private int quality = DEFAULT_QUALITY;
-    
-    /**Creating new radial blur effect and setting shader
+
+    /**
+     * Creating new radial blur effect and setting shader
      */
     public RadialBlurEffect() {
         super(new RadialBlurPPShader());
-        
+
         reloadTexelSize();
         Window.addWindowListener((x, y, aspect) -> reloadTexelSize());
     }
-    
-    /**(Re)loading size of a texel into the shader
+
+    /**
+     * (Re)loading size of a texel into the shader
      */
-    private void reloadTexelSize(){
+    private void reloadTexelSize() {
         shader.start();
-        ((RadialBlurPPShader) shader).setSize(new Vector2f(
-                1.0f / Window.getWidth(), 1.0f / Window.getHeight()
-        ));
+        ((RadialBlurPPShader) shader).setSize(new Vector2f(1.0f / Window.getWidth(), 1.0f / Window.getHeight()));
         shader.stop();
     }
-    
+
     @Override
     protected void setUniforms() {
-        ((RadialBlurPPShader) shader).prepareBlur
-            (intensity, bightness, origin, quality);
+        ((RadialBlurPPShader) shader).prepareBlur(intensity, bightness, origin, quality);
     }
-    
-    /**@return Read/writeable origin of the blur
+
+    /**
+     * @return Read/writeable origin of the blur
      */
     public Vector2f getOrigin() {
         return origin;
     }
-    
-    /**@param bightness New brightness of the blur
+
+    /**
+     * @param bightness New brightness of the blur
      */
     public void setBightness(float bightness) {
         this.bightness = bightness;
     }
-    
-    /**@param intensity New intensity of the blur
+
+    /**
+     * @param intensity New intensity of the blur
      */
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
-    
-    /**@param quality New quality of the blur (iterations)
+
+    /**
+     * @param quality New quality of the blur (iterations)
      */
     public void setQuality(int quality) {
         this.quality = quality;
     }
-    
+
     @Override
-    public void addImpliedEffects(List<PostProcessingEffect> effects) {}
+    public void addImpliedEffects(List<PostProcessingEffect> effects) {
+    }
 }

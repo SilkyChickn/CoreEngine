@@ -37,42 +37,45 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-/**Class that can render a GUIText
+/**
+ * Class that can render a GUIText
  *
  * @author Darius Dinger
  */
 public class FontRenderer {
-    
+
     private FontShader shader = new FontShader();
-    
-    /**Render a list of texts onto the bound framebuffer
+
+    /**
+     * Render a list of texts onto the bound framebuffer
      * 
      * @param panesWithText GUIPanes with text to render
-     * @param cam Camera to render from
+     * @param cam           Camera to render from
      */
-    void render(List<GUIPane> panesWithText, Camera cam, boolean world){
-        
+    void render(List<GUIPane> panesWithText, Camera cam, boolean world) {
+
         shader.start();
-        
-        //render 2d or 3d?
-        if(world) shader.setVPMat(cam.getViewProjectionMatrix());
-        else shader.setVPMat(Window.getOrthoMatrix());
-        
+
+        // render 2d or 3d?
+        if (world)
+            shader.setVPMat(cam.getViewProjectionMatrix());
+        else
+            shader.setVPMat(Window.getOrthoMatrix());
+
         panesWithText.forEach(t -> {
-            if(t.renderText() && t.getText().getFont() != null){
+            if (t.renderText() && t.getText().getFont() != null) {
                 AssetDatabase.getFont(t.getText().getFont()).getVao().bind();
                 AssetDatabase.getFont(t.getText().getFont()).getVao().enableAttributes();
-                
+
                 shader.prepareText(t);
-                
-                for(GUIChar c: t.getText().getChars()){
+
+                for (GUIChar c : t.getText().getChars()) {
                     c.getIndex().bind();
-                    
+
                     shader.prepareChar(c);
-                    
-                    GL11.glDrawElements(GL11.GL_TRIANGLES, c.getIndex().getSize(), 
-                            GL11.GL_UNSIGNED_INT, 0);
-                    
+
+                    GL11.glDrawElements(GL11.GL_TRIANGLES, c.getIndex().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
                     c.getIndex().unbind();
                 }
 
@@ -80,7 +83,7 @@ public class FontRenderer {
                 AssetDatabase.getFont(t.getText().getFont()).getVao().unbind();
             }
         });
-        
+
         shader.stop();
     }
 }

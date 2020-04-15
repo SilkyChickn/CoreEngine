@@ -35,95 +35,94 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for a grassland renderer
+/**
+ * Shader for a grassland renderer
  *
  * @author Darius Dinger
  */
-public class GrasslandShader extends Shader{
-    
-    private final int bladesTextureUnit = 0, heightMapUnit = 1, lightMapUnit = 2, 
-            densityMapUnit = 3, windMapUnit = 4;
-    
-    //Uniform locations
-    private int amplitudeLoc, mMatTerrLoc, vpMat, scaleLoc, camPosLoc, tuftCount,
-            tuftDistanceLoc, bladesColorLoc, areaLoc, windOffsetLoc, windMapTiling, 
-            windIntensityLoc;
-    
-    @Override
-    protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "grassland.vert", true),
-                GL20.GL_VERTEX_SHADER, "Grassland Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "grassland.frag", true), 
-                GL20.GL_FRAGMENT_SHADER, "Grassland Fragment Shader");
-    }
-    
-    @Override
-    protected void bindAttribs() {
-        bindAttribute(0, "position");
-        bindAttribute(1, "texCoord");
-    }
-    
-    @Override
-    protected void loadUniforms() {
-        amplitudeLoc = getUniformLocation("amplitude");
-        mMatTerrLoc = getUniformLocation("mMatTerr");
-        vpMat = getUniformLocation("vpMat");
-        scaleLoc = getUniformLocation("scale");
-        camPosLoc = getUniformLocation("camPos");
-        tuftDistanceLoc = getUniformLocation("tuftDistance");
-        bladesColorLoc = getUniformLocation("bladesColor");
-        areaLoc = getUniformLocation("area");
-        windOffsetLoc = getUniformLocation("windOffset");
-        windMapTiling = getUniformLocation("windMapTiling");
-        windIntensityLoc = getUniformLocation("windIntensity");
-        tuftCount = getUniformLocation("tuftCount");
-        
-        bindTextureUnit("bladesTexture", bladesTextureUnit);
-        bindTextureUnit("heightMap", heightMapUnit);
-        bindTextureUnit("lightMap", lightMapUnit);
-        bindTextureUnit("densityMap", densityMapUnit);
-        bindTextureUnit("windMap", windMapUnit);
-    }
-    
-    /**Setting camera for next terrain
-     * 
-     * @param cam Next camera
-     */
-    public void setcamera(Camera cam){
-        setUniform(vpMat, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
-        setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y,
-                cam.getPosition().z);
-    }
-    
-    /**Preparing shader for next terrain
-     * 
-     * @param terrain Next terrain
-     */
-    public void prepareTerrain(Terrain terrain){
-        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getMesh().getMaterial().diffuseMap),
-                bladesTextureUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getDensityMap()),
-                densityMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getWindMap()),
-                windMapUnit, GL11.GL_TEXTURE_2D);
-        
-        setUniform(bladesColorLoc, terrain.getGrassland().getMesh().
-                getMaterial().diffuseColor);
-        setUniform(tuftDistanceLoc, terrain.getGrassland().getDistance());
-        setUniform(areaLoc, terrain.getGrassland().getArea().x,
-                terrain.getGrassland().getArea().y);
-        setUniform(windOffsetLoc, terrain.getGrassland().getWindOffset());
-        setUniform(windIntensityLoc, terrain.getGrassland().getWindIntensitivity());
-        setUniform(windMapTiling, terrain.getGrassland().getWindMapTiling());
-        setUniform(scaleLoc, terrain.getGrassland().getTuftScale());
-        setUniform(tuftCount, terrain.getGrassland().getDensity());
-        
-        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getHeightMap().getKey()),
-                heightMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(terrain.getConfig().getLightMap()),
-                lightMapUnit, GL11.GL_TEXTURE_2D);
-        
-        setUniform(amplitudeLoc, terrain.getConfig().getAmplitude());
-        setUniform(mMatTerrLoc, Toolbox.matrixToFloatArray(terrain.getTransMat()));
-    }
+public class GrasslandShader extends Shader {
+
+        private final int bladesTextureUnit = 0, heightMapUnit = 1, lightMapUnit = 2, densityMapUnit = 3,
+                        windMapUnit = 4;
+
+        // Uniform locations
+        private int amplitudeLoc, mMatTerrLoc, vpMat, scaleLoc, camPosLoc, tuftCount, tuftDistanceLoc, bladesColorLoc,
+                        areaLoc, windOffsetLoc, windMapTiling, windIntensityLoc;
+
+        @Override
+        protected void addShaders() {
+                addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "grassland.vert", true),
+                                GL20.GL_VERTEX_SHADER, "Grassland Vertex Shader");
+                addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "grassland.frag", true),
+                                GL20.GL_FRAGMENT_SHADER, "Grassland Fragment Shader");
+        }
+
+        @Override
+        protected void bindAttribs() {
+                bindAttribute(0, "position");
+                bindAttribute(1, "texCoord");
+        }
+
+        @Override
+        protected void loadUniforms() {
+                amplitudeLoc = getUniformLocation("amplitude");
+                mMatTerrLoc = getUniformLocation("mMatTerr");
+                vpMat = getUniformLocation("vpMat");
+                scaleLoc = getUniformLocation("scale");
+                camPosLoc = getUniformLocation("camPos");
+                tuftDistanceLoc = getUniformLocation("tuftDistance");
+                bladesColorLoc = getUniformLocation("bladesColor");
+                areaLoc = getUniformLocation("area");
+                windOffsetLoc = getUniformLocation("windOffset");
+                windMapTiling = getUniformLocation("windMapTiling");
+                windIntensityLoc = getUniformLocation("windIntensity");
+                tuftCount = getUniformLocation("tuftCount");
+
+                bindTextureUnit("bladesTexture", bladesTextureUnit);
+                bindTextureUnit("heightMap", heightMapUnit);
+                bindTextureUnit("lightMap", lightMapUnit);
+                bindTextureUnit("densityMap", densityMapUnit);
+                bindTextureUnit("windMap", windMapUnit);
+        }
+
+        /**
+         * Setting camera for next terrain
+         * 
+         * @param cam Next camera
+         */
+        public void setcamera(Camera cam) {
+                setUniform(vpMat, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
+                setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
+        }
+
+        /**
+         * Preparing shader for next terrain
+         * 
+         * @param terrain Next terrain
+         */
+        public void prepareTerrain(Terrain terrain) {
+                bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getMesh().getMaterial().diffuseMap),
+                                bladesTextureUnit, GL11.GL_TEXTURE_2D);
+                bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getDensityMap()), densityMapUnit,
+                                GL11.GL_TEXTURE_2D);
+                bindTexture(AssetDatabase.getTexture(terrain.getGrassland().getWindMap()), windMapUnit,
+                                GL11.GL_TEXTURE_2D);
+
+                setUniform(bladesColorLoc, terrain.getGrassland().getMesh().getMaterial().diffuseColor);
+                setUniform(tuftDistanceLoc, terrain.getGrassland().getDistance());
+                setUniform(areaLoc, terrain.getGrassland().getArea().x, terrain.getGrassland().getArea().y);
+                setUniform(windOffsetLoc, terrain.getGrassland().getWindOffset());
+                setUniform(windIntensityLoc, terrain.getGrassland().getWindIntensitivity());
+                setUniform(windMapTiling, terrain.getGrassland().getWindMapTiling());
+                setUniform(scaleLoc, terrain.getGrassland().getTuftScale());
+                setUniform(tuftCount, terrain.getGrassland().getDensity());
+
+                bindTexture(AssetDatabase.getTexture(terrain.getConfig().getHeightMap().getKey()), heightMapUnit,
+                                GL11.GL_TEXTURE_2D);
+                bindTexture(AssetDatabase.getTexture(terrain.getConfig().getLightMap()), lightMapUnit,
+                                GL11.GL_TEXTURE_2D);
+
+                setUniform(amplitudeLoc, terrain.getConfig().getAmplitude());
+                setUniform(mMatTerrLoc, Toolbox.matrixToFloatArray(terrain.getTransMat()));
+        }
 }

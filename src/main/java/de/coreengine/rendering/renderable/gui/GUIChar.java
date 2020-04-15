@@ -31,34 +31,39 @@ import de.coreengine.util.gl.IndexBuffer;
 
 import javax.vecmath.Vector2f;
 
-/**Class that represent a renderable character
+/**
+ * Class that represent a renderable character
  *
  * @author Darius Dinger
  */
 public class GUIChar {
-    
-    //Index buffer of this character
+
+    // Index buffer of this character
     private IndexBuffer index;
-    
-    //Offset of this particular char
+
+    // Offset of this particular char
     private Vector2f offset = new Vector2f();
-    
-    //Package only constructor
-    GUIChar() {}
-    
-    /**@return Offset of this particular char
+
+    // Package only constructor
+    GUIChar() {
+    }
+
+    /**
+     * @return Offset of this particular char
      */
     public Vector2f getOffset() {
         return offset;
     }
-    
-    /**@param index Index buffer of this character
+
+    /**
+     * @param index Index buffer of this character
      */
     public void setIndex(IndexBuffer index) {
         this.index = index;
     }
-    
-    /**@return Index buffer of this character
+
+    /**
+     * @return Index buffer of this character
      */
     public IndexBuffer getIndex() {
         return index;

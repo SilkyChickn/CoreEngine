@@ -35,29 +35,29 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for the skybox renderer
+/**
+ * Shader for the skybox renderer
  *
  * @author Darius Dinger
  */
-public class SkyboxShader extends Shader{
+public class SkyboxShader extends Shader {
     private static final int MAX_CUBE_MAPS = 10;
-    
-    private int blendingFactorsLoc, vpMatLoc, transMatLoc, sizeLoc, camPosLoc ,
-            cubeMapCountLoc, cubeMapTexturesLoc;
-    
+
+    private int blendingFactorsLoc, vpMatLoc, transMatLoc, sizeLoc, camPosLoc, cubeMapCountLoc, cubeMapTexturesLoc;
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "skybox.vert", true),
-                    GL20.GL_VERTEX_SHADER, "Skybox Vertex Shader");
-            addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "skybox.frag", true), 
-                    GL20.GL_FRAGMENT_SHADER, "Skybox Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "skybox.vert", true), GL20.GL_VERTEX_SHADER,
+                "Skybox Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "skybox.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Skybox Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         sizeLoc = getUniformLocation("size");
@@ -68,47 +68,50 @@ public class SkyboxShader extends Shader{
         cubeMapCountLoc = getUniformLocation("cubeMapCount");
         cubeMapTexturesLoc = getUniformLocation("cubeMapTextures");
     }
-    
-    /**Setting thescaling of the skybox
+
+    /**
+     * Setting thescaling of the skybox
      * 
      * @param size New scaling
      */
-    public void setSkyboxSize(float size){
+    public void setSkyboxSize(float size) {
         setUniform(sizeLoc, size);
     }
-    
-    /**Setting the camera to render next skyboxes from
+
+    /**
+     * Setting the camera to render next skyboxes from
      * 
      * @param cam Camera to set
      */
-    public void setCamera(Camera cam){
+    public void setCamera(Camera cam) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
         setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
     }
-    
-    /**Preparing next skybox
+
+    /**
+     * Preparing next skybox
      * 
      * @param skybox Next skybox to render
      */
-    public void prepareSkybox(Skybox skybox){
-        
-        //Cap cube map count at limit
+    public void prepareSkybox(Skybox skybox) {
+
+        // Cap cube map count at limit
         int cubeMapCount = Integer.min(MAX_CUBE_MAPS, skybox.getCubeMapTextures().length);
-        
-        //Preparing array
+
+        // Preparing array
         float[] blendFactors = new float[cubeMapCount];
         int[] cubeMapTextureUnits = new int[cubeMapCount];
-        
-        //Fill array and loading textures
-        for(int i = 0; i < cubeMapCount; i++){
+
+        // Fill array and loading textures
+        for (int i = 0; i < cubeMapCount; i++) {
             blendFactors[i] = skybox.getBlendingFactors()[i];
-            
-            //Load texture
+
+            // Load texture
             cubeMapTextureUnits[i] = i;
             bindTexture(AssetDatabase.getTexture(skybox.getCubeMapTextures()[i]), i, GL13.GL_TEXTURE_CUBE_MAP);
         }
-        
-        //Load arrays and skybox stuff
+
+        // Load arrays and skybox stuff
         setUniform(cubeMapCountLoc, cubeMapCount);
         setUniformArray1i(cubeMapTexturesLoc, cubeMapTextureUnits);
         setUniformArray1f(blendingFactorsLoc, blendFactors);

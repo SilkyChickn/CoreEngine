@@ -27,44 +27,46 @@
  */
 package de.coreengine.network;
 
-/**Class that handles network messenges
+/**
+ * Class that handles network messenges
  *
  * @author Darius Dinger
  */
 public class Protocol {
-    
+
     static final String HANDSHAKE_BANNER = "handshake";
     static final String SEPERATOR = ";";
-    
+
     static final String HANDSHAKE_ACCEPTED = "accepted";
     static final String HANDSHAKE_FULL = "full";
     static final String HANDSHAKE_WRONG_PASSWORD = "password";
     static final String HANDSHAKE_BANNED = "banned";
     static final String HANDSHAKE_NAME_NOT_AVAILABLE = "name";
-    
+
     static final String KICKED_BANNER = "kicked";
     static final String BANNED_BANNER = "banned";
-    
+
     static final String TIMEOUT_EXPIRED = KICKED_BANNER + SEPERATOR + "timeout";
     static final String STREAM_ENDED = KICKED_BANNER + SEPERATOR + "stream_ended";
     static final String HOSTER_CLOSED = KICKED_BANNER + SEPERATOR + "hoster_closed";
     static final String SERVER_CLOSED = KICKED_BANNER + SEPERATOR + "server_closed";
-    
+
     static final String TAGGED_BANNER = "tagged";
-    
+
     static final String JOINED_BANNER = "joined";
     static final String LEFT_BANNER = "left";
-    
-    /**Checking, if a handshake message of a client is acceptable
+
+    /**
+     * Checking, if a handshake message of a client is acceptable
      * 
-     * @param msg Handshake message from client
+     * @param msg      Handshake message from client
      * @param password Password of the server
      * @return Playername if password is correct else null
      */
-    static String checkHandShakeMessage(String msg, String password){
+    static String checkHandShakeMessage(String msg, String password) {
         String[] args = msg.split(SEPERATOR);
-        boolean accept = args[0].equals(HANDSHAKE_BANNER) && ((args.length > 2 &&  
-                args[2].equals(password)) || password.equals(""));
+        boolean accept = args[0].equals(HANDSHAKE_BANNER)
+                && ((args.length > 2 && args[2].equals(password)) || password.equals(""));
         return accept ? args[1] : null;
     }
 }

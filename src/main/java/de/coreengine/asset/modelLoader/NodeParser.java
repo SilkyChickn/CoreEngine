@@ -37,13 +37,14 @@ import java.util.List;
 
 public class NodeParser {
 
-    //Input
+    // Input
     private final AINode aiNode;
 
-    //Output
+    // Output
     private Joint skeleton;
 
-    /**Creates new node data to parse ai nodes
+    /**
+     * Creates new node data to parse ai nodes
      *
      * @param aiNode AINode to parse
      */
@@ -51,77 +52,81 @@ public class NodeParser {
         this.aiNode = aiNode;
     }
 
-    /**Parsing data from the ai node
+    /**
+     * Parsing data from the ai node
      */
-    public void parse(List<BoneParser> bones){
+    public void parse(List<BoneParser> bones) {
         skeleton = createJoint(aiNode, bones);
         skeleton.calcBindPose(null);
         skeleton.calcAnimatedTransformAndPose(null);
     }
 
-    /**Recursively creating joint hierarchy from aiNode.
+    /**
+     * Recursively creating joint hierarchy from aiNode.
      *
      * @param aiNode AINode of the joint to create
-     * @param bones Loaded bones of the mesh
+     * @param bones  Loaded bones of the mesh
      * @return Created hierarchy
      */
-    private Joint createJoint(AINode aiNode, List<BoneParser> bones){
+    private Joint createJoint(AINode aiNode, List<BoneParser> bones) {
 
-        //Get bone id
+        // Get bone id
         int nodeId = -1;
         String nodeName = aiNode.mName().dataString();
-        for(int b = 0; b < bones.size(); b++){
-            if(bones.get(b).getName().equals(nodeName)){
+        for (int b = 0; b < bones.size(); b++) {
+            if (bones.get(b).getName().equals(nodeName)) {
                 nodeId = b;
                 break;
             }
         }
 
-        //If bone to node found
-        if(nodeId >= 0){
+        // If bone to node found
+        if (nodeId >= 0) {
 
-            //Create this joint
+            // Create this joint
             Matrix4f localBindPose = aiMatToMat(aiNode.mTransformation());
             Joint joint = new Joint(nodeId, nodeName, bones.get(nodeId).getOffsetMatrix(), localBindPose);
 
-            //Create and parse children recursively children
+            // Create and parse children recursively children
             int childCount = aiNode.mNumChildren();
-            for(int i = 0; i < childCount; i++){
+            for (int i = 0; i < childCount; i++) {
                 AINode aiChild = AINode.create(aiNode.mChildren().get(i));
                 Joint child = createJoint(aiChild, bones);
-                if(child != null) joint.addChild(child);
+                if (child != null)
+                    joint.addChild(child);
             }
 
             return joint;
-        }else{
+        } else {
 
-            //Create and parse children recursively children
+            // Create and parse children recursively children
             int childCount = aiNode.mNumChildren();
-            for(int i = 0; i < childCount; i++){
+            for (int i = 0; i < childCount; i++) {
                 AINode aiChild = AINode.create(aiNode.mChildren().get(i));
                 Joint child = createJoint(aiChild, bones);
-                if(child != null) return child;
+                if (child != null)
+                    return child;
             }
         }
 
-        //No root found, returning null
+        // No root found, returning null
         return null;
     }
 
-    /**Converting AIMatrix4x4 into a Matrix4f
+    /**
+     * Converting AIMatrix4x4 into a Matrix4f
      *
      * @param aiMat AIMatrix4x4 input
      * @return Matrix4f output
      */
-    private Matrix4f aiMatToMat(AIMatrix4x4 aiMat){
-        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a4(),
-                aiMat.b1(), aiMat.b2(), aiMat.b3(), aiMat.b4(),
-                aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c4(),
-                aiMat.d1(), aiMat.d2(), aiMat.d3(), aiMat.d4()
-        );
+    private Matrix4f aiMatToMat(AIMatrix4x4 aiMat) {
+        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a4(), aiMat.b1(), aiMat.b2(), aiMat.b3(),
+                aiMat.b4(), aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c4(), aiMat.d1(), aiMat.d2(), aiMat.d3(),
+                aiMat.d4());
     }
 
-    /**@return Parsed skeleton
+    /**
+     * @return Parsed skeleton
      */
     public Joint getSkeleton() {
         return skeleton;

@@ -29,27 +29,29 @@ package de.coreengine.rendering.model;
 
 import de.coreengine.util.gl.IndexBuffer;
 
-/**Class that represent a character of a font
+/**
+ * Class that represent a character of a font
  *
  * @author Darius Dinger
  */
 public class Character {
-    
-    //Offset of the character relative to the cursor
+
+    // Offset of the character relative to the cursor
     private final float offsetx, offsety;
-    
-    //Moving of the cursor after this char
+
+    // Moving of the cursor after this char
     private final float advancex;
-    
-    //Indexbuffer of the character texture
+
+    // Indexbuffer of the character texture
     private final IndexBuffer index;
-    
-    /**Creating new character for a font
+
+    /**
+     * Creating new character for a font
      * 
-     * @param offsetx X offset of the character relative to the cursor
-     * @param offsety Y offset of the character relative to the cursor
+     * @param offsetx  X offset of the character relative to the cursor
+     * @param offsety  Y offset of the character relative to the cursor
      * @param advancex Moving of the cursor after this char
-     * @param index Indexbuffer of the character texture
+     * @param index    Indexbuffer of the character texture
      */
     public Character(float offsetx, float offsety, float advancex, IndexBuffer index) {
         this.offsetx = offsetx;
@@ -57,26 +59,30 @@ public class Character {
         this.advancex = advancex;
         this.index = index;
     }
-    
-    /**@return Moving of the cursor after this char
+
+    /**
+     * @return Moving of the cursor after this char
      */
     public float getAdvancex() {
         return advancex;
     }
-    
-    /**@return Indexbuffer of the character texture
+
+    /**
+     * @return Indexbuffer of the character texture
      */
     public IndexBuffer getIndex() {
         return index;
     }
-    
-    /**@return Y offset of the character relative to the cursor
+
+    /**
+     * @return Y offset of the character relative to the cursor
      */
     public float getOffsetx() {
         return offsetx;
     }
-    
-    /**@return X offset of the character relative to the cursor
+
+    /**
+     * @return X offset of the character relative to the cursor
      */
     public float getOffsety() {
         return offsety;

@@ -36,41 +36,42 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-/**Class that can load a sound file
+/**
+ * Class that can load a sound file
  *
  * @author Darius Dinger
  */
 public class OggLoader {
 
-    /**Loading ogg sound file and storing into asset database
+    /**
+     * Loading ogg sound file and storing into asset database
      *
      * @param file Ogg sound file
      */
-    public static void loadSound(String file){
-        if(AssetDatabase.sounds.containsKey(file)) return;
+    public static void loadSound(String file) {
+        if (AssetDatabase.sounds.containsKey(file))
+            return;
 
         ShortBuffer audioData;
         int channels, sampleRate;
-        
-        try(MemoryStack stack = MemoryStack.stackPush()){
-            
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+
             IntBuffer channelsBuffer = stack.mallocInt(1);
             IntBuffer sampleRateBuffer = stack.mallocInt(1);
-            
-            //Load sound file into buffers
-            audioData = STBVorbis.stb_vorbis_decode_filename
-                (file, channelsBuffer, sampleRateBuffer);
-            if(audioData == null){
-                Logger.warn("Error by loading audio", "The audio file " + file +
-                        " could not be loaded!");
+
+            // Load sound file into buffers
+            audioData = STBVorbis.stb_vorbis_decode_filename(file, channelsBuffer, sampleRateBuffer);
+            if (audioData == null) {
+                Logger.warn("Error by loading audio", "The audio file " + file + " could not be loaded!");
             }
-            
-            //Get data from buffers
+
+            // Get data from buffers
             channels = channelsBuffer.get();
             sampleRate = sampleRateBuffer.get();
         }
-        
-        //Getting format (Mono/Stereo)
+
+        // Getting format (Mono/Stereo)
         int format = AL10.AL_FORMAT_MONO16;
         switch (channels) {
             case 1:
@@ -84,15 +85,15 @@ public class OggLoader {
                         "The audio format for " + file + " couldn't be extracted!");
                 break;
         }
-        
-        //Create audio buffer
+
+        // Create audio buffer
         int sound = AL10.alGenBuffers();
         MemoryDumper.addAudioBuffer(sound);
-        
-        //Load audio into buffer
+
+        // Load audio into buffer
         assert audioData != null;
         AL10.alBufferData(sound, format, audioData, sampleRate);
-        
+
         AssetDatabase.sounds.put(file, sound);
     }
 }

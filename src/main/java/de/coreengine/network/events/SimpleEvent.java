@@ -29,39 +29,43 @@ package de.coreengine.network.events;
 
 import de.coreengine.network.Event;
 
-/**Simpleevent class, that can handle an event in the network
+/**
+ * Simpleevent class, that can handle an event in the network
  *
  * @author Darius Dinger
  */
-public class SimpleEvent extends Event{
-    
+public class SimpleEvent extends Event {
+
     private boolean triggered = false;
-    
-    /**Creating a simple event to trigger things over a network
+
+    /**
+     * Creating a simple event to trigger things over a network
      * 
      * @param tag Tag of the event in the network
      */
     public SimpleEvent(String tag) {
         super(tag);
     }
-    
-    /**Trigger the event in the network
+
+    /**
+     * Trigger the event in the network
      */
-    public void trigger(){
+    public void trigger() {
         eventOccured();
     }
-    
-    /**@return Was the event triggered
+
+    /**
+     * @return Was the event triggered
      */
-    public boolean check(){
+    public boolean check() {
         return triggered;
     }
-    
+
     @Override
     protected void event(String event) {
         triggered = event != null;
     }
-    
+
     @Override
     protected String event() {
         return "trig";

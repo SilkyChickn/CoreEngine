@@ -31,61 +31,66 @@ import de.coreengine.util.gl.VertexArrayObject;
 
 import java.util.HashMap;
 
-/**Class that represent a font to render text
+/**
+ * Class that represent a font to render text
  *
  * @author Darius Dinger
  */
 public class Font {
-    
-    //TextureData atlas image of the font
+
+    // TextureData atlas image of the font
     private final String textureAtlas;
-    
-    //Characters of the font sirtet by ascii
+
+    // Characters of the font sirtet by ascii
     private final HashMap<Integer, Character> characters;
-    
-    //Vertex array object of the character models
+
+    // Vertex array object of the character models
     private final VertexArrayObject vao;
-    
-    //Height of a line of text
+
+    // Height of a line of text
     private final float lineHeight;
-    
-    /**Creating new font
+
+    /**
+     * Creating new font
      * 
      * @param textureAtlas TextureData atlas image of the font
-     * @param characters Characters of the font sirtet by ascii
-     * @param vao Vertex array object of the character models
-     * @param lineHeight Height of a line of text
+     * @param characters   Characters of the font sirtet by ascii
+     * @param vao          Vertex array object of the character models
+     * @param lineHeight   Height of a line of text
      */
-    public Font(String textureAtlas, HashMap<Integer, Character> characters,
-            VertexArrayObject vao, float lineHeight) {
+    public Font(String textureAtlas, HashMap<Integer, Character> characters, VertexArrayObject vao, float lineHeight) {
         this.textureAtlas = textureAtlas;
         this.characters = characters;
         this.vao = vao;
         this.lineHeight = lineHeight;
     }
-    
-    /**@return TextureData atlas image of the font
+
+    /**
+     * @return TextureData atlas image of the font
      */
     public String getTextureAtlas() {
         return textureAtlas;
     }
-    
-    /**Getting character for specific ascii
+
+    /**
+     * Getting character for specific ascii
      * 
      * @param ascii Ascii of the char
      * @return Character of ascii
      */
-    public Character getCharacter(int ascii){
+    public Character getCharacter(int ascii) {
         return characters.get(ascii);
     }
-    
-    /**@return VAO of the font chars
+
+    /**
+     * @return VAO of the font chars
      */
     public VertexArrayObject getVao() {
         return vao;
     }
-    
-    /**@return Height of a line of text
+
+    /**
+     * @return Height of a line of text
      */
     public float getLineHeight() {
         return lineHeight;

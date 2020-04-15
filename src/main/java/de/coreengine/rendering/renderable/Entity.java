@@ -29,33 +29,56 @@ package de.coreengine.rendering.renderable;
 
 import de.coreengine.rendering.model.Transformation;
 
-/**Class that represents an entity in the world
+/**
+ * Class that represents an entity in the world
  *
  * @author Darius Dinger
  */
 public class Entity {
-    
-    //Transformation of the entity
+
+    // Transformation of the entity
     private Transformation transform = new Transformation();
-    
-    //Model of the entity
+
+    // Model of the entity
     private String model = null;
-    
-    /**@param model New model of the entity
+
+    // Should the entity rotate and move with the camera
+    private boolean rotateWithCam = false;
+
+    /**
+     * @param model New model of the entity
      */
     public void setModel(String model) {
         this.model = model;
     }
-    
-    /**@return Read/writeable transformation of the entity
+
+    /**
+     * @return Read/writeable transformation of the entity
      */
     public Transformation getTransform() {
         return transform;
     }
-    
-    /**@return Model of the entity
+
+    /**
+     * @return Model of the entity
      */
     public String getModel() {
         return model;
+    }
+
+    /**
+     * Should the entity rotate and move with the camera
+     * 
+     * @param rotateWithCam New value
+     */
+    public void setRotateWithCam(boolean rotateWithCam) {
+        this.rotateWithCam = rotateWithCam;
+    }
+
+    /**
+     * @return Should the entity rotate and move with the camera
+     */
+    public boolean isRotateWithCam() {
+        return rotateWithCam;
     }
 }

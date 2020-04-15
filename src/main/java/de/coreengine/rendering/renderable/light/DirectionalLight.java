@@ -29,16 +29,18 @@ package de.coreengine.rendering.renderable.light;
 
 import javax.vecmath.Vector3f;
 
-/**Represents a directional light in the scene
+/**
+ * Represents a directional light in the scene
  *
  * @author Darius Dinger
  */
-public class DirectionalLight extends AmbientLight{
-    
-    //Direction, the light is shining to
+public class DirectionalLight extends AmbientLight {
+
+    // Direction, the light is shining to
     private Vector3f direction = new Vector3f();
-    
-    /**Getting the direction, the light is shining to as vector (x, y, z).<br>
+
+    /**
+     * Getting the direction, the light is shining to as vector (x, y, z).<br>
      * f.e. (0, 1, 0) is pointing upwards.
      * 
      * @return Direction of the light

@@ -37,46 +37,49 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-/**Class that can render 2d/3d gui elements/panes
+/**
+ * Class that can render 2d/3d gui elements/panes
  *
  * @author Darius Dinger
  */
 public class GUIRenderer {
-    
+
     private GUIShader shader = new GUIShader();
-    
-    /**Rendering a gui onto the bound framebuffer
+
+    /**
+     * Rendering a gui onto the bound framebuffer
      *
-     * @param guis GUIs to render
-     * @param cam Camera to render from for 3d guis
+     * @param guis  GUIs to render
+     * @param cam   Camera to render from for 3d guis
      * @param world Place the gui into the 3d world
      */
-    void render(List<GUIPane> guis, Camera cam, boolean world){
-        
+    void render(List<GUIPane> guis, Camera cam, boolean world) {
+
         Mesh model = Quad2D.getInstance();
-        
+
         shader.start();
-        
-        //render 2d or 3d?
-        if(world) shader.setVPMat(cam.getViewProjectionMatrix());
-        else shader.setVPMat(Window.getOrthoMatrix());
-        
+
+        // render 2d or 3d?
+        if (world)
+            shader.setVPMat(cam.getViewProjectionMatrix());
+        else
+            shader.setVPMat(Window.getOrthoMatrix());
+
         model.getVao().bind();
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
-        
+
         guis.forEach(gui -> {
-            
-            //Render pane
+
+            // Render pane
             shader.prepareGui(gui);
-            GL11.glDrawElements(GL11.GL_TRIANGLES, 
-                    model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
         });
-        
+
         model.getIndexBuffer().unbind();
         model.getVao().disableAttributes();
         model.getVao().unbind();
-        
+
         shader.stop();
     }
 }

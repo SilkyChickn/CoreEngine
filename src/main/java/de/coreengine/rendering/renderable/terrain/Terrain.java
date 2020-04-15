@@ -36,169 +36,188 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-/**Class that represents a terrain in the scene
+/**
+ * Class that represents a terrain in the scene
  *
  * @author Darius Dinger
  */
 public class Terrain {
-    
-    //Default terrain horizontal scale
-    private static final float DEFAULT_SIZE = 
-            Configuration.getValuef("TERRAIN_DEFAULT_SIZE");
-    
-    //Terrain root nodes that defining the terrain quad tree
+
+    // Default terrain horizontal scale
+    private static final float DEFAULT_SIZE = Configuration.getValuef("TERRAIN_DEFAULT_SIZE");
+
+    // Terrain root nodes that defining the terrain quad tree
     private final TerrainNode terrainQuadtree;
-    
-    //Terrains transformation matrix for scale and position
+
+    // Terrains transformation matrix for scale and position
     private final Matrix4f transMat;
-    
-    //Terrains configuration
+
+    // Terrains configuration
     private TerrainConfig config = new TerrainConfig();
-    
-    //Grassland of the terrain
+
+    // Grassland of the terrain
     private Grassland grassland = new Grassland();
-    
-    //Should grassland be rendered/updated
+
+    // Should grassland be rendered/updated
     private boolean grasslandEnabled = false;
-    
-    //Collision shape of the terrain
+
+    // Collision shape of the terrain
     private CollisionShape shape;
-    
-    /**Creates a new terrain with default values, defined in the configuration file
+
+    /**
+     * Creates a new terrain with default values, defined in the configuration file
      */
     public Terrain() {
-        
-        //Prepare transformation matrix and set default size
+
+        // Prepare transformation matrix and set default size
         transMat = new Matrix4f();
         transMat.setIdentity();
         transMat.setScale(DEFAULT_SIZE);
-        
-        //Create quadtree/root node
+
+        // Create quadtree/root node
         terrainQuadtree = new TerrainNode(null, null, new Vector2f(0, 0), 1.0f, 0, this);
     }
-    
-    /**Setting the new configuration of the terrain
+
+    /**
+     * Setting the new configuration of the terrain
      * 
      * @param config New configuration
      */
     public void setConfig(TerrainConfig config) {
         this.config = config;
     }
-    
-    /**@return Currents terrain configuration
+
+    /**
+     * @return Currents terrain configuration
      */
     public TerrainConfig getConfig() {
         return config;
     }
-    
-    /**Returning the terrain quadtree (the root nodes of the tree)
+
+    /**
+     * Returning the terrain quadtree (the root nodes of the tree)
      * 
      * @return Terrain root nodes
      */
     public TerrainNode getTerrainQuadtree() {
         return terrainQuadtree;
     }
-    
-    /**Aligning the terrain quadtree to the position pos. At pos the terrain 
-     * has the highest lod. From pos the lod decreases.
+
+    /**
+     * Aligning the terrain quadtree to the position pos. At pos the terrain has the
+     * highest lod. From pos the lod decreases.
      * 
      * @param pos Position to align to
      */
-    public void alignTo(Vector3f pos){
+    public void alignTo(Vector3f pos) {
         terrainQuadtree.alignTo(pos);
     }
-    
-    /**Sets the terrain horizontal scale/size
+
+    /**
+     * Sets the terrain horizontal scale/size
      * 
      * @param scale New scale of the terrain
      */
-    public void setScale(float scale){
+    public void setScale(float scale) {
         transMat.setScale(scale);
     }
-    
-    /**Sets the x position of the terrains (0, 0) point
+
+    /**
+     * Sets the x position of the terrains (0, 0) point
      * 
      * @param x New x position
      */
-    public void setX(float x){
+    public void setX(float x) {
         transMat.m03 = x;
     }
-    
-    /**Sets the y position of the terrains (0, 0) point
+
+    /**
+     * Sets the y position of the terrains (0, 0) point
      * 
      * @param y New y position
      */
-    public void setY(float y){
+    public void setY(float y) {
         transMat.m13 = y;
     }
-    
-    /**Sets the z position of the terrains (0, 0) point
+
+    /**
+     * Sets the z position of the terrains (0, 0) point
      * 
      * @param z New z position
      */
-    public void setZ(float z){
+    public void setZ(float z) {
         transMat.m23 = z;
     }
-    
-    /**@return Terrains current transformation matrix
+
+    /**
+     * @return Terrains current transformation matrix
      */
     public Matrix4f getTransMat() {
         return transMat;
     }
-    
-    /**@return Horizontal scale/size of the terrain
+
+    /**
+     * @return Horizontal scale/size of the terrain
      */
-    public float getScale(){
+    public float getScale() {
         return transMat.m00;
     }
-    
-    /**@return X position of the terrain
+
+    /**
+     * @return X position of the terrain
      */
-    public float getX(){
+    public float getX() {
         return transMat.m03;
     }
-    
-    /**@return Y position of the terrain
+
+    /**
+     * @return Y position of the terrain
      */
-    public float getY(){
+    public float getY() {
         return transMat.m13;
     }
-    
-    /**@return Z position of the terrain
+
+    /**
+     * @return Z position of the terrain
      */
-    public float getZ(){
+    public float getZ() {
         return transMat.m23;
     }
-    
-    /**@return Grassland of the terrain
+
+    /**
+     * @return Grassland of the terrain
      */
     public Grassland getGrassland() {
         return grassland;
     }
-    
-    /**@return Should grassland be rendered
+
+    /**
+     * @return Should grassland be rendered
      */
     public boolean isGrasslandEnabled() {
         return grasslandEnabled;
     }
-    
-    /**@param grasslandEnabled Should grassland be rendered/updated
+
+    /**
+     * @param grasslandEnabled Should grassland be rendered/updated
      */
     public void setGrasslandEnabled(boolean grasslandEnabled) {
         this.grasslandEnabled = grasslandEnabled;
     }
-    
-    /**@return Collision shpe of the terrain. Only use in static rigid bodys!
+
+    /**
+     * @return Collision shpe of the terrain. Only use in static rigid bodys!
      */
     public CollisionShape getShape() {
         return shape;
     }
-    
-    /**Recalculate the terrain collision shape
+
+    /**
+     * Recalculate the terrain collision shape
      * 
      * @param resolution Number of quads per row/column of the shape
      */
-    public void recalcCollisionShape(int resolution){
+    public void recalcCollisionShape(int resolution) {
         shape = TerrainShapeCreator.createTerrainShape(this, resolution);
     }
 }

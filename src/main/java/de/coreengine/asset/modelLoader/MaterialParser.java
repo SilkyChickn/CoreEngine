@@ -40,13 +40,15 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public class MaterialParser {
 
-    //Input
+    // Input
     private final AIMaterial aiMaterial;
 
-    //Output
+    // Output
     private final MaterialData materialData = new MaterialData();
 
-    /**Creating new material data that can parse ai materials into materials and dataStructures materials
+    /**
+     * Creating new material data that can parse ai materials into materials and
+     * dataStructures materials
      *
      * @param aiMaterial AIMaterial to parse
      */
@@ -54,76 +56,78 @@ public class MaterialParser {
         this.aiMaterial = aiMaterial;
     }
 
-    /**Parse ai materials into materials and dataStructures materials
+    /**
+     * Parse ai materials into materials and dataStructures materials
      */
-    public void parse(){
+    public void parse() {
 
-        //Data buffers
+        // Data buffers
         AIColor4D color = AIColor4D.create();
         AIString path = AIString.create();
         float[] floot = new float[1];
 
-        //Load diffuse texture
-        if(getTexturePath(aiTextureType_DIFFUSE, path)){
+        // Load diffuse texture
+        if (getTexturePath(aiTextureType_DIFFUSE, path)) {
             materialData.diffuseMap = path.dataString();
         }
 
-        //Load normal texture
-        if(getTexturePath(aiTextureType_NORMALS, path)){
+        // Load normal texture
+        if (getTexturePath(aiTextureType_NORMALS, path)) {
             materialData.normalMap = path.dataString();
         }
 
-        //Load specular texture
-        if(getTexturePath(aiTextureType_SPECULAR, path)){
+        // Load specular texture
+        if (getTexturePath(aiTextureType_SPECULAR, path)) {
             materialData.specularMap = path.dataString();
         }
 
-        //Load ambient texture
-        if(getTexturePath(aiTextureType_AMBIENT, path)){
+        // Load ambient texture
+        if (getTexturePath(aiTextureType_AMBIENT, path)) {
             materialData.ambientOcclusionMap = path.dataString();
         }
 
-        //Load alpha texture
-        if(getTexturePath(aiTextureType_OPACITY, path)){
+        // Load alpha texture
+        if (getTexturePath(aiTextureType_OPACITY, path)) {
             materialData.alphaMap = path.dataString();
         }
 
-        //Load displacement texture
-        if(getTexturePath(aiTextureType_DISPLACEMENT, path)){
+        // Load displacement texture
+        if (getTexturePath(aiTextureType_DISPLACEMENT, path)) {
             materialData.displacementMap = path.dataString();
         }
 
-        //Load diffuse color
-        if(aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color)
-                == aiReturn_SUCCESS){
+        // Load diffuse color
+        if (aiGetMaterialColor(aiMaterial, AI_MATKEY_COLOR_DIFFUSE, aiTextureType_NONE, 0, color) == aiReturn_SUCCESS) {
             materialData.diffuseColor = new Color(color.r(), color.g(), color.b());
         }
 
-        //Load shininess
-        if(aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_SHININESS, aiTextureType_NONE, 0,
-                floot, new int[] {1}) == aiReturn_SUCCESS){
+        // Load shininess
+        if (aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_SHININESS, aiTextureType_NONE, 0, floot,
+                new int[] { 1 }) == aiReturn_SUCCESS) {
             materialData.shininess = floot[0];
         }
 
-        //Load bump/displacement factor
-        if(aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_BUMPSCALING, aiTextureType_NONE, 0,
-                floot, new int[] {1}) == aiReturn_SUCCESS){
+        // Load bump/displacement factor
+        if (aiGetMaterialFloatArray(aiMaterial, AI_MATKEY_BUMPSCALING, aiTextureType_NONE, 0, floot,
+                new int[] { 1 }) == aiReturn_SUCCESS) {
             materialData.displacementFactor = floot[0];
         }
     }
 
-    /**Getting texture from ai material
+    /**
+     * Getting texture from ai material
      *
      * @param type Type of texture to get
      * @param path Path to store tex path in
      * @return True if texture exist, else false
      */
-    private boolean getTexturePath(int type, AIString path){
-        return aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null,
-                null, null, null) == aiReturn_SUCCESS;
+    private boolean getTexturePath(int type, AIString path) {
+        return aiGetMaterialTexture(aiMaterial, type, 0, path, (IntBuffer) null, null, null, null, null,
+                null) == aiReturn_SUCCESS;
     }
 
-    /**@return Parsed dataStructures material
+    /**
+     * @return Parsed dataStructures material
      */
     public MaterialData getMaterialData() {
         return materialData;

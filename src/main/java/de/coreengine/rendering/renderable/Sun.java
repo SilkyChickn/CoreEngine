@@ -29,30 +29,33 @@ package de.coreengine.rendering.renderable;
 
 import de.coreengine.util.Configuration;
 
-/**Class that reprsents a sun for post processing and lighting calculation
+/**
+ * Class that reprsents a sun for post processing and lighting calculation
  *
  * @author Darius Dinger
  */
-public class Sun extends Moon{
-    private static final float DEFAULT_SIZE = 
-            Configuration.getValuef("SUN_DEFAULT_SIZE");
-    
-    //Is sun currently visible in the scene
+public class Sun extends Moon {
+    private static final float DEFAULT_SIZE = Configuration.getValuef("SUN_DEFAULT_SIZE");
+
+    // Is sun currently visible in the scene
     private boolean lensFlareEnabled = true;
-    
-    /**Creating new white sun and setting its attenuation to infinity
+
+    /**
+     * Creating new white sun and setting its attenuation to infinity
      */
     public Sun() {
         setSize(DEFAULT_SIZE);
     }
-    
-    /**@return Is lens flare currently enabled for the sun
+
+    /**
+     * @return Is lens flare currently enabled for the sun
      */
     public final boolean isLensFlareEnabled() {
         return lensFlareEnabled;
     }
-    
-    /**@param lensFlareEnabled Enable/disable lens flare
+
+    /**
+     * @param lensFlareEnabled Enable/disable lens flare
      */
     public final void setLensFlareEnabled(boolean lensFlareEnabled) {
         this.lensFlareEnabled = lensFlareEnabled;

@@ -35,52 +35,53 @@ import org.lwjgl.opengl.GL31;
 
 import java.util.List;
 
-/**Class that can render a grassland
+/**
+ * Class that can render a grassland
  *
  * @author Darius Dinger
  */
 public class GrasslandRenderer {
-    
+
     GrasslandShader shader = new GrasslandShader();
-    
-    /**Rendering a grassland using a grassland shader
+
+    /**
+     * Rendering a grassland using a grassland shader
      * 
      * @param terrains Terrains that contains the grasslands
-     * @param camera Camera to render from
+     * @param camera   Camera to render from
      */
-    void renderGrassland(List<Terrain> terrains, Camera camera){
+    void renderGrassland(List<Terrain> terrains, Camera camera) {
         GL11.glDisable(GL11.GL_CULL_FACE);
-        
-        //Start shader and bind vao and indices
+
+        // Start shader and bind vao and indices
         shader.start();
         shader.setcamera(camera);
-        
+
         terrains.forEach(terrain -> {
-            if(terrain.isGrasslandEnabled()){
+            if (terrain.isGrasslandEnabled()) {
                 terrain.getGrassland().getMesh().getVao().bind();
                 terrain.getGrassland().getMesh().getVao().enableAttributes();
                 terrain.getGrassland().getMesh().getIndexBuffer().bind();
-                
-                //Prepare shader
+
+                // Prepare shader
                 shader.prepareTerrain(terrain);
-                
-                int instances = terrain.getGrassland().getDensity() * 
-                        terrain.getGrassland().getDensity();
-                
-                //Render call
-                GL31.glDrawElementsInstanced(GL11.GL_TRIANGLES, 
-                        terrain.getGrassland().getMesh().getIndexBuffer().getSize(), 
-                        GL11.GL_UNSIGNED_INT, 0, instances);
-                
-                //Unbind vao and indices
+
+                int instances = terrain.getGrassland().getDensity() * terrain.getGrassland().getDensity();
+
+                // Render call
+                GL31.glDrawElementsInstanced(GL11.GL_TRIANGLES,
+                        terrain.getGrassland().getMesh().getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0,
+                        instances);
+
+                // Unbind vao and indices
                 terrain.getGrassland().getMesh().getIndexBuffer().unbind();
                 terrain.getGrassland().getMesh().getVao().disableAttributes();
                 terrain.getGrassland().getMesh().getVao().unbind();
             }
         });
-        
+
         shader.stop();
-        
+
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 }

@@ -36,42 +36,44 @@ import javax.vecmath.Vector3f;
 
 public class Animator {
 
-    /**Setting a skeleton and all its children into the current pose of an animation
+    /**
+     * Setting a skeleton and all its children into the current pose of an animation
      *
-     * @param skeleton Skeleton to animate
+     * @param skeleton  Skeleton to animate
      * @param animation Animation to play
-     * @param time Current time of the animation
+     * @param time      Current time of the animation
      */
-    public static void applyAnimation(Joint skeleton, Animation animation, float time){
+    public static void applyAnimation(Joint skeleton, Animation animation, float time) {
         applyAnimationNode(skeleton, animation, time);
         skeleton.calcAnimatedTransformAndPose(null);
     }
 
-    /**Setting a joint and all its children into the current pose of an animation
+    /**
+     * Setting a joint and all its children into the current pose of an animation
      *
-     * @param node Joint node to animate
+     * @param node      Joint node to animate
      * @param animation Animation to play
-     * @param time Current time of the animation
+     * @param time      Current time of the animation
      */
-    private static void applyAnimationNode(Joint node, Animation animation, float time){
+    private static void applyAnimationNode(Joint node, Animation animation, float time) {
 
-        //Get relevant keyframes from list
-        Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantPositionKfs =
-                animation.getPositionKeyFrames(node.getIndex()).getRelevantKeyFrames(time);
-        Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> relevantRotationKfs =
-                animation.getRotationKeyFrames(node.getIndex()).getRelevantKeyFrames(time);
-        //Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantScaleKfs =
-        //        animation.getScaleKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
+        // Get relevant keyframes from list
+        Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantPositionKfs = animation
+                .getPositionKeyFrames(node.getIndex()).getRelevantKeyFrames(time);
+        Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> relevantRotationKfs = animation.getRotationKeyFrames(node.getIndex())
+                .getRelevantKeyFrames(time);
+        // Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> relevantScaleKfs =
+        // animation.getScaleKeyFrames(child.getIndex()).getRelevantKeyFrames(time);
 
-        //Get interpolated matrix between the two keyframes
+        // Get interpolated matrix between the two keyframes
         Vector3f position = getInterpolatedVector(relevantPositionKfs, time);
         Quat4f rotation = getInterpolatedQuaternion(relevantRotationKfs, time);
-        //Vector3f scale = getInterpolatedVector(relevantScaleKfs, time);
+        // Vector3f scale = getInterpolatedVector(relevantScaleKfs, time);
 
-        //Check if joints transform has to update
-        if(position != null || rotation != null) {
+        // Check if joints transform has to update
+        if (position != null || rotation != null) {
 
-            //Check if position or rotation has no update, then get from current pose
+            // Check if position or rotation has no update, then get from current pose
             if (position == null) {
                 position = new Vector3f();
                 node.getLocalPose().get(position);
@@ -81,63 +83,68 @@ public class Animator {
                 node.getLocalPose().get(rotation);
             }
 
-            //Set interpolated local transform as local pose
+            // Set interpolated local transform as local pose
             Matrix4f interpolatedMatrix = new Matrix4f(rotation, position, 1.0f);
             node.setLocalPose(interpolatedMatrix);
         }
 
-        //Animate all children
-        for(Joint c: node.getChildren()) applyAnimationNode(c, animation, time);
+        // Animate all children
+        for (Joint c : node.getChildren())
+            applyAnimationNode(c, animation, time);
     }
 
-    /**Calculate the interpolated value of two vector3f keyframes
+    /**
+     * Calculate the interpolated value of two vector3f keyframes
      *
      * @param keyFrames Previous and next keyframe
-     * @param time Current time in the animation
+     * @param time      Current time in the animation
      * @return Interpolated vector3f
      */
-    private static Vector3f getInterpolatedVector(Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> keyFrames, float time){
+    private static Vector3f getInterpolatedVector(Pair<KeyFrame<Vector3f>, KeyFrame<Vector3f>> keyFrames, float time) {
         Vector3f result = new Vector3f();
 
-        if(keyFrames.getValue() == null && keyFrames.getKey() != null){
+        if (keyFrames.getValue() == null && keyFrames.getKey() != null) {
 
-            //There is no next keyframe, so return the transform from the last keyframe
+            // There is no next keyframe, so return the transform from the last keyframe
             result.set(keyFrames.getKey().getStatus());
-        }else if(keyFrames.getKey() != null){
+        } else if (keyFrames.getKey() != null) {
 
-            //Calculate percentage progression between the two keyframes
-            float diffrence = keyFrames.getValue().getTimestamp() -keyFrames.getKey().getTimestamp();
-            float progression = 1.0f * (time -keyFrames.getKey().getTimestamp()) / diffrence;
+            // Calculate percentage progression between the two keyframes
+            float diffrence = keyFrames.getValue().getTimestamp() - keyFrames.getKey().getTimestamp();
+            float progression = 1.0f * (time - keyFrames.getKey().getTimestamp()) / diffrence;
 
-            //Calculate interpolated translation
+            // Calculate interpolated translation
             result.interpolate(keyFrames.getKey().getStatus(), keyFrames.getValue().getStatus(), progression);
-        }else return null;
+        } else
+            return null;
 
         return result;
     }
 
-    /**Calculate the interpolated value of two quaternion keyframes
+    /**
+     * Calculate the interpolated value of two quaternion keyframes
      *
      * @param keyFrames Previous and next keyframe
-     * @param time Current time in the animation
+     * @param time      Current time in the animation
      * @return Interpolated quaternion
      */
-    private static Quat4f getInterpolatedQuaternion(Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> keyFrames, float time){
+    private static Quat4f getInterpolatedQuaternion(Pair<KeyFrame<Quat4f>, KeyFrame<Quat4f>> keyFrames, float time) {
         Quat4f result = new Quat4f();
 
-        if(keyFrames.getValue() == null && keyFrames.getKey() != null){
+        if (keyFrames.getValue() == null && keyFrames.getKey() != null) {
 
-            //There is no next keyframe, so return the transform from the last keyframe
+            // There is no next keyframe, so return the transform from the last keyframe
             result.set(keyFrames.getKey().getStatus());
-        }else if(keyFrames.getKey() != null){
+        } else if (keyFrames.getKey() != null) {
 
-            //Calculate percentage progression between the two keyframes
-            float diffrence = keyFrames.getValue().getTimestamp() -keyFrames.getKey().getTimestamp();
-            float progression = 1.0f * (time -keyFrames.getKey().getTimestamp()) / diffrence;
+            // Calculate percentage progression between the two keyframes
+            float diffrence = keyFrames.getValue().getTimestamp() - keyFrames.getKey().getTimestamp();
+            float progression = 1.0f * (time - keyFrames.getKey().getTimestamp()) / diffrence;
 
-            //Calculate interpolated translation
+            // Calculate interpolated translation
             result.interpolate(keyFrames.getKey().getStatus(), keyFrames.getValue().getStatus(), progression);
-        }else return null;
+        } else
+            return null;
 
         return result;
     }

@@ -37,20 +37,22 @@ import javax.vecmath.Vector3f;
 public class Particle {
     private static final float[] DEFAULT_SIZE = Configuration.getValuefa("PARTICLE_DEFAULT_SIZE");
 
-    //Particle transformation
+    // Particle transformation
     private Vector2f size = new Vector2f(DEFAULT_SIZE[0], DEFAULT_SIZE[1]);
     private Vector3f position = new Vector3f();
 
-    //Particles current texture
+    // Particles current texture
     private String texture = Material.TEXTURE_WHITE;
 
-    /**@return Particles current texture
+    /**
+     * @return Particles current texture
      */
     public String getTexture() {
         return texture;
     }
 
-    /**Setting texture of the particle
+    /**
+     * Setting texture of the particle
      *
      * @param texture New texture of the particle
      */
@@ -58,13 +60,15 @@ public class Particle {
         this.texture = texture;
     }
 
-    /**@return Read/Writeable 2d size of the particle
+    /**
+     * @return Read/Writeable 2d size of the particle
      */
     public Vector2f getSize() {
         return size;
     }
 
-    /**@return Read/Writeable 3d position of the particle
+    /**
+     * @return Read/Writeable 3d position of the particle
      */
     public Vector3f getPosition() {
         return position;

@@ -35,68 +35,68 @@ import de.coreengine.util.Configuration;
 import javax.vecmath.Vector2f;
 import java.util.List;
 
-/**Light scattering effect for the post processer
+/**
+ * Light scattering effect for the post processer
  *
  * @author Darius Dinger
  */
-public class LightScatteringEffect extends PostProcessingEffect{
-    private static final float DEFAULT_BRIGHTNESS = 
-            Configuration.getValuef("LIGHT_SCATTERING_DEFAULT_BRIGHTNESS");
-    private static final float DEFAULT_INTENSITY = 
-            Configuration.getValuef("LIGHT_SCATTERING_DEFAULT_INTENSITY");
-    private static final int DEFAULT_QUALITY = 
-            Configuration.getValuei("LIGHT_SCATTERING_DEFAULT_QUALITY");
-    
-    //Scattering configuration
+public class LightScatteringEffect extends PostProcessingEffect {
+    private static final float DEFAULT_BRIGHTNESS = Configuration.getValuef("LIGHT_SCATTERING_DEFAULT_BRIGHTNESS");
+    private static final float DEFAULT_INTENSITY = Configuration.getValuef("LIGHT_SCATTERING_DEFAULT_INTENSITY");
+    private static final int DEFAULT_QUALITY = Configuration.getValuei("LIGHT_SCATTERING_DEFAULT_QUALITY");
+
+    // Scattering configuration
     private float brightness = DEFAULT_BRIGHTNESS, intensity = DEFAULT_INTENSITY;
     private int quality = DEFAULT_QUALITY;
-    
-    /**Create new light scattering effect
+
+    /**
+     * Create new light scattering effect
      */
     public LightScatteringEffect() {
         super(new LightScatteringPPShader());
-        
+
         reloadTexelSize();
         Window.addWindowListener((x, y, aspect) -> reloadTexelSize());
     }
-    
-    /**(Re)loading size of a texel into the shader
+
+    /**
+     * (Re)loading size of a texel into the shader
      */
-    private void reloadTexelSize(){
+    private void reloadTexelSize() {
         shader.start();
-        ((LightScatteringPPShader) shader).setSize(new Vector2f(
-                1.0f / Window.getWidth(), 1.0f / Window.getHeight()
-        ));
+        ((LightScatteringPPShader) shader).setSize(new Vector2f(1.0f / Window.getWidth(), 1.0f / Window.getHeight()));
         shader.stop();
     }
-    
+
     @Override
     protected void setUniforms() {
-        ((LightScatteringPPShader) shader).setSunTexture(
-                MasterRenderer.getGBUFFER().getSunBuffer());
+        ((LightScatteringPPShader) shader).setSunTexture(MasterRenderer.getGBUFFER().getSunBuffer());
         ((LightScatteringPPShader) shader).reloadSun();
-        ((LightScatteringPPShader) shader).prepareEffect
-            (intensity, brightness, quality);
+        ((LightScatteringPPShader) shader).prepareEffect(intensity, brightness, quality);
     }
-    
-    /**@param brightness New brightness of the light scatters
+
+    /**
+     * @param brightness New brightness of the light scatters
      */
     public void setBrightness(float brightness) {
         this.brightness = brightness;
     }
-    
-    /**@param intensity New intensity of the light scatters (radius)
+
+    /**
+     * @param intensity New intensity of the light scatters (radius)
      */
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
-    
-    /**@param quality New quality of the light scatters (iterations)
+
+    /**
+     * @param quality New quality of the light scatters (iterations)
      */
     public void setQuality(int quality) {
         this.quality = quality;
     }
-    
+
     @Override
-    public void addImpliedEffects(List<PostProcessingEffect> effects) {}
+    public void addImpliedEffects(List<PostProcessingEffect> effects) {
+    }
 }

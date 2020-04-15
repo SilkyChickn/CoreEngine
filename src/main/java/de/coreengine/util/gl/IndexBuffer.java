@@ -29,47 +29,53 @@ package de.coreengine.util.gl;
 
 import org.lwjgl.opengl.GL15;
 
-/**Class that represent an opengl index buffer
+/**
+ * Class that represent an opengl index buffer
  *
  * @author Darius Dinger
  */
 public class IndexBuffer {
-    
-    //Id of the index buffer
+
+    // Id of the index buffer
     private int id;
-    
-    //Size of the index buffer
+
+    // Size of the index buffer
     private int size;
-    
-    /**Creates new Index buffer
+
+    /**
+     * Creates new Index buffer
      * 
-     * @param id Id of the new index buffer
+     * @param id   Id of the new index buffer
      * @param size Size of the new index buffer
      */
     public IndexBuffer(int id, int size) {
         this.id = id;
         this.size = size;
     }
-    
-    /**Binds IndexBuffer to opengl
+
+    /**
+     * Binds IndexBuffer to opengl
      */
-    public void bind(){
+    public void bind() {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, id);
     }
-    
-    /**Unbinds IndexBuffer from opengl (bind 0)
+
+    /**
+     * Unbinds IndexBuffer from opengl (bind 0)
      */
-    public void unbind(){
+    public void unbind() {
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, 0);
     }
-    
-    /**@return Index buffers id
+
+    /**
+     * @return Index buffers id
      */
     public int getId() {
         return id;
     }
-    
-    /**@return Index buffers size
+
+    /**
+     * @return Index buffers size
      */
     public int getSize() {
         return size;

@@ -29,19 +29,20 @@ package de.coreengine.rendering.programs.pp;
 
 import javax.vecmath.Vector2f;
 
-/**Shader for the radial blur effect
+/**
+ * Shader for the radial blur effect
  *
  * @author Darius Dinger
  */
-public class RadialBlurPPShader extends PPShader{
-    
+public class RadialBlurPPShader extends PPShader {
+
     private int intensityLoc, brightnessLoc, originLoc, sizeLoc, qualityLoc;
-    
+
     @Override
     protected String getPPFragShaderFile() {
         return "radialBlur.frag";
     }
-    
+
     @Override
     protected void setUniformLocations() {
         intensityLoc = getUniformLocation("intensity");
@@ -50,25 +51,26 @@ public class RadialBlurPPShader extends PPShader{
         sizeLoc = getUniformLocation("size");
         qualityLoc = getUniformLocation("quality");
     }
-    
-    /**Setting the size of the next to blur image texel.<br>
+
+    /**
+     * Setting the size of the next to blur image texel.<br>
      * vec2(1.0f / image.width, 1.0f / image.height)
      * 
      * @param size Size of a texel of the next to blur image
      */
-    public void setSize(Vector2f size){
+    public void setSize(Vector2f size) {
         setUniform(sizeLoc, size.x, size.y);
     }
-    
-    /**Preparing the shader for the next blur
+
+    /**
+     * Preparing the shader for the next blur
      * 
-     * @param intensity Intensity of the blur
+     * @param intensity  Intensity of the blur
      * @param brightness Brightnessof the blur
-     * @param origin Origin of the blur
-     * @param quality Quality of the blur
+     * @param origin     Origin of the blur
+     * @param quality    Quality of the blur
      */
-    public void prepareBlur(float intensity, float brightness, Vector2f origin, 
-            int quality){
+    public void prepareBlur(float intensity, float brightness, Vector2f origin, int quality) {
         setUniform(intensityLoc, intensity);
         setUniform(brightnessLoc, brightness);
         setUniform(originLoc, origin.x, origin.y);

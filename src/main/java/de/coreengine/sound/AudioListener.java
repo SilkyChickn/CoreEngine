@@ -31,13 +31,14 @@ import org.lwjgl.openal.AL10;
 
 import javax.vecmath.Vector3f;
 
-/**Class that represents a listener for the audios
+/**
+ * Class that represents a listener for the audios
  *
  * @author Darius Dinger
  */
 public class AudioListener {
-    
-    //Position, direction and range of the listener
+
+    // Position, direction and range of the listener
     private final Vector3f position = new Vector3f(), velocity = new Vector3f();
     private final float[] orientation = new float[6];
 
@@ -46,34 +47,38 @@ public class AudioListener {
         orientation[4] = 1;
         orientation[5] = 0;
     }
-    
-    /**@return Read/writeable vector of the listeners position
+
+    /**
+     * @return Read/writeable vector of the listeners position
      */
     public Vector3f getPosition() {
         return position;
     }
-    
-    /**@return Read/writeable vector of the listeners velocity
+
+    /**
+     * @return Read/writeable vector of the listeners velocity
      */
     public Vector3f getVelocity() {
         return velocity;
     }
-    
-    /**Orientation of the listener as 3d vector
+
+    /**
+     * Orientation of the listener as 3d vector
      * 
      * @param x Orinetation to X
      * @param y Orinetation to Y
      * @param z Orinetation to Z
      */
-    public void setOrientation(float x, float y, float z){
+    public void setOrientation(float x, float y, float z) {
         orientation[0] = x;
         orientation[1] = y;
         orientation[2] = z;
     }
-    
-    /**Applying the listener to the scene
+
+    /**
+     * Applying the listener to the scene
      */
-    public void apply(){
+    public void apply() {
         AL10.alListener3f(AL10.AL_POSITION, position.x, position.y, position.z);
         AL10.alListener3f(AL10.AL_VELOCITY, velocity.x, velocity.y, velocity.z);
         AL10.alListenerfv(AL10.AL_ORIENTATION, orientation);

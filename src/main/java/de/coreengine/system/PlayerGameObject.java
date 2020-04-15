@@ -27,42 +27,50 @@
  */
 package de.coreengine.system;
 
-/**Gameobject that can be spawned by a client
+/**
+ * Gameobject that can be spawned by a client
  *
  * @author Darius Dinger
  */
-public abstract class PlayerGameObject extends GameObject{
+public abstract class PlayerGameObject extends GameObject {
     private String playerName;
     private boolean controlled;
-    
-    /**Setup player controlled game object
+
+    /**
+     * Setup player controlled game object
      * 
      * @param playerName Name of the player who controls this object
      * @param controlled Is the game object controlled from this player
      */
-    public void setup(String playerName, boolean controlled){
+    public void setup(String playerName, boolean controlled) {
         this.playerName = playerName;
         this.controlled = controlled;
     }
-    
-    /**Getting the name of this player on the server. Use this as
-     * prefix for all syncronized objects and events in this gameobject!
+
+    /**
+     * Getting the name of this player on the server. Use this as prefix for all
+     * syncronized objects and events in this gameobject!
      * 
      * @return Name of this player
      */
     protected String getPlayerName() {
         return playerName;
     }
-    
-    /**Getting called when player disconnects
+
+    /**
+     * Getting called when player disconnects
      */
-    public void onDisconnect(){}
-    
-    /**Getting called, when player joines
+    public void onDisconnect() {
+    }
+
+    /**
+     * Getting called, when player joines
      */
-    public void onJoin(){}
-    
-    /**@return Is the game object controlled by this player
+    public void onJoin() {
+    }
+
+    /**
+     * @return Is the game object controlled by this player
      */
     protected boolean isControlled() {
         return controlled;

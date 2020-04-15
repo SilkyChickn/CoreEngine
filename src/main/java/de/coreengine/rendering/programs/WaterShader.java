@@ -35,31 +35,31 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for the water renderer
+/**
+ * Shader for the water renderer
  *
  * @author Darius Dinger
  */
-public class WaterShader extends Shader{
-    
-    private final int dudvMapUnit = 0, reflectionTextureUnit = 1, 
-            refractionTextureUnit = 2, depthTexureUnit = 3, normalMapUnit = 4;
-    
-    private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, 
-            colorLoc, softEdgeDepthLoc, vpMatLoc, camPosLoc;
-    
+public class WaterShader extends Shader {
+
+    private final int dudvMapUnit = 0, reflectionTextureUnit = 1, refractionTextureUnit = 2, depthTexureUnit = 3,
+            normalMapUnit = 4;
+
+    private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, colorLoc, softEdgeDepthLoc, vpMatLoc, camPosLoc;
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "water.vert", true),
-                GL20.GL_VERTEX_SHADER, "Water Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "water.frag", true), 
-                GL20.GL_FRAGMENT_SHADER, "Water Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "water.vert", true), GL20.GL_VERTEX_SHADER,
+                "Water Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "water.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Water Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         bindTextureUnit("dudvMap", dudvMapUnit);
@@ -67,7 +67,7 @@ public class WaterShader extends Shader{
         bindTextureUnit("reflectionTexture", reflectionTextureUnit);
         bindTextureUnit("refractionTexture", refractionTextureUnit);
         bindTextureUnit("depthTexture", depthTexureUnit);
-        
+
         mMatLoc = getUniformLocation("mMat");
         tilingLoc = getUniformLocation("tiling");
         offsetLoc = getUniformLocation("offset");
@@ -77,33 +77,35 @@ public class WaterShader extends Shader{
         vpMatLoc = getUniformLocation("vpMat");
         camPosLoc = getUniformLocation("camPos");
     }
-    
-    /**Setting camera for next water
+
+    /**
+     * Setting camera for next water
      * 
      * @param cam Camera to set
      */
-    public void setCamera(Camera cam){
+    public void setCamera(Camera cam) {
         setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
     }
-    
-    /**Prepare shader for next water to render
+
+    /**
+     * Prepare shader for next water to render
      * 
      * @param water Next water
      */
-    public void prepareWater(Water water){
+    public void prepareWater(Water water) {
         bindTexture(AssetDatabase.getTexture(water.getDudvMap()), dudvMapUnit, GL11.GL_TEXTURE_2D);
         bindTexture(AssetDatabase.getTexture(water.getNormalMap()), normalMapUnit, GL11.GL_TEXTURE_2D);
         bindTexture(water.getReflectionFbo().getColorAttachment0(), reflectionTextureUnit, GL11.GL_TEXTURE_2D);
         bindTexture(water.getRefractionFbo().getColorAttachment0(), refractionTextureUnit, GL11.GL_TEXTURE_2D);
         bindTexture(water.getRefractionFbo().getDepthAttachment(), depthTexureUnit, GL11.GL_TEXTURE_2D);
-        
+
         setUniform(mMatLoc, Toolbox.matrixToFloatArray(water.getTransMat()));
         setUniform(tilingLoc, water.getTiling());
         setUniform(offsetLoc, water.getOffset());
         setUniform(waveStrengthLoc, water.getWaveStrength());
-        setUniform(colorLoc, water.getColor().getRed(), water.getColor().getGreen(), 
-                water.getColor().getBlue(), water.getTransparency());
+        setUniform(colorLoc, water.getColor().getRed(), water.getColor().getGreen(), water.getColor().getBlue(),
+                water.getTransparency());
         setUniform(softEdgeDepthLoc, water.getSoftEdgeDepth());
     }
 }

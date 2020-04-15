@@ -35,48 +35,50 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for the sun renderer
+/**
+ * Shader for the sun renderer
  *
  * @author Darius Dinger
  */
-public class SunMoonShader extends Shader{
-    
+public class SunMoonShader extends Shader {
+
     private final int colorTextureUnit = 0;
-    
+
     private int vpMatLoc, scaleLoc;
-    
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(SHADERS_LOCATION + "sunMoon.vert", true),
-                    GL20.GL_VERTEX_SHADER, "Sun/Moon Vertex Shader");
-        addShader(FileLoader.getResource(SHADERS_LOCATION + "sunMoon.frag", true),
-                    GL20.GL_FRAGMENT_SHADER, "Sun/Moon Fragment Shader");
+        addShader(FileLoader.getResource(SHADERS_LOCATION + "sunMoon.vert", true), GL20.GL_VERTEX_SHADER,
+                "Sun/Moon Vertex Shader");
+        addShader(FileLoader.getResource(SHADERS_LOCATION + "sunMoon.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Sun/Moon Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         vpMatLoc = getUniformLocation("vpMat");
         scaleLoc = getUniformLocation("scale");
-        
+
         bindTextureUnit("colorTexture", colorTextureUnit);
     }
-    
-    /**Preparing shader for the next sun or moon
+
+    /**
+     * Preparing shader for the next sun or moon
      * 
      * @param moon Moon or sun to prepare
-     * @param cam Camera to render from
+     * @param cam  Camera to render from
      */
-    public void prepareMoon(Moon moon, Camera cam){
+    public void prepareMoon(Moon moon, Camera cam) {
         setUniform(scaleLoc, moon.getSize());
-        
-        setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getFacingMVPMatrix(
-                moon.getPosition().x, moon.getPosition().y, moon.getPosition().z)));
-        
+
+        setUniform(vpMatLoc, Toolbox.matrixToFloatArray(
+                cam.getFacingMVPMatrix(moon.getPosition().x, moon.getPosition().y, moon.getPosition().z)));
+
         bindTexture(AssetDatabase.getTexture(moon.getTexture()), colorTextureUnit, GL11.GL_TEXTURE_2D);
     }
 }

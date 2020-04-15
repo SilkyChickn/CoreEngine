@@ -36,37 +36,38 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-/**Class that can render water
+/**
+ * Class that can render water
  *
  * @author Darius Dinger
  */
 public class WaterRenderer {
-    
+
     private WaterShader shader = new WaterShader();
-    
-    /**Rendering water using a water shader
+
+    /**
+     * Rendering water using a water shader
      * 
      * @param waters Waters to render
      * @param camera Camera to render from
      */
-    void render(List<Water> waters, Camera camera){
-        
+    void render(List<Water> waters, Camera camera) {
+
         Mesh model = Quad2D.getInstance();
-        
+
         shader.start();
         shader.setCamera(camera);
-        
+
         model.getVao().bind();
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
-        
+
         waters.forEach(water -> {
             shader.prepareWater(water);
-            
-            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(),
-                    GL11.GL_UNSIGNED_INT, 0);
+
+            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
         });
-        
+
         model.getIndexBuffer().unbind();
         model.getVao().disableAttributes();
         model.getVao().unbind();

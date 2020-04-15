@@ -37,64 +37,68 @@ import org.lwjgl.opengl.GL20;
 
 import javax.vecmath.Matrix4f;
 
-/**Shader for the font renderer
+/**
+ * Shader for the font renderer
  *
  * @author Darius Dinger
  */
-public class FontShader extends Shader{
-    
+public class FontShader extends Shader {
+
     private final int fontAtlasUnit = 0;
-    
+
     private int mMatTextLoc, vpMatLoc, offsetLoc, scaleLoc, fontColorLoc;
-    
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "font.vert", true),
-                GL20.GL_VERTEX_SHADER, "Font Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "font.frag", true), 
-                GL20.GL_FRAGMENT_SHADER, "Font Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "font.vert", true), GL20.GL_VERTEX_SHADER,
+                "Font Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "font.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Font Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
         bindAttribute(1, "texCoord");
     }
-    
+
     @Override
     protected void loadUniforms() {
         bindTextureUnit("fontAtlas", fontAtlasUnit);
-        
+
         mMatTextLoc = getUniformLocation("mMatText");
         offsetLoc = getUniformLocation("offset");
         scaleLoc = getUniformLocation("scale");
         vpMatLoc = getUniformLocation("vpMat");
         fontColorLoc = getUniformLocation("fontColor");
     }
-    
-    /**@param vpMat View projection matrix to load
+
+    /**
+     * @param vpMat View projection matrix to load
      */
-    public void setVPMat(Matrix4f vpMat){
+    public void setVPMat(Matrix4f vpMat) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(vpMat));
     }
-    
-    /**Prepare shader for next text to render
+
+    /**
+     * Prepare shader for next text to render
      * 
      * @param pane Pane that contains the text
      */
-    public void prepareText(GUIPane pane){
+    public void prepareText(GUIPane pane) {
         bindTexture(AssetDatabase.getTexture(AssetDatabase.getFont(pane.getText().getFont()).getTextureAtlas()),
                 fontAtlasUnit, GL11.GL_TEXTURE_2D);
         setUniform(mMatTextLoc, pane.getRotPosMat());
         setUniform(scaleLoc, pane.getText().getFontSize());
         setUniform(fontColorLoc, pane.getText().getFontColor());
     }
-    
-    /**Prepare shader fo one next char to render
+
+    /**
+     * Prepare shader fo one next char to render
      * 
      * @param c Char to render
      */
-    public void prepareChar(GUIChar c){
+    public void prepareChar(GUIChar c) {
         setUniform(offsetLoc, c.getOffset().x, c.getOffset().y);
     }
 }

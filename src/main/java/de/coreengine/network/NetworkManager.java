@@ -33,13 +33,15 @@ import de.coreengine.util.Logger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-/**Class that manaes network stuff
+/**
+ * Class that manaes network stuff
  *
  * @author Darius Dinger
  */
 public class NetworkManager {
-    
-    /**Network state of the game (one of):<br>
+
+    /**
+     * Network state of the game (one of):<br>
      * - DEDICATED_SERVER (Only server)<br>
      * - HOSTER (Hosting client)<br>
      * - CLIENT (Connected Client)<br>
@@ -48,82 +50,85 @@ public class NetworkManager {
     public enum NetworkState {
         DEDICATED_SERVER, HOSTER, CLIENT, SINGLEPLAYER
     }
-    
-    //Current network state
+
+    // Current network state
     private static NetworkState state = NetworkState.SINGLEPLAYER;
-    
-    /**@return Current network state
+
+    /**
+     * @return Current network state
      */
     public static NetworkState getState() {
         return state;
     }
-    
-    /**@param state New network state
+
+    /**
+     * @param state New network state
      */
     static void setState(NetworkState state) {
         NetworkManager.state = state;
     }
-    
-    /**Setting up a dedicated server
+
+    /**
+     * Setting up a dedicated server
      * 
-     * @param port Port to bind the server to
-     * @param maxPlayers Max players to join
-     * @param password Password of the server
+     * @param port        Port to bind the server to
+     * @param maxPlayers  Max players to join
+     * @param password    Password of the server
      * @param playerClass Class to instance when players join
      * @return Could the server be created
      */
-    public static boolean host(int port, int maxPlayers, String password, 
-            Class<? extends PlayerGameObject> playerClass){
+    public static boolean host(int port, int maxPlayers, String password,
+            Class<? extends PlayerGameObject> playerClass) {
         boolean result = TCPServer.start(port, maxPlayers, password, playerClass);
-        if(result){
+        if (result) {
             state = NetworkState.DEDICATED_SERVER;
             return true;
-        } else return false;
+        } else
+            return false;
     }
-    
-    /**Joining a running server. 
+
+    /**
+     * Joining a running server.
      * 
-     * @param ip Ip address of the server
-     * @param port Port of the server
-     * @param password Password of the server
-     * @param name Player name on the server
+     * @param ip          Ip address of the server
+     * @param port        Port of the server
+     * @param password    Password of the server
+     * @param name        Player name on the server
      * @param playerClass Class to instance when players join
      * @return Joining handshake result
      */
-    public static TCPClient.HandshakeResult join(String ip, int port, String password, 
-            String name, Class<? extends PlayerGameObject> playerClass){
+    public static TCPClient.HandshakeResult join(String ip, int port, String password, String name,
+            Class<? extends PlayerGameObject> playerClass) {
         try {
-            TCPClient.HandshakeResult result =
-                    TCPClient.connect(InetAddress.getByName(ip), port, 
-                            password, name, playerClass);
-            if(result == TCPClient.HandshakeResult.ACCEPTED){
+            TCPClient.HandshakeResult result = TCPClient.connect(InetAddress.getByName(ip), port, password, name,
+                    playerClass);
+            if (result == TCPClient.HandshakeResult.ACCEPTED) {
                 state = NetworkState.CLIENT;
             }
             return result;
         } catch (UnknownHostException ex) {
-            Logger.warn("Error by getting host address", "The host address is "
-                    + "unknown (" + ip + ")");
+            Logger.warn("Error by getting host address", "The host address is " + "unknown (" + ip + ")");
             return TCPClient.HandshakeResult.ERROR;
         }
     }
-    
-    /**Hosting and joining a server via localhost
+
+    /**
+     * Hosting and joining a server via localhost
      * 
-     * @param port Port to bind the server to
-     * @param maxPlayers Max players for te server
-     * @param password Password of the server
+     * @param port        Port to bind the server to
+     * @param maxPlayers  Max players for te server
+     * @param password    Password of the server
      * @param playerClass Class to instance when players join
-     * @param name Player name on the server
+     * @param name        Player name on the server
      * @return Could the server be created
      */
-    public static boolean hostAndJoin(int port, int maxPlayers, String password, 
-            String name, Class<? extends PlayerGameObject> playerClass){
+    public static boolean hostAndJoin(int port, int maxPlayers, String password, String name,
+            Class<? extends PlayerGameObject> playerClass) {
         boolean result = TCPServer.start(port, maxPlayers, password, playerClass);
-        if(result){
+        if (result) {
             state = NetworkState.HOSTER;
             try {
-                TCPClient.connect(InetAddress.getByName("localhost"), port, 
-                        password, name, playerClass);
+                TCPClient.connect(InetAddress.getByName("localhost"), port, password, name, playerClass);
             } catch (UnknownHostException ex) {
                 Logger.warn("Unknown host exception", ex.getLocalizedMessage());
             }
@@ -133,22 +138,25 @@ public class NetworkManager {
             return false;
         }
     }
-    
-    /**Updating the network manager
+
+    /**
+     * Updating the network manager
      */
-    public static void sync(){
-        
-        //Sync
+    public static void sync() {
+
+        // Sync
         MessageManager.reloadMsgs();
     }
-    
-    /**Sending a message to all other network clients
+
+    /**
+     * Sending a message to all other network clients
      * 
      * @param msg Message to send
      */
-    static void sendToNetwork(String msg){
-        switch(state){
-            case SINGLEPLAYER: break;
+    static void sendToNetwork(String msg) {
+        switch (state) {
+            case SINGLEPLAYER:
+                break;
             case HOSTER:
             case DEDICATED_SERVER:
                 TCPServer.sendToAll(msg);

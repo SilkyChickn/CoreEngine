@@ -31,107 +31,117 @@ import de.coreengine.util.Toolbox;
 
 import javax.vecmath.Matrix4f;
 
-/**Class that represents a skybox
+/**
+ * Class that represents a skybox
  *
  * @author Darius Dinger
  */
 public class Skybox {
-    
-    //Skybox cube map textures and blendings
+
+    // Skybox cube map textures and blendings
     private String[] cubeMapTextures = new String[0];
     private float[] blendingFactors = new float[0];
-    
-    //Current rotation ind degrees and rotation matrix
+
+    // Current rotation ind degrees and rotation matrix
     private float rotation = 0.0f;
     private Matrix4f transMat = new Matrix4f();
-    
-    /**Creating new skybox, init variables
+
+    /**
+     * Creating new skybox, init variables
      */
     public Skybox() {
         transMat.setIdentity();
     }
-    
-    /**@param rotation New rotation of the skybox in degrees
+
+    /**
+     * @param rotation New rotation of the skybox in degrees
      */
     public void setRotation(float rotation) {
-        if(rotation != this.rotation){
+        if (rotation != this.rotation) {
             transMat.rotY((float) Math.toRadians(rotation));
             this.rotation = rotation;
         }
     }
-    
-    /**Setting cube map textures and its initial blending factors.<br>
+
+    /**
+     * Setting cube map textures and its initial blending factors.<br>
      * The factor represents the visibility of the cube map texture. 0.0f is not
-     * visible and 1.0f is full visible. The blending factor will be multiplied
-     * by the texture color.<br>
-     * The cubeMapTextures must have the same length as the blendingfactors, else
-     * it would not be changed.
+     * visible and 1.0f is full visible. The blending factor will be multiplied by
+     * the texture color.<br>
+     * The cubeMapTextures must have the same length as the blendingfactors, else it
+     * would not be changed.
      * 
      * @param cubeMapTextures Cube map textures
      * @param blendingFactors Initial blending factors
      */
     public void setCubeMapTextures(String[] cubeMapTextures, float[] blendingFactors) {
-        if(cubeMapTextures.length == blendingFactors.length){
+        if (cubeMapTextures.length == blendingFactors.length) {
             this.cubeMapTextures = cubeMapTextures;
             this.blendingFactors = blendingFactors;
         }
     }
-    
-    /**Setting cube map texture at specific id. The id has to be in the range of
-     * the units else it wouldnt change!
+
+    /**
+     * Setting cube map texture at specific id. The id has to be in the range of the
+     * units else it wouldnt change!
      * 
-     * @param id Id of the unit to set the texture
+     * @param id  Id of the unit to set the texture
      * @param tex TextureData to set at the id
      */
-    public void setCubeMapTexture(int id, String tex){
-        if(id >= 0 && id < cubeMapTextures.length){
+    public void setCubeMapTexture(int id, String tex) {
+        if (id >= 0 && id < cubeMapTextures.length) {
             cubeMapTextures[id] = tex;
         }
     }
-    
-    /**Setting blending factor at specific id. The id has to be in the range of
-     * the units else it wouldnt change!<br>
+
+    /**
+     * Setting blending factor at specific id. The id has to be in the range of the
+     * units else it wouldnt change!<br>
      * The factor represents the visibility of the cube map texture. 0.0f is not
-     * visible and 1.0f is full visible. The blending factor will be multiplied
-     * by the texture color.
+     * visible and 1.0f is full visible. The blending factor will be multiplied by
+     * the texture color.
      * 
-     * @param id Id of the unit to set the blending factor for
+     * @param id       Id of the unit to set the blending factor for
      * @param blending Blending factor to set at the id
      */
-    public void setBlendingFactor(int id, float blending){
-        if(id >= 0 && id < blendingFactors.length){
+    public void setBlendingFactor(int id, float blending) {
+        if (id >= 0 && id < blendingFactors.length) {
             blendingFactors[id] = blending;
         }
     }
-    
-    /**Adding cube map texture and its initial blending factor to the units.<br>
+
+    /**
+     * Adding cube map texture and its initial blending factor to the units.<br>
      * The factor represents the visibility of the cube map texture. 0.0f is not
-     * visible and 1.0f is full visible. The blending factor will be multiplied
-     * by the texture color.
+     * visible and 1.0f is full visible. The blending factor will be multiplied by
+     * the texture color.
      * 
-     * @param tex Cube map texture to add
+     * @param tex      Cube map texture to add
      * @param blending Initial blending factor
      * @return Unit id of the texture
      */
-    public int addCubeMapTexture(String tex, float blending){
+    public int addCubeMapTexture(String tex, float blending) {
         cubeMapTextures = Toolbox.addElement(cubeMapTextures, tex);
         blendingFactors = Toolbox.addElement(blendingFactors, blending);
-        return cubeMapTextures.length -1;
+        return cubeMapTextures.length - 1;
     }
-    
-    /**@return Read/writeable array of the blending factors
+
+    /**
+     * @return Read/writeable array of the blending factors
      */
     public float[] getBlendingFactors() {
         return blendingFactors;
     }
-    
-    /**@return Read/writeable array of the cube map textures
+
+    /**
+     * @return Read/writeable array of the cube map textures
      */
     public String[] getCubeMapTextures() {
         return cubeMapTextures;
     }
-    
-    /**@return Current transformation matrix of the skybox
+
+    /**
+     * @return Current transformation matrix of the skybox
      */
     public Matrix4f getTransMat() {
         return transMat;

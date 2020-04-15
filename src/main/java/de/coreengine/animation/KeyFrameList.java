@@ -28,70 +28,80 @@
 
 package de.coreengine.animation;
 
-
 import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**Class that stores a list of keyframes for a specific component
+/**
+ * Class that stores a list of keyframes for a specific component
  *
  * @param <Component> Component of the keyframes
  */
-public class KeyFrameList<Component>{
+public class KeyFrameList<Component> {
 
     private List<KeyFrame<Component>> keyFrames = new ArrayList<>();
 
-    /**Adding a keyframe to the end of the list
+    /**
+     * Adding a keyframe to the end of the list
      *
      * @param keyFrame Keyframe to add
      */
-    public void addKeyFrame(KeyFrame<Component> keyFrame){
+    public void addKeyFrame(KeyFrame<Component> keyFrame) {
         keyFrames.add(keyFrame);
     }
 
-    /**@return Keyframes of this list
+    /**
+     * @return Keyframes of this list
      */
     List<KeyFrame<Component>> getKeyFrames() {
         return keyFrames;
     }
 
-    /**@return Last timestamp of this list
+    /**
+     * @return Last timestamp of this list
      */
-    float getLastTimeStamp(){
-        if(keyFrames.isEmpty()) return 0;
-        return keyFrames.get(keyFrames.size() -1).getTimestamp();
+    float getLastTimeStamp() {
+        if (keyFrames.isEmpty())
+            return 0;
+        return keyFrames.get(keyFrames.size() - 1).getTimestamp();
     }
 
-    /**Finding previous and next keyframe for a specific time stamp. If no previous keyframe exist, the key of the
-     * result is null. If no next keyframe exist, the value of the result is null. If no keyframes exist, both
-     * value and key are null.
+    /**
+     * Finding previous and next keyframe for a specific time stamp. If no previous
+     * keyframe exist, the key of the result is null. If no next keyframe exist, the
+     * value of the result is null. If no keyframes exist, both value and key are
+     * null.
      *
      * @param time Current timestamp
      * @return Pair of the previous as key and the next keyframe as value
      */
-    Pair<KeyFrame<Component>, KeyFrame<Component>> getRelevantKeyFrames(float time){
+    Pair<KeyFrame<Component>, KeyFrame<Component>> getRelevantKeyFrames(float time) {
         KeyFrame previous = null, next = null;
 
-        if(keyFrames.size() == 0) return new Pair<>(null, null);
+        if (keyFrames.size() == 0)
+            return new Pair<>(null, null);
 
-        //Iterate through key frames to find next and previous
-        for(int i = 0; i < keyFrames.size(); i++){
+        // Iterate through key frames to find next and previous
+        for (int i = 0; i < keyFrames.size(); i++) {
 
-            //Is greater, so next keyframe found
-            if(keyFrames.get(i).getTimestamp() > time){
+            // Is greater, so next keyframe found
+            if (keyFrames.get(i).getTimestamp() > time) {
                 next = keyFrames.get(i);
 
-                //Check if next keyframe is first, so previous doesnt exist
-                if(i == 0) previous = null;
-                else previous = keyFrames.get(i -1);
+                // Check if next keyframe is first, so previous doesnt exist
+                if (i == 0)
+                    previous = null;
+                else
+                    previous = keyFrames.get(i - 1);
 
                 break;
             }
         }
 
-        //If time is over last keyframe set last keyframe as previous
-        if(next == null) previous = keyFrames.get(keyFrames.size() -1);
+        // If time is over last keyframe set last keyframe as previous
+        if (next == null)
+            previous = keyFrames.get(keyFrames.size() - 1);
 
         return new Pair<>(previous, next);
     }

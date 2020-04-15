@@ -37,43 +37,44 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-/**Representing a renderer that rendering deferred lights into a gbuffer
+/**
+ * Representing a renderer that rendering deferred lights into a gbuffer
  *
  * @author Darius Dinger
  */
 public class DeferredRenderer {
-    
+
     private DeferredShader shader = new DeferredShader();
-    
-    /**Rendering lights into a gbuffer using deferred rendering
+
+    /**
+     * Rendering lights into a gbuffer using deferred rendering
      * 
-     * @param gBuffer GBuffer to get rendered texture from
-     * @param pointLights Point lights to render
-     * @param spotLights Spot lights to render
-     * @param ambientLights Ambient lights to render
+     * @param gBuffer           GBuffer to get rendered texture from
+     * @param pointLights       Point lights to render
+     * @param spotLights        Spot lights to render
+     * @param ambientLights     Ambient lights to render
      * @param directionalLights Directional lights to render
-     * @param cam Camera to use for lighting calculation
-     * @param shadowLight Shadow light to render shadows from
+     * @param cam               Camera to use for lighting calculation
+     * @param shadowLight       Shadow light to render shadows from
      */
-    void render(GBuffer gBuffer, List<PointLight> pointLights,
-                List<SpotLight> spotLights, List<AmbientLight> ambientLights,
-                List<DirectionalLight> directionalLights, Camera cam, ShadowLight shadowLight) {
-        
+    void render(GBuffer gBuffer, List<PointLight> pointLights, List<SpotLight> spotLights,
+            List<AmbientLight> ambientLights, List<DirectionalLight> directionalLights, Camera cam,
+            ShadowLight shadowLight) {
+
         Mesh quad = Quad2D.getInstance();
-        
+
         shader.start();
         quad.getVao().bind();
         quad.getVao().enableAttributes();
         quad.getIndexBuffer().bind();
-        
+
         shader.setGBuffer(gBuffer);
         shader.setCameraPosition(cam.getPosition());
         shader.setLightSources(pointLights, spotLights, ambientLights, directionalLights);
         shader.setShadowLight(shadowLight);
-        
-        GL11.glDrawElements(GL11.GL_TRIANGLES, quad.getIndexBuffer().getSize(), 
-                GL11.GL_UNSIGNED_INT, 0);
-        
+
+        GL11.glDrawElements(GL11.GL_TRIANGLES, quad.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
         quad.getIndexBuffer().unbind();
         quad.getVao().disableAttributes();
         quad.getVao().unbind();

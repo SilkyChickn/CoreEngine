@@ -32,28 +32,30 @@ import de.coreengine.util.Configuration;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-/**Represent a point light in the scene with specific range
+/**
+ * Represent a point light in the scene with specific range
  *
  * @author Darius Dinger
  */
 public class PointLight extends AmbientLight {
-    private static Vector2f DEFAULT_ATTENUATION = new Vector2f(
-            Configuration.getValuef("LIGHT_DEFAULT_LINEAR_DROP"),
+    private static Vector2f DEFAULT_ATTENUATION = new Vector2f(Configuration.getValuef("LIGHT_DEFAULT_LINEAR_DROP"),
             Configuration.getValuef("LIGHT_DEFAULT_SQUARED_DROP"));
-    
-    //Lights attenuation (x = linear drop, y = squared drop)
+
+    // Lights attenuation (x = linear drop, y = squared drop)
     private Vector2f attenuation = DEFAULT_ATTENUATION;
-    
-    //Position of the point light in the 3d world
+
+    // Position of the point light in the 3d world
     private Vector3f position = new Vector3f();
-    
-    /**@return Lights current attenuation (x = linear drop, y = squared drop)
+
+    /**
+     * @return Lights current attenuation (x = linear drop, y = squared drop)
      */
     public Vector2f getAttenuation() {
         return attenuation;
     }
-    
-    /**@return Lights position in the 3d world
+
+    /**
+     * @return Lights position in the 3d world
      */
     public Vector3f getPosition() {
         return position;

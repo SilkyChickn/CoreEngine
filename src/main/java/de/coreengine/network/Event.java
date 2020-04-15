@@ -27,50 +27,56 @@
  */
 package de.coreengine.network;
 
-/**Abstract class for network events
+/**
+ * Abstract class for network events
  *
  * @author Darius Dinger
  */
 public abstract class Event {
-    
-    //Tag of the event in the network
+
+    // Tag of the event in the network
     private final String tag;
-    
-    //Has the event state changed since last sync
+
+    // Has the event state changed since last sync
     private boolean hasEvent = false;
-    
-    /**@param tag Tag of the event in the network
+
+    /**
+     * @param tag Tag of the event in the network
      */
     public Event(String tag) {
         this.tag = tag;
     }
-    
-    /**Syncronize event with the network<br>
+
+    /**
+     * Syncronize event with the network<br>
      * (Call every sync)
      */
-    public void syncronize(){
-        
-        //If event has occured send event to server
-        if(hasEvent){
+    public void syncronize() {
+
+        // If event has occured send event to server
+        if (hasEvent) {
             hasEvent = false;
             MessageManager.sendTaggedData(tag, event());
         }
-        
+
         event(MessageManager.getTaggedData(tag));
     }
-    
-    /**Has an event occured
+
+    /**
+     * Has an event occured
      */
-    protected void eventOccured(){
+    protected void eventOccured() {
         hasEvent = true;
     }
-    
-    /**Resetting the event<br>
+
+    /**
+     * Resetting the event<br>
      * (Call every frame, AFTER event gets processed)
      */
     public abstract void reset();
-    
-    //Event methods
+
+    // Event methods
     protected abstract void event(String event);
+
     protected abstract String event();
 }

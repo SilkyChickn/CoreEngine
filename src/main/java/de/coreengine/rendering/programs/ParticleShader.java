@@ -46,12 +46,12 @@ public class ParticleShader extends Shader {
 
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.vert", true),
-                GL20.GL_VERTEX_SHADER, "Particle Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.geo", true),
-                GL32.GL_GEOMETRY_SHADER, "Particle Geometry Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.frag", true),
-                GL20.GL_FRAGMENT_SHADER, "Particle Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.vert", true), GL20.GL_VERTEX_SHADER,
+                "Particle Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.geo", true), GL32.GL_GEOMETRY_SHADER,
+                "Particle Geometry Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "particle.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Particle Fragment Shader");
     }
 
     @Override
@@ -69,29 +69,32 @@ public class ParticleShader extends Shader {
         bindTextureUnit("colorTexture", colorTextureUnit);
     }
 
-    /**Prepare camera to render next particles from
+    /**
+     * Prepare camera to render next particles from
      *
      * @param cam Camera to render from
      */
-    public void prepareCam(Camera cam){
+    public void prepareCam(Camera cam) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
         setUniform(fMatLoc, Toolbox.matrixToFloatArray(cam.getFacingMatrix()));
     }
 
-    /**Preparing stuff for next particles
+    /**
+     * Preparing stuff for next particles
      *
      * @param texture TextureData of next particles
      */
-    public void prepareParticles(int texture){
+    public void prepareParticles(int texture) {
         bindTexture(texture, colorTextureUnit, GL11.GL_TEXTURE_2D);
     }
 
-    /**Set transformation for next particle
+    /**
+     * Set transformation for next particle
      *
      * @param size Size of the next particle
-     * @param pos Position of the next particle
+     * @param pos  Position of the next particle
      */
-    public void setNextTransform(Vector2f size, Vector3f pos){
+    public void setNextTransform(Vector2f size, Vector3f pos) {
         setUniform(scaleLoc, size.x, size.y);
         setUniform(posLoc, pos.x, pos.y, pos.z);
     }

@@ -32,49 +32,51 @@ import de.coreengine.rendering.programs.Shader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for a post processing effect
+/**
+ * Shader for a post processing effect
  *
  * @author Darius Dinger
  */
-public abstract class PPShader extends Shader{
-    private static final String PP_SHADER_LOCATION = 
-            Shader.SHADERS_LOCATION + "pp/";
-    
+public abstract class PPShader extends Shader {
+    private static final String PP_SHADER_LOCATION = Shader.SHADERS_LOCATION + "pp/";
+
     private final int colorTextureUnit = 0, depthTextureUnit = 1;
-    
+
     protected abstract String getPPFragShaderFile();
-    
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(PPShader.PP_SHADER_LOCATION + "pp.vert", true),
-                GL20.GL_VERTEX_SHADER, "PostProcessing Vertex Shader");
-        addShader(FileLoader.getResource(PPShader.PP_SHADER_LOCATION + getPPFragShaderFile(), true), 
+        addShader(FileLoader.getResource(PPShader.PP_SHADER_LOCATION + "pp.vert", true), GL20.GL_VERTEX_SHADER,
+                "PostProcessing Vertex Shader");
+        addShader(FileLoader.getResource(PPShader.PP_SHADER_LOCATION + getPPFragShaderFile(), true),
                 GL20.GL_FRAGMENT_SHADER, getPPFragShaderFile());
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         bindTextureUnit("colorTexture", colorTextureUnit);
         bindTextureUnit("depthTexture", depthTextureUnit);
-        
+
         setUniformLocations();
     }
-    
-    /**Setting the effect shader relevant uniforms.
+
+    /**
+     * Setting the effect shader relevant uniforms.
      */
     protected abstract void setUniformLocations();
-    
-    /**Setting base post processing effect textures
+
+    /**
+     * Setting base post processing effect textures
      * 
      * @param color Input color texture
      * @param depth Input depth buffer texture
      */
-    public void setBaseTexture(int color, int depth){
+    public void setBaseTexture(int color, int depth) {
         bindTexture(color, colorTextureUnit, GL11.GL_TEXTURE_2D);
         bindTexture(depth, depthTextureUnit, GL11.GL_TEXTURE_2D);
     }

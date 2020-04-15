@@ -42,16 +42,17 @@ import java.util.HashMap;
 
 public class AnimatedModelData extends ModelData {
 
-    //Data
+    // Data
     public Joint skeleton = null;
     public HashMap<String, Animation> animations = null;
 
-    /**Constructing this animated model data from bytes.<br>
+    /**
+     * Constructing this animated model data from bytes.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
-     * ModelSize (int) | SkeletonSize (int) | AnimationCount (int) |
-     * Animation0Size (int) | Animation1Size (int) | ...<br>
+     * ModelSize (int) | SkeletonSize (int) | AnimationCount (int) | Animation0Size
+     * (int) | Animation1Size (int) | ...<br>
      * <br>
      * Second Sector [ModelData]:<br>
      * Model (ModelData)<br>
@@ -65,30 +66,32 @@ public class AnimatedModelData extends ModelData {
      * @param data Bytes to construct animated model data from
      */
     @Override
-    public void fromBytes(byte[] data){
+    public void fromBytes(byte[] data) {
 
-        //Get meta data
+        // Get meta data
         int counter = 0;
         int[] modelSkeletonAnimationSizes = ByteArrayUtils.fromBytesi(Arrays.copyOfRange(data, counter, counter += 12));
-        int[] animationSizes = ByteArrayUtils.fromBytesi(
-                Arrays.copyOfRange(data, counter, counter += modelSkeletonAnimationSizes[2]*4));
+        int[] animationSizes = ByteArrayUtils
+                .fromBytesi(Arrays.copyOfRange(data, counter, counter += modelSkeletonAnimationSizes[2] * 4));
 
-        //Get model data
+        // Get model data
         super.fromBytes(Arrays.copyOfRange(data, counter, counter += modelSkeletonAnimationSizes[0]));
 
-        //Get skeleton data
-        if(modelSkeletonAnimationSizes[1] > 0){
+        // Get skeleton data
+        if (modelSkeletonAnimationSizes[1] > 0) {
             this.skeleton = new Joint(0, "", new Matrix4f(), new Matrix4f());
             this.skeleton.fromBytes(Arrays.copyOfRange(data, counter, counter += modelSkeletonAnimationSizes[1]));
             this.skeleton.calcBindPose(null);
             this.skeleton.calcAnimatedTransformAndPose(null);
-        }else this.skeleton = null;
+        } else
+            this.skeleton = null;
 
-        //Get animation data
-        if(animationSizes.length == 0) this.animations = null;
-        else{
+        // Get animation data
+        if (animationSizes.length == 0)
+            this.animations = null;
+        else {
             this.animations = new HashMap<>();
-            for(int i = 0; i < animationSizes.length; i++){
+            for (int i = 0; i < animationSizes.length; i++) {
                 Animation animation = new Animation("", new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
                 animation.fromBytes(Arrays.copyOfRange(data, counter, counter += animationSizes[i]));
                 this.animations.put(animation.getName(), animation);
@@ -96,12 +99,13 @@ public class AnimatedModelData extends ModelData {
         }
     }
 
-    /**Converting the dataStructure animated model into a byte array.<br>
+    /**
+     * Converting the dataStructure animated model into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
-     * ModelSize (int) | SkeletonSize (int) | AnimationCount (int) |
-     * Animation0Size (int) | Animation1Size (int) | ...<br>
+     * ModelSize (int) | SkeletonSize (int) | AnimationCount (int) | Animation0Size
+     * (int) | Animation1Size (int) | ...<br>
      * <br>
      * Second Sector [ModelData]:<br>
      * Model (ModelData)<br>
@@ -115,26 +119,23 @@ public class AnimatedModelData extends ModelData {
      * @return Converted byte array
      */
     @Override
-    public byte[] toBytes(){
+    public byte[] toBytes() {
 
-        //Get model and skeleton bytes
+        // Get model and skeleton bytes
         byte[] modelData = super.toBytes();
         byte[] skeletonData = skeleton == null ? new byte[0] : skeleton.toBytes();
 
-        //Create meta data
-        int[] modelSkeletonAnimationsSizesI = new int[] {
-                modelData.length,
-                skeleton == null ? 0 : skeletonData.length,
-                animations == null ? 0 : animations.size()
-        };
+        // Create meta data
+        int[] modelSkeletonAnimationsSizesI = new int[] { modelData.length, skeleton == null ? 0 : skeletonData.length,
+                animations == null ? 0 : animations.size() };
         byte[] modelSkeletonAnimationsSizes = ByteArrayUtils.toBytes(modelSkeletonAnimationsSizesI);
 
-        //Create animations data
+        // Create animations data
         byte[][] animationsA = new byte[modelSkeletonAnimationsSizesI[2]][];
         int[] animationsSizesI = new int[animationsA.length];
-        if(animations != null){
+        if (animations != null) {
             int c = 0;
-            for(String animationName: animations.keySet()){
+            for (String animationName : animations.keySet()) {
                 Animation animation = animations.get(animationName);
                 animationsA[c] = animation.toBytes();
                 animationsSizesI[c] = animationsA[c].length;
@@ -143,20 +144,21 @@ public class AnimatedModelData extends ModelData {
         byte[] animationSizes = ByteArrayUtils.toBytes(animationsSizesI);
         byte[] animations = ByteArrayUtils.combine(animationsA);
 
-        //Combine and return
-        return ByteArrayUtils.combine(modelSkeletonAnimationsSizes,
-                animationSizes, modelData, skeletonData, animations);
+        // Combine and return
+        return ByteArrayUtils.combine(modelSkeletonAnimationsSizes, animationSizes, modelData, skeletonData,
+                animations);
     }
 
-    /**Creates new animated model instance of the dataStructure animated model
+    /**
+     * Creates new animated model instance of the dataStructure animated model
      *
-     * @param texPath Path to get models textures from
+     * @param texPath    Path to get models textures from
      * @param asResource Load model textures from resources
      * @return Create model instance
      */
     @Override
-    public AnimatedModel getInstance(String texPath, boolean asResource){
-        if(this.meshes == null){
+    public AnimatedModel getInstance(String texPath, boolean asResource) {
+        if (this.meshes == null) {
             Logger.warn("Error by creating animated model instance",
                     "The meshes array of the dataStructures animated model is null! Returning null");
             return null;
@@ -164,8 +166,8 @@ public class AnimatedModelData extends ModelData {
 
         Mesh[] meshes = new Mesh[this.meshes.length];
 
-        //Create all mesh instances
-        for(int i = 0; i < this.meshes.length; i++){
+        // Create all mesh instances
+        for (int i = 0; i < this.meshes.length; i++) {
             meshes[i] = this.meshes[i].getInstance(texPath, asResource, true);
         }
 

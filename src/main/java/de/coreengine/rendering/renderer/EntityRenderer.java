@@ -37,56 +37,64 @@ import javax.vecmath.Vector4f;
 import java.util.HashMap;
 import java.util.List;
 
-/**Renderer that can render an model into the world
+/**
+ * Renderer that can render an model into the world
  *
  * @author Darius Dinger
  */
 public class EntityRenderer {
-    
+
     private EntityShader shader = new EntityShader();
-    
-    /**Renders a list of entities into the bound framebuffer
+
+    /**
+     * Renders a list of entities into the bound framebuffer
      * 
-     * @param entities Entity map to render
-     * @param cam Camera to render from
+     * @param entities  Entity map to render
+     * @param cam       Camera to render from
      * @param clipPlane Clip plane of the entities
      */
-    void render(HashMap<Mesh, List<Entity>> entities, Camera cam, Vector4f clipPlane){
+    void render(HashMap<Mesh, List<Entity>> entities, Camera cam, Vector4f clipPlane) {
 
-        //Setup shader
+        // Setup shader
         shader.start();
-        shader.setCamera(cam);
-        shader.setClipPlane(clipPlane.x, clipPlane.y,
-                clipPlane.z, clipPlane.w);
+        shader.setCamera(cam, false);
+        shader.setClipPlane(clipPlane.x, clipPlane.y, clipPlane.z, clipPlane.w);
 
-        for(Mesh mesh: entities.keySet()){
+        for (Mesh mesh : entities.keySet()) {
 
-            //Bind mesh data
+            // Bind mesh data
             mesh.getVao().bind();
             mesh.getVao().enableAttributes();
             mesh.getIndexBuffer().bind();
 
-            //Load material into shader
+            // Load material into shader
             shader.prepareMaterial(mesh.getMaterial());
 
-            //Iterate instanced entities
-            for(Entity entity: entities.get(mesh)){
+            // Iterate instanced entities
+            for (Entity entity : entities.get(mesh)) {
 
-                //Prepare entity
+                // Prepare entity
                 shader.prepareEntity(entity);
 
-                //Render entity
-                GL11.glDrawElements(GL11.GL_TRIANGLES,
-                        mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+                // Should entity rot with cam
+                if (entity.isRotateWithCam())
+                    shader.setCamera(cam, true);
+
+                // Render entity
+                GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
+                // Undo cam rotation, when entity rot with cam
+                if (entity.isRotateWithCam())
+                    shader.setCamera(cam, false);
             }
 
-            //Unbind mesh data
+            // Unbind mesh data
             mesh.getIndexBuffer().unbind();
             mesh.getVao().disableAttributes();
             mesh.getVao().unbind();
         }
 
-        //Stop shader
+        // Stop shader
         shader.stop();
     }
 }

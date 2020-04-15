@@ -34,39 +34,39 @@ import de.coreengine.util.Configuration;
 
 import java.util.List;
 
-/**Fog effect for the post processer
+/**
+ * Fog effect for the post processer
  *
  * @author Darius Dinger
  */
-public class FogEffect extends PostProcessingEffect{
-    private static final float DEFAULT_DENSITY = 
-            Configuration.getValuef("FOG_DEFAULT_DENSITY");
-    private static final float DEFAULT_GRADIENT = 
-            Configuration.getValuef("FOG_DEFAULT_GRADIENT");
-    
-    //Fogs density
+public class FogEffect extends PostProcessingEffect {
+    private static final float DEFAULT_DENSITY = Configuration.getValuef("FOG_DEFAULT_DENSITY");
+    private static final float DEFAULT_GRADIENT = Configuration.getValuef("FOG_DEFAULT_GRADIENT");
+
+    // Fogs density
     private float density = DEFAULT_DENSITY;
-    
-    //Fogs gradient
+
+    // Fogs gradient
     private float gradient = DEFAULT_GRADIENT;
-    
-    //Fogs color
+
+    // Fogs color
     private Color color = new Color();
-    
-    /**Creating new fog effect
+
+    /**
+     * Creating new fog effect
      */
     public FogEffect() {
         super(new FogPPShader());
     }
-    
+
     @Override
     protected void setUniforms() {
         ((FogPPShader) shader).setStrengthTexture(MasterRenderer.getGBUFFER().getVariable1Buffer());
         ((FogPPShader) shader).setValues(density, gradient, color);
     }
-    
-    /**Setting fogs gradient. Fog visibility will be calculated by this 
-     * formula:<br>
+
+    /**
+     * Setting fogs gradient. Fog visibility will be calculated by this formula:<br>
      * f(x) = e^-(density * x)^gradient
      * 
      * @param density Fogs new density
@@ -74,9 +74,9 @@ public class FogEffect extends PostProcessingEffect{
     public void setDensity(float density) {
         this.density = density;
     }
-    
-    /**Setting fogs density. Fog visibility will be calculated by this 
-     * formula:<br>
+
+    /**
+     * Setting fogs density. Fog visibility will be calculated by this formula:<br>
      * f(x) = e^-(density * x)^gradient
      * 
      * @param gradient Fogs new gradient
@@ -84,13 +84,15 @@ public class FogEffect extends PostProcessingEffect{
     public void setGradient(float gradient) {
         this.gradient = gradient;
     }
-    
-    /**@return Color of the fog
+
+    /**
+     * @return Color of the fog
      */
     public Color getColor() {
         return color;
     }
 
     @Override
-    public void addImpliedEffects(List<PostProcessingEffect> effects) {}
+    public void addImpliedEffects(List<PostProcessingEffect> effects) {
+    }
 }

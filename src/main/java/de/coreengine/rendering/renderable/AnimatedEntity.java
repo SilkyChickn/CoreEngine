@@ -32,41 +32,46 @@ import de.coreengine.animation.Joint;
 import de.coreengine.asset.AssetDatabase;
 import de.coreengine.rendering.model.Transformation;
 
-/**Class that represents an animated entity in the world
+/**
+ * Class that represents an animated entity in the world
  *
  * @author Darius Dinger
  */
 public class AnimatedEntity {
 
-    //Transformation of the entity
+    // Transformation of the entity
     private Transformation transform = new Transformation();
 
-    //Model of the entity
+    // Model of the entity
     private String model = null;
 
-    //Root joint of the models skeleton
+    // Root joint of the models skeleton
     private Joint skeleton = null;
 
-    /**@param model New model of the entity
+    /**
+     * @param model New model of the entity
      */
     public void setModel(String model) {
         this.model = model;
         this.skeleton = AssetDatabase.getAnimatedModel(model).getNewSkeletonInstance();
     }
 
-    /**@return Read/writeable transformation of the entity
+    /**
+     * @return Read/writeable transformation of the entity
      */
     public Transformation getTransform() {
         return transform;
     }
 
-    /**@return Model of the entity
+    /**
+     * @return Model of the entity
      */
     public String getModel() {
         return model;
     }
 
-    /**@return Root joint of the models skeleton
+    /**
+     * @return Root joint of the models skeleton
      */
     public Joint getSkeleton() {
         return skeleton;

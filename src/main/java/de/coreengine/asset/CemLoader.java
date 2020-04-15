@@ -34,84 +34,93 @@ import de.coreengine.util.Logger;
 import java.io.*;
 import java.net.URL;
 
-/**Class that can load cem (Core Engine Model) files (see de.coreengine.asset.dataStructures)
+/**
+ * Class that can load cem (Core Engine Model) files (see
+ * de.coreengine.asset.dataStructures)
  *
  * @author Darius
  */
 public class CemLoader {
 
-    /**Loading a model from a file into the asset database. If the model already loaded, this method does nothing.
+    /**
+     * Loading a model from a file into the asset database. If the model already
+     * loaded, this method does nothing.
      *
-     * @param file File to load
-     * @param texPath Location of the models textures
+     * @param file       File to load
+     * @param texPath    Location of the models textures
      * @param asResource Loading model and textures from resources
      */
-    public static void loadModel(String file, String texPath, boolean asResource){
-        if(AssetDatabase.models.containsKey(file)) return;
+    public static void loadModel(String file, String texPath, boolean asResource) {
+        if (AssetDatabase.models.containsKey(file))
+            return;
         ModelData modelData = loadModelData(file, asResource);
-        if(modelData != null)AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
+        if (modelData != null)
+            AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
     }
 
-    /**Saving model data to a file
+    /**
+     * Saving model data to a file
      *
-     * @param file Filename to save
+     * @param file      Filename to save
      * @param modelData ModelData to save
      */
-    public static void saveModelData(String file, ModelData modelData){
+    public static void saveModelData(String file, ModelData modelData) {
 
         try {
 
-            //Construct data from dataStructures model
+            // Construct data from dataStructures model
             byte[] data = modelData.toBytes();
 
-            //Read bytes from file
+            // Read bytes from file
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
             fos.close();
 
         } catch (FileNotFoundException e0) {
-            Logger.err("Error by saving model data", "The model data file " +
-                    file + " could not be found! Returning null!");
+            Logger.err("Error by saving model data",
+                    "The model data file " + file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.err("Error by saving model data", "The model data file " +
-                    file + " could not be saved! Returning null!");
+            Logger.err("Error by saving model data",
+                    "The model data file " + file + " could not be saved! Returning null!");
         }
     }
 
-    /**Loading dataStructures model from a file
+    /**
+     * Loading dataStructures model from a file
      *
-     * @param file File to load
+     * @param file       File to load
      * @param asResource Loading model data from resources
      * @return Loaded dataStructures model
      */
-    public static ModelData loadModelData(String file, boolean asResource){
+    public static ModelData loadModelData(String file, boolean asResource) {
 
         try {
 
             File f;
-            if(asResource) {
+            if (asResource) {
                 URL url = Thread.currentThread().getContextClassLoader().getResource(file);
                 assert url != null;
                 f = new File(url.getFile());
-            }else f = new File(file);
+            } else
+                f = new File(file);
 
-            //Read bytes from file
+            // Read bytes from file
             FileInputStream fis = new FileInputStream(f);
             byte[] data = new byte[fis.available()];
             fis.read(data);
             fis.close();
 
-            //Construct dataStructures model from bytes
+            // Construct dataStructures model from bytes
             ModelData modelData = new ModelData();
             modelData.fromBytes(data);
             return modelData;
 
         } catch (FileNotFoundException e0) {
-            Logger.warn("Error by loading model data", "The model data file " +
-                    file + " could not be found! Returning null!");
+            Logger.warn("Error by loading model data",
+                    "The model data file " + file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.warn("Error by loading model data", "The model data file " +
-                    file + " could not be loaded! Returning null!");
+            Logger.warn("Error by loading model data",
+                    "The model data file " + file + " could not be loaded! Returning null!");
         }
 
         return null;

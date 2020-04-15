@@ -34,37 +34,35 @@ import de.coreengine.util.gl.VertexArrayObject;
 
 import javax.vecmath.Vector3f;
 
-/**Representing a simple 2 dimensional quad model singleton
+/**
+ * Representing a simple 2 dimensional quad model singleton
  *
  * @author Darius Dinger
  */
 public class Quad2D {
-    
-    //Instance of a 2D quad model
+
+    // Instance of a 2D quad model
     private static Mesh instance = null;
-    
-    /**@return Instance of a 2D quad model
+
+    /**
+     * @return Instance of a 2D quad model
      */
     public static Mesh getInstance() {
-        if(instance == null) create();
+        if (instance == null)
+            create();
         return instance;
     }
-    
-    /**Creating instance
+
+    /**
+     * Creating instance
      */
-    private static void create(){
+    private static void create() {
         VertexArrayObject vao = new VertexArrayObject();
-        vao.addVertexBuffer(new float[]{
-            -1, -1, 1, -1, 1, 1, -1, 1
-        }, 2, 0);
-        
-        IndexBuffer index = vao.addIndexBuffer(new int[]{
-            3, 0, 2, 2, 0, 1
-        });
-        
-        instance = new Mesh(vao, index, new BU_Simplex1to4(
-                new Vector3f(-1, -1, 0), new Vector3f(1, -1, 0), 
-                new Vector3f(1, 1, 0), new Vector3f(-1, 1, 0)
-        ));
+        vao.addVertexBuffer(new float[] { -1, -1, 1, -1, 1, 1, -1, 1 }, 2, 0);
+
+        IndexBuffer index = vao.addIndexBuffer(new int[] { 3, 0, 2, 2, 0, 1 });
+
+        instance = new Mesh(vao, index, new BU_Simplex1to4(new Vector3f(-1, -1, 0), new Vector3f(1, -1, 0),
+                new Vector3f(1, 1, 0), new Vector3f(-1, 1, 0)));
     }
 }

@@ -27,7 +27,8 @@
  */
 package de.coreengine.system.gameObjects.gui;
 
-/**Listener for the Button class
+/**
+ * Listener for the Button class
  *
  * @author Darius Dinger
  */

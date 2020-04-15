@@ -34,16 +34,18 @@ import de.coreengine.util.Logger;
 
 import java.util.Arrays;
 
-/**Model data that can be saved in a file
+/**
+ * Model data that can be saved in a file
  *
  * @author Darius Dinger
  */
 public class ModelData {
-    
-    //Data
+
+    // Data
     public MeshData[] meshes = null;
 
-    /**Constructing dataStructure model from a byte array.<br>
+    /**
+     * Constructing dataStructure model from a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -54,32 +56,33 @@ public class ModelData {
      *
      * @param data Data to construct dataStructure model from
      */
-    public void fromBytes(byte[] data){
+    public void fromBytes(byte[] data) {
 
-        //Get mesh count
+        // Get mesh count
         byte[] meshCountB = Arrays.copyOfRange(data, 0, 4);
         int meshCount = ByteArrayUtils.fromBytesi(meshCountB)[0];
 
-        //If no meshes return
-        if(meshCount == 0){
+        // If no meshes return
+        if (meshCount == 0) {
             meshes = null;
             return;
         }
 
-        //Get mesh sizes
+        // Get mesh sizes
         int counter = 4;
-        byte[] meshSizesB = Arrays.copyOfRange(data, counter, counter += (meshCount*4));
+        byte[] meshSizesB = Arrays.copyOfRange(data, counter, counter += (meshCount * 4));
         int[] meshSizes = ByteArrayUtils.fromBytesi(meshSizesB);
 
-        //Get mesh data
+        // Get mesh data
         meshes = new MeshData[meshCount];
-        for(int i = 0; i < meshCount; i++){
+        for (int i = 0; i < meshCount; i++) {
             meshes[i] = new MeshData();
             meshes[i].fromBytes(Arrays.copyOfRange(data, counter, counter += meshSizes[i]));
         }
     }
 
-    /**Converting the dataStructure model into a byte array.<br>
+    /**
+     * Converting the dataStructure model into a byte array.<br>
      * <br>
      * Format:<br>
      * First Sector [MetaData]:<br>
@@ -90,43 +93,46 @@ public class ModelData {
      *
      * @return Converted byte array
      */
-    public byte[] toBytes(){
+    public byte[] toBytes() {
 
-        //Create mesh data
+        // Create mesh data
         byte[][] meshDataA;
-        if(meshes != null){
+        if (meshes != null) {
             meshDataA = new byte[meshes.length][];
-            for(int i = 0; i < meshes.length; i++){
+            for (int i = 0; i < meshes.length; i++) {
                 meshDataA[i] = meshes[i].toBytes();
             }
-        } else meshDataA = new byte[0][];
+        } else
+            meshDataA = new byte[0][];
         byte[] meshData = ByteArrayUtils.combine(meshDataA);
 
-        //Get dataStructures data
-        int[] meshCountI = meshes == null ? new int[] {0} : new int[] { meshes.length };
+        // Get dataStructures data
+        int[] meshCountI = meshes == null ? new int[] { 0 } : new int[] { meshes.length };
         byte[] meshCount = ByteArrayUtils.toBytes(meshCountI);
 
         int[] meshSizesI;
-        if(meshes != null){
+        if (meshes != null) {
             meshSizesI = new int[meshes.length];
-            for(int i = 0; i < meshes.length; i++){
+            for (int i = 0; i < meshes.length; i++) {
                 meshSizesI[i] = meshDataA[i].length;
             }
-        }else meshSizesI = new int[0];
+        } else
+            meshSizesI = new int[0];
         byte[] meshSizes = ByteArrayUtils.toBytes(meshSizesI);
 
-        //Combine and return
+        // Combine and return
         return ByteArrayUtils.combine(meshCount, meshSizes, meshData);
     }
 
-    /**Creates new model instance of the dataStructure model
+    /**
+     * Creates new model instance of the dataStructure model
      *
-     * @param texPath Path to get models textures from
+     * @param texPath    Path to get models textures from
      * @param asResource Load model textures from resources
      * @return Create model instance
      */
-    public Model getInstance(String texPath, boolean asResource){
-        if(this.meshes == null){
+    public Model getInstance(String texPath, boolean asResource) {
+        if (this.meshes == null) {
             Logger.warn("Error by creating model instance",
                     "The meshes array of the dataStructures model is null! Returning null");
             return null;
@@ -134,8 +140,8 @@ public class ModelData {
 
         Mesh[] meshes = new Mesh[this.meshes.length];
 
-        //Create all mesh instances
-        for(int i = 0; i < this.meshes.length; i++){
+        // Create all mesh instances
+        for (int i = 0; i < this.meshes.length; i++) {
             meshes[i] = this.meshes[i].getInstance(texPath, asResource, false);
         }
 

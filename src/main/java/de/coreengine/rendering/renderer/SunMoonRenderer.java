@@ -34,41 +34,42 @@ import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Moon;
 import org.lwjgl.opengl.GL11;
 
-/**Class that can render a sun texture into the scene
+/**
+ * Class that can render a sun texture into the scene
  *
  * @author Darius Dinger
  */
-public class SunMoonRenderer{
-    
+public class SunMoonRenderer {
+
     SunMoonShader shader = new SunMoonShader();
-    
-    /**Rendering sun into the bound framebuffer
+
+    /**
+     * Rendering sun into the bound framebuffer
      * 
      * @param moon Moon or sun to render
-     * @param cam Camera to render from
+     * @param cam  Camera to render from
      */
-    void render(Moon moon, Camera cam){
+    void render(Moon moon, Camera cam) {
         GL11.glDisable(GL11.GL_CULL_FACE);
-        
+
         Mesh model = Quad2D.getInstance();
-        
+
         shader.start();
-        
+
         model.getVao().bind();
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
-        
+
         shader.prepareMoon(moon, cam);
-        
-        GL11.glDrawElements(GL11.GL_TRIANGLES, 
-                model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
-        
+
+        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
         model.getIndexBuffer().unbind();
         model.getVao().disableAttributes();
         model.getVao().unbind();
-        
+
         shader.stop();
-        
+
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
 }

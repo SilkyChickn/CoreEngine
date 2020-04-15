@@ -35,74 +35,77 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**Class to manage logging
+/**
+ * Class to manage logging
  *
  * @author Darius Dinger
  */
 public class Logger {
-    
-    //Time stamp helper variables
+
+    // Time stamp helper variables
     private static final String TIME_STAMP_FORMAT = "dd-MM-yyyy HH:mm:ss";
     private static final Date TIME_STAMP_DATE = new Date();
-    private static final SimpleDateFormat TIME_STAMP_DATE_FORMATTER = 
-            new SimpleDateFormat(TIME_STAMP_FORMAT);
+    private static final SimpleDateFormat TIME_STAMP_DATE_FORMATTER = new SimpleDateFormat(TIME_STAMP_FORMAT);
 
-    //Log cache
+    // Log cache
     private static final List<String> LOG_CACHE = new ArrayList<>();
 
-    /**Prints and logging error message to console
+    /**
+     * Prints and logging error message to console
      * 
      * @param header Error header
-     * @param msg Error message
+     * @param msg    Error message
      */
-    public static void err(String header, String msg){
+    public static void err(String header, String msg) {
         LOG_CACHE.add("| " + getTimeStamp() + " | E | [" + header + "] " + msg);
-        
+
         try {
             throw new CoreEngineException(header + "\n" + msg);
         } catch (CoreEngineException ex) {
             ex.printStackTrace();
         }
     }
-    
-    /**Prints and logging warning message to console
+
+    /**
+     * Prints and logging warning message to console
      * 
      * @param header Warning header
-     * @param msg Warning message
+     * @param msg    Warning message
      */
-    public static void warn(String header, String msg){
+    public static void warn(String header, String msg) {
         String log = "| " + getTimeStamp() + " | W | [" + header + "] " + msg;
         System.out.println(log);
         LOG_CACHE.add(log);
     }
-    
-    /**Prints and logging info message to console
+
+    /**
+     * Prints and logging info message to console
      * 
      * @param header Info header
-     * @param msg Info message
+     * @param msg    Info message
      */
-    public static void info(String header, String msg){
+    public static void info(String header, String msg) {
         String log = "| " + getTimeStamp() + " | I | [" + header + "] " + msg;
         System.out.println(log);
         LOG_CACHE.add(log);
     }
-    
-    /**@return Stamp with actual time and date
+
+    /**
+     * @return Stamp with actual time and date
      */
-    private static String getTimeStamp(){
+    private static String getTimeStamp() {
         TIME_STAMP_DATE.setTime(System.currentTimeMillis());
         return TIME_STAMP_DATE_FORMATTER.format(TIME_STAMP_DATE);
     }
 
-    /**Saving current log into file relative to application.<br>
+    /**
+     * Saving current log into file relative to application.<br>
      * File format: log_dd-MM-yyyy HH:mm:ss.log
      */
-    public static void saveLog(){
+    public static void saveLog() {
         try {
-            FileLoader.writeFile("log_" +
-                    getTimeStamp().replaceAll(":", "-").replaceAll(" ", "_") + ".log",
-                    LOG_CACHE.toArray(new String[0])
-            );
+            FileLoader.writeFile("log_" + getTimeStamp().replaceAll(":", "-").replaceAll(" ", "_") + ".log",
+                    LOG_CACHE.toArray(new String[0]));
         } catch (IOException e) {
             e.printStackTrace();
         }

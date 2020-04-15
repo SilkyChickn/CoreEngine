@@ -31,144 +31,147 @@ import de.coreengine.asset.FileLoader;
 
 import java.util.HashMap;
 
-/**Class that can load a config file with default values and stores them
+/**
+ * Class that can load a config file with default values and stores them
  *
  * @author Darius Dinger
  */
 public class Configuration {
-    
+
     private static final String ARRAY_LIMITER = ";";
-    
-    //Configuration File location
+
+    // Configuration File location
     private static final String CONFIG_FILE = "res/config.ini";
-    
-    //Configurations loaded from config file
+
+    // Configurations loaded from config file
     private static HashMap<String, Object> config = null;
-    
-    /**Initializing the configuration and (re)loading the config file
+
+    /**
+     * Initializing the configuration and (re)loading the config file
      */
     private static void reloadConfig() {
-        
-        //Creating config map
+
+        // Creating config map
         config = new HashMap<>();
-        
-        //Load config file and split into lines
+
+        // Load config file and split into lines
         String[] configLines = FileLoader.getResource(CONFIG_FILE, false);
-        
-        //Iterate lines
+
+        // Iterate lines
         for (String line : configLines) {
-            //Check if line is empty or comment
-            if(line != null && !line.equals("") && !line.startsWith("//") && !line.startsWith("#")){
-                
-                //Get Setting key and value and put into configuration
+            // Check if line is empty or comment
+            if (line != null && !line.equals("") && !line.startsWith("//") && !line.startsWith("#")) {
+
+                // Get Setting key and value and put into configuration
                 String[] pair = line.split("=");
-                if(pair.length >= 2) config.put(pair[0], pair[1]);
+                if (pair.length >= 2)
+                    config.put(pair[0], pair[1]);
             }
         }
     }
-    
-    /**Getting float value of setting
-     * Loggin an error and returning 1, if setting not found
+
+    /**
+     * Getting float value of setting Loggin an error and returning 1, if setting
+     * not found
      * 
      * @param id Name or id of the Setting
      * @return Setting as float
      */
-    public static float getValuef(String id){
-        
-        //Check if config is loaded
-        if(config == null){
+    public static float getValuef(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
             reloadConfig();
         }
-        
-        //Check if config contains setting
-        if(config.containsKey(id)){
-            return Float.parseFloat((String)config.get(id));
-        }else{
-            Logger.warn("Setting not found", 
-                    "The Setting '" + id + "' could not be found in the configuration file\n"
-                            + "returning 1");
+
+        // Check if config contains setting
+        if (config.containsKey(id)) {
+            return Float.parseFloat((String) config.get(id));
+        } else {
+            Logger.warn("Setting not found",
+                    "The Setting '" + id + "' could not be found in the configuration file\n" + "returning 1");
             return 1.0f;
         }
     }
-    
-    /**Getting int value of setting
-     * Loggin an error and returning 1, if setting not found
+
+    /**
+     * Getting int value of setting Loggin an error and returning 1, if setting not
+     * found
      * 
      * @param id Name or id of the Setting
      * @return Setting as int
      */
-    public static int getValuei(String id){
-        
-        //Check if config is loaded
-        if(config == null){
+    public static int getValuei(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
             reloadConfig();
         }
-        
-        //Check if config contains setting
-        if(config.containsKey(id)){
-            return Integer.parseInt((String)config.get(id));
-        }else{
-            Logger.warn("Setting not found", 
-                    "The Setting '" + id + "' could not be found in the configuration file\n"
-                            + "returning 1");
+
+        // Check if config contains setting
+        if (config.containsKey(id)) {
+            return Integer.parseInt((String) config.get(id));
+        } else {
+            Logger.warn("Setting not found",
+                    "The Setting '" + id + "' could not be found in the configuration file\n" + "returning 1");
             return 1;
         }
     }
-    
-    /**Getting string value of setting
-     * Loggin an error and returning "", if setting not found
+
+    /**
+     * Getting string value of setting Loggin an error and returning "", if setting
+     * not found
      * 
      * @param id Name or id of the Setting
      * @return Setting as string
      */
-    public static String getValues(String id){
-        
-        //Check if config is loaded
-        if(config == null){
+    public static String getValues(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
             reloadConfig();
         }
-        
-        //Check if config contains setting
-        if(config.containsKey(id)){
-            return (String)config.get(id);
-        }else{
-            Logger.warn("Setting not found", 
-                    "The Setting '" + id + "' could not be found in the configuration file\n"
-                            + "returning ''");
+
+        // Check if config contains setting
+        if (config.containsKey(id)) {
+            return (String) config.get(id);
+        } else {
+            Logger.warn("Setting not found",
+                    "The Setting '" + id + "' could not be found in the configuration file\n" + "returning ''");
             return "";
         }
     }
-    
-    /**Getting float array value of setting
-     * Loggin an error and returning {}, if setting not found
+
+    /**
+     * Getting float array value of setting Loggin an error and returning {}, if
+     * setting not found
      * 
      * @param id Name or id of the Setting
      * @return Setting as float array
      */
-    public static float[] getValuefa(String id){
-        
-        //Check if config is loaded
-        if(config == null){
+    public static float[] getValuefa(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
             reloadConfig();
         }
-        
-        //Check if config contains setting
-        if(config.containsKey(id)){
-            
-            //Split array data and create result array
-            String[] data = ((String)config.get(id)).split(ARRAY_LIMITER);
+
+        // Check if config contains setting
+        if (config.containsKey(id)) {
+
+            // Split array data and create result array
+            String[] data = ((String) config.get(id)).split(ARRAY_LIMITER);
             float[] result = new float[data.length];
-            
-            //Parse data into result array
-            for(int i = 0; i < result.length; i++){
+
+            // Parse data into result array
+            for (int i = 0; i < result.length; i++) {
                 result[i] = Float.parseFloat(data[i]);
             }
-            
+
             return result;
-        }else{
-            Logger.warn("Setting not found", 
-                    "The Setting '" + id + "' could not be found in the configuration file\n"
-                            + "returning 1");
+        } else {
+            Logger.warn("Setting not found",
+                    "The Setting '" + id + "' could not be found in the configuration file\n" + "returning 1");
             return new float[] {};
         }
     }

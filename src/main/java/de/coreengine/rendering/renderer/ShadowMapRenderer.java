@@ -43,14 +43,15 @@ public class ShadowMapRenderer {
 
     private ShadowMapShader shader = new ShadowMapShader();
 
-    /**Rendering a list of entities and 3d GUIs into the shadow map of the shadow light.
-     * Only the depth information will be rendered!
+    /**
+     * Rendering a list of entities and 3d GUIs into the shadow map of the shadow
+     * light. Only the depth information will be rendered!
      *
-     * @param entities Entities to render
-     * @param guis 3 Dimensional GUIs to render
+     * @param entities    Entities to render
+     * @param guis        3 Dimensional GUIs to render
      * @param shadowLight Shadow Light to render from
      */
-    void render(HashMap<Mesh, List<Entity>> entities, List<GUIPane> guis, ShadowLight shadowLight){
+    void render(HashMap<Mesh, List<Entity>> entities, List<GUIPane> guis, ShadowLight shadowLight) {
         GL11.glCullFace(GL11.GL_FRONT);
         shadowLight.getShadowMap().bind(GL30.GL_COLOR_ATTACHMENT0);
         GL11.glClearColor(0, 0, 0, 1);
@@ -59,25 +60,24 @@ public class ShadowMapRenderer {
         shader.start();
         shader.setVPMat(shadowLight.getVpMat());
 
-        for(Mesh mesh: entities.keySet()){
+        for (Mesh mesh : entities.keySet()) {
 
-            //Bind mesh data
+            // Bind mesh data
             mesh.getVao().bind();
             mesh.getVao().enableAttributes();
             mesh.getIndexBuffer().bind();
 
-            //Iterate instanced entities
-            for(Entity entity: entities.get(mesh)){
+            // Iterate instanced entities
+            for (Entity entity : entities.get(mesh)) {
 
-                //Prepare entity
+                // Prepare entity
                 shader.prepareEntity(entity);
 
-                //Render entity
-                GL11.glDrawElements(GL11.GL_TRIANGLES,
-                        mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+                // Render entity
+                GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
             }
 
-            //Unbind mesh data
+            // Unbind mesh data
             mesh.getIndexBuffer().unbind();
             mesh.getVao().disableAttributes();
             mesh.getVao().unbind();

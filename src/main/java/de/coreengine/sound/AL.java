@@ -34,46 +34,48 @@ import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
 
-/**Class to manage openAL stuff
+/**
+ * Class to manage openAL stuff
  *
  * @author Darius Dinger
  */
 public class AL {
-    
-    //OpenAL context to use
+
+    // OpenAL context to use
     private static long context;
-    
-    //Audio device to use
+
+    // Audio device to use
     private static long device;
-    
-    /**Initalize OpenAL context and get default audio device
+
+    /**
+     * Initalize OpenAL context and get default audio device
      */
-    public static void init(){
-        
-        //Get default audio device and open
-        String defDeviceName = ALC10.alcGetString(0, 
-                ALC10.ALC_DEFAULT_DEVICE_SPECIFIER);
+    public static void init() {
+
+        // Get default audio device and open
+        String defDeviceName = ALC10.alcGetString(0, ALC10.ALC_DEFAULT_DEVICE_SPECIFIER);
         device = ALC10.alcOpenDevice(defDeviceName);
-        
-        //Create OpenAL context from device
-        int[] attribs = {0};
+
+        // Create OpenAL context from device
+        int[] attribs = { 0 };
         context = ALC10.alcCreateContext(device, attribs);
         ALC10.alcMakeContextCurrent(context);
-        
-        //create AL capabilities
+
+        // create AL capabilities
         ALCCapabilities alcCaps = ALC.createCapabilities(device);
         ALCapabilities alCaps = org.lwjgl.openal.AL.createCapabilities(alcCaps);
-        
-        //Check if AL is supportes
-        if(!alCaps.OpenAL10){
+
+        // Check if AL is supportes
+        if (!alCaps.OpenAL10) {
             Logger.err("Error by init OpenAL", "OpenAL 10 is not supportet!");
             Game.exit(1);
         }
     }
-    
-    /**Destroy OpenAL context and exit device
+
+    /**
+     * Destroy OpenAL context and exit device
      */
-    public static void deinit(){
+    public static void deinit() {
         ALC10.alcDestroyContext(context);
         ALC10.alcCloseDevice(device);
     }

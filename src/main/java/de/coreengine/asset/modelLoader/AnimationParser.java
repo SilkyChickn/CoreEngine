@@ -43,14 +43,15 @@ import java.util.List;
 
 public class AnimationParser {
 
-    //Input
+    // Input
     private final AIAnimation aiAnimation;
 
-    //Output
+    // Output
     private Animation animation;
     private String name;
 
-    /**Creates new animation data to parse an ai animation
+    /**
+     * Creates new animation data to parse an ai animation
      *
      * @param aiAnimation AIAnimation to parse
      */
@@ -58,74 +59,77 @@ public class AnimationParser {
         this.aiAnimation = aiAnimation;
     }
 
-    /**Parsing animation data from ai animation
+    /**
+     * Parsing animation data from ai animation
      *
      * @param bones Loaded bones
      */
-    public void parse(List<BoneParser> bones){
+    public void parse(List<BoneParser> bones) {
 
-        //Get animation name
+        // Get animation name
         name = aiAnimation.mName().dataString();
 
-        //Prepare animation data
+        // Prepare animation data
         List<KeyFrameList<Vector3f>> positionKeys = new ArrayList<>();
         List<KeyFrameList<Quat4f>> rotationKeys = new ArrayList<>();
         List<KeyFrameList<Vector3f>> scaleKeys = new ArrayList<>();
 
-        //Initialize lists
-        for(int i = 0; i < bones.size(); i++){
+        // Initialize lists
+        for (int i = 0; i < bones.size(); i++) {
             positionKeys.add(new KeyFrameList<>());
             rotationKeys.add(new KeyFrameList<>());
             scaleKeys.add(new KeyFrameList<>());
         }
 
-        //Fill up keyframe lists
+        // Fill up keyframe lists
         int channelCount = aiAnimation.mNumChannels();
-        for(int i = 0; i < channelCount; i++){
+        for (int i = 0; i < channelCount; i++) {
             AINodeAnim aiChannel = AINodeAnim.create(aiAnimation.mChannels().get(i));
 
-            //Get bone id
+            // Get bone id
             int id = 0;
-            for(int b = 0; b < bones.size(); b++){
-                if(bones.get(b).getName().equals(aiChannel.mNodeName().dataString())){
+            for (int b = 0; b < bones.size(); b++) {
+                if (bones.get(b).getName().equals(aiChannel.mNodeName().dataString())) {
                     id = b;
                     break;
                 }
             }
 
-            //Add position keys
-            for(int kid = 0; kid < aiChannel.mNumPositionKeys(); kid++){
+            // Add position keys
+            for (int kid = 0; kid < aiChannel.mNumPositionKeys(); kid++) {
                 AIVectorKey key = aiChannel.mPositionKeys().get(kid);
                 Vector3f vec = new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z());
-                positionKeys.get(id).addKeyFrame(new KeyFrame<>((float)key.mTime(), vec));
+                positionKeys.get(id).addKeyFrame(new KeyFrame<>((float) key.mTime(), vec));
             }
 
-            //Add rotation keys
-            for(int kid = 0; kid < aiChannel.mNumRotationKeys(); kid++){
+            // Add rotation keys
+            for (int kid = 0; kid < aiChannel.mNumRotationKeys(); kid++) {
                 AIQuatKey key = aiChannel.mRotationKeys().get(kid);
                 Quat4f quat = new Quat4f(key.mValue().x(), key.mValue().y(), key.mValue().z(), key.mValue().w());
-                rotationKeys.get(id).addKeyFrame(new KeyFrame<>((float)key.mTime(), quat));
+                rotationKeys.get(id).addKeyFrame(new KeyFrame<>((float) key.mTime(), quat));
             }
 
-            //Add scale keys
-            for(int kid = 0; kid < aiChannel.mNumScalingKeys(); kid++){
+            // Add scale keys
+            for (int kid = 0; kid < aiChannel.mNumScalingKeys(); kid++) {
                 AIVectorKey key = aiChannel.mScalingKeys().get(kid);
                 Vector3f vec = new Vector3f(key.mValue().x(), key.mValue().y(), key.mValue().z());
-                scaleKeys.get(id).addKeyFrame(new KeyFrame<>((float)key.mTime(), vec));
+                scaleKeys.get(id).addKeyFrame(new KeyFrame<>((float) key.mTime(), vec));
             }
         }
 
-        //Create animation
+        // Create animation
         animation = new Animation(name, positionKeys, rotationKeys, scaleKeys);
     }
 
-    /**@return Parsed animation name
+    /**
+     * @return Parsed animation name
      */
     public String getName() {
         return name;
     }
 
-    /**@return Parsed animation
+    /**
+     * @return Parsed animation
      */
     public Animation getAnimation() {
         return animation;

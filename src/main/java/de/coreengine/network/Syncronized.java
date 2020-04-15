@@ -27,45 +27,51 @@
  */
 package de.coreengine.network;
 
-/**Class that represents an object that can be syncronized in a network
+/**
+ * Class that represents an object that can be syncronized in a network
  *
  * @author Darius Dinger
  */
 public abstract class Syncronized {
-    
-    //Tag of the syncronized object in thenetwork
+
+    // Tag of the syncronized object in thenetwork
     private final String tag;
-    
-    //Has the object state changed since last sync
+
+    // Has the object state changed since last sync
     private boolean changed = false;
-    
-    /**@param tag Tag of the syncronized object in thenetwork
+
+    /**
+     * @param tag Tag of the syncronized object in thenetwork
      */
     public Syncronized(String tag) {
         this.tag = tag;
     }
-    
-    /**Syncronizing object with the network
+
+    /**
+     * Syncronizing object with the network
      */
-    public void syncronize(){
-        
-        //If value has changed send sync to server
-        if(changed){
+    public void syncronize() {
+
+        // If value has changed send sync to server
+        if (changed) {
             changed = false;
             MessageManager.sendTaggedData(tag, sync());
-        }else{
+        } else {
             String sync = MessageManager.getTaggedData(tag);
-            if(sync != null) sync(sync);
+            if (sync != null)
+                sync(sync);
         }
     }
-    
-    /**Sync object at next sync
+
+    /**
+     * Sync object at next sync
      */
-    protected void change(){
+    protected void change() {
         changed = true;
     }
-    
-    //Syncronize methods
+
+    // Syncronize methods
     protected abstract void sync(String sync);
+
     protected abstract String sync();
 }

@@ -37,62 +37,65 @@ import org.lwjgl.opengl.GL20;
 
 import javax.vecmath.Matrix4f;
 
-/**Shader for the gui renderer
+/**
+ * Shader for the gui renderer
  *
  * @author Darius Dinger
  */
-public class GUIShader extends Shader{
-    
+public class GUIShader extends Shader {
+
     private final int colorTextureUnit = 0;
-    
-    private int transMatLoc, vpMatLoc, colorLoc, textureSetLoc, 
-            pickColorLoc;
-    
+
+    private int transMatLoc, vpMatLoc, colorLoc, textureSetLoc, pickColorLoc;
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "gui.vert", true),
-                GL20.GL_VERTEX_SHADER, "GUI Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "gui.frag", true), 
-                GL20.GL_FRAGMENT_SHADER, "GUI Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "gui.vert", true), GL20.GL_VERTEX_SHADER,
+                "GUI Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "gui.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "GUI Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         bindTextureUnit("colorTexture", colorTextureUnit);
-        
+
         colorLoc = getUniformLocation("color");
         pickColorLoc = getUniformLocation("pickColor");
         transMatLoc = getUniformLocation("transMat");
         textureSetLoc = getUniformLocation("textureSet");
         vpMatLoc = getUniformLocation("vpMat");
     }
-    
-    /**Prepare shader for next gui to render
+
+    /**
+     * Prepare shader for next gui to render
      * 
      * @param gui Next gui to render
      */
-    public void prepareGui(GUIPane gui){
+    public void prepareGui(GUIPane gui) {
         setUniform(transMatLoc, gui.getTransMat());
         setUniform(colorLoc, gui.getColor());
         setUniform(pickColorLoc, gui.getPickColor());
-        
-        if(gui.getTexture() != Material.TEXTURE_BLACK){
+
+        if (gui.getTexture() != Material.TEXTURE_BLACK) {
             bindTexture(AssetDatabase.getTexture(gui.getTexture()), colorTextureUnit, GL11.GL_TEXTURE_2D);
             setUniform(textureSetLoc, true);
-        }else setUniform(textureSetLoc, false);
-        
+        } else
+            setUniform(textureSetLoc, false);
+
     }
-    
-    /**Setting the vpMat variable of the shader
+
+    /**
+     * Setting the vpMat variable of the shader
      * 
      * @param mat Matrix to set as vpMat
      */
-    public void setVPMat(Matrix4f mat){
+    public void setVPMat(Matrix4f mat) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(mat));
     }
 }

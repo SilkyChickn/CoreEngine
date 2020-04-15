@@ -34,55 +34,59 @@ import org.lwjgl.opengl.GL20;
 
 import javax.vecmath.Matrix4f;
 
-/**Shader forthe lens flare renderer
+/**
+ * Shader forthe lens flare renderer
  *
  * @author Darius Dinger
  */
-public class LensFlareShader extends Shader{
-    
+public class LensFlareShader extends Shader {
+
     private final int lensFlareTextureUnit = 0;
-    
+
     private int sizeLoc, posLoc, pMatLoc;
-    
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(SHADERS_LOCATION + "lensFlare.vert", true),
-                GL20.GL_VERTEX_SHADER, "Lens Flare Vertex Shader");
-        addShader(FileLoader.getResource(SHADERS_LOCATION + "lensFlare.frag", true),
-                GL20.GL_FRAGMENT_SHADER, "Lens Flare Fragment Shader");
+        addShader(FileLoader.getResource(SHADERS_LOCATION + "lensFlare.vert", true), GL20.GL_VERTEX_SHADER,
+                "Lens Flare Vertex Shader");
+        addShader(FileLoader.getResource(SHADERS_LOCATION + "lensFlare.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Lens Flare Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
     }
-    
+
     @Override
     protected void loadUniforms() {
         bindTextureUnit("lensFlareTexture", lensFlareTextureUnit);
-        
+
         posLoc = getUniformLocation("pos");
         sizeLoc = getUniformLocation("size");
         pMatLoc = getUniformLocation("pMat");
     }
-    
-    /** * @param tex Next lens flare texture
+
+    /**
+     * * @param tex Next lens flare texture
+     * 
      * @param size Next lens flare size
-     * @param x Next lens flare x position
-     * @param y Next lens flare y position
-     * @param z Next lens flare z position
+     * @param x    Next lens flare x position
+     * @param y    Next lens flare y position
+     * @param z    Next lens flare z position
      */
-    public void prepareLensFlareTile(int tex, float size, float x, float y, float z){
+    public void prepareLensFlareTile(int tex, float size, float x, float y, float z) {
         bindTexture(tex, lensFlareTextureUnit, GL11.GL_TEXTURE_2D);
         setUniform(posLoc, x, y, z);
         setUniform(sizeLoc, size);
     }
-    
-    /**Reloading ortho projection matrix into shader
+
+    /**
+     * Reloading ortho projection matrix into shader
      * 
      * @param ortho Ortho matrix to load
      */
-    public void reloadOrtho(Matrix4f ortho){
+    public void reloadOrtho(Matrix4f ortho) {
         setUniform(pMatLoc, Toolbox.matrixToFloatArray(ortho));
     }
 }

@@ -35,14 +35,14 @@ import de.coreengine.rendering.renderable.Skybox;
 import de.coreengine.util.Configuration;
 import org.lwjgl.opengl.GL11;
 
-/**Renderer that can render a skybox
+/**
+ * Renderer that can render a skybox
  *
  * @author Darius Dinger
  */
 public class SkyboxRenderer {
-    private static final float SKYBOX_SIZE = 
-            Configuration.getValuef("SKYBOX_SIZE");
-    
+    private static final float SKYBOX_SIZE = Configuration.getValuef("SKYBOX_SIZE");
+
     private SkyboxShader shader = new SkyboxShader();
 
     public SkyboxRenderer() {
@@ -50,36 +50,36 @@ public class SkyboxRenderer {
         shader.setSkyboxSize(SKYBOX_SIZE);
         shader.stop();
     }
-    
-    /**Rendering skybox onto the bound framebuffer
+
+    /**
+     * Rendering skybox onto the bound framebuffer
      * 
      * @param skybox Skybox to render
-     * @param cam Camera to render skyboc from
+     * @param cam    Camera to render skyboc from
      */
-    void render(Skybox skybox, Camera cam){
+    void render(Skybox skybox, Camera cam) {
         GL11.glDisable(GL11.GL_CULL_FACE);
-        
+
         Mesh model = Cube3D.getInstance();
-        
+
         shader.start();
-        
+
         model.getVao().bind();
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
-        
+
         shader.setCamera(cam);
         shader.prepareSkybox(skybox);
-        
-        GL11.glDrawElements(GL11.GL_TRIANGLES, 
-                model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
-        
+
+        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
         model.getIndexBuffer().unbind();
         model.getVao().disableAttributes();
         model.getVao().unbind();
-        
+
         shader.stop();
-        
+
         GL11.glEnable(GL11.GL_CULL_FACE);
     }
-    
+
 }

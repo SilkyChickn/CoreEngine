@@ -30,20 +30,22 @@ package de.coreengine.util;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-/**Linked list that is securedby a semaphore
+/**
+ * Linked list that is securedby a semaphore
  *
  * @author Darius Dinger
  * @param <T> Type of the list data
  */
 public class BlockedList<T> {
-    
-    //List of data in this list
+
+    // List of data in this list
     private LinkedList<T> data = new LinkedList<>();
     private Semaphore semaphore = new Semaphore(1);
-    
-    /**@param str Adding message to list
+
+    /**
+     * @param str Adding message to list
      */
-    public void add(T str){
+    public void add(T str) {
         try {
             semaphore.acquire();
             data.add(str);
@@ -52,12 +54,13 @@ public class BlockedList<T> {
             Logger.warn("Interrupted Exception", ex.getLocalizedMessage());
         }
     }
-    
-    /**Getting message from list and storing into out
+
+    /**
+     * Getting message from list and storing into out
      * 
      * @param out List to store messages
      */
-    public void get(LinkedList<T> out){
+    public void get(LinkedList<T> out) {
         try {
             semaphore.acquire();
             out.addAll(data);
@@ -66,10 +69,11 @@ public class BlockedList<T> {
             Logger.warn("Interrupted Exception", ex.getLocalizedMessage());
         }
     }
-    
-    /**Clearing list
+
+    /**
+     * Clearing list
      */
-    public void clear(){
+    public void clear() {
         try {
             semaphore.acquire();
             data.clear();

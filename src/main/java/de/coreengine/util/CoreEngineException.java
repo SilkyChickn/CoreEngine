@@ -27,32 +27,36 @@
  */
 package de.coreengine.util;
 
-/**Exception that is caused by a CoreEngine class
+/**
+ * Exception that is caused by a CoreEngine class
  *
  * @author Darius Dinger
  */
-class CoreEngineException extends Exception{
-    
-    /**Create new CoreEngineException with specific error message
+class CoreEngineException extends Exception {
+
+    /**
+     * Create new CoreEngineException with specific error message
      * 
      * @param msg Error message
      */
     CoreEngineException(String msg) {
         super(msg);
     }
-    
-    /**Create new CoreEngineException from specific throwable cause
+
+    /**
+     * Create new CoreEngineException from specific throwable cause
      * 
      * @param cause Throwable cause
      */
     public CoreEngineException(Throwable cause) {
         super(cause);
     }
-    
-    /**Create new CoreEngineException from specific throwable cause with 
-     * specific error message
+
+    /**
+     * Create new CoreEngineException from specific throwable cause with specific
+     * error message
      * 
-     * @param msg Error message
+     * @param msg   Error message
      * @param cause Throwable cause
      */
     public CoreEngineException(String msg, Throwable cause) {

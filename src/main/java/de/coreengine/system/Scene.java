@@ -31,60 +31,69 @@ import com.bulletphysics.dynamics.DynamicsWorld;
 import de.coreengine.util.FrameTimer;
 import de.coreengine.util.bullet.Physics;
 
-/**Class that represent a scene/level in the game
+/**
+ * Class that represent a scene/level in the game
  *
  * @author Darius Dinger
  */
 public class Scene {
-    
-    //Physic world of the scene
-    private final DynamicsWorld dynWorld = Physics.createDynamicsWorld(Physics.GRAVITY_OF_EARTH);
-    
-    //Root game object of the scene, contains all scene game objects
-    private final GameObject rootGameObject = new GameObject() {};
 
-    /**Initialize root GameObject
+    // Physic world of the scene
+    private final DynamicsWorld dynWorld = Physics.createDynamicsWorld(Physics.GRAVITY_OF_EARTH);
+
+    // Root game object of the scene, contains all scene game objects
+    private final GameObject rootGameObject = new GameObject() {
+    };
+
+    /**
+     * Initialize root GameObject
      */
-    public Scene(){
+    public Scene() {
         rootGameObject.setScene(this);
     }
-    
-    /**Syncronize scene with network
+
+    /**
+     * Syncronize scene with network
      */
-    public void syncronize(){
+    public void syncronize() {
         rootGameObject.onSyncronize();
     }
-    
-    /**Updating scene
+
+    /**
+     * Updating scene
      */
-    public void update(){
+    public void update() {
         rootGameObject.onUpdate();
         dynWorld.stepSimulation(FrameTimer.getTslf());
     }
-    
-    /**Rendering scene
+
+    /**
+     * Rendering scene
      */
-    public void render(){
+    public void render() {
         rootGameObject.onRender();
     }
-    
-    /**Adding new game object to the root game object
+
+    /**
+     * Adding new game object to the root game object
      * 
      * @param gameObject Game object to add
      */
-    public final void addGameObject(GameObject gameObject){
+    public final void addGameObject(GameObject gameObject) {
         rootGameObject.addChild(gameObject);
     }
-    
-    /**Removing game object from the root game object
+
+    /**
+     * Removing game object from the root game object
      * 
      * @param gameObject Game object to remove
      */
-    public void removeGameObject(GameObject gameObject){
+    public void removeGameObject(GameObject gameObject) {
         rootGameObject.removeChild(gameObject);
     }
-    
-    /**Getting the physical collision world of this scene. Here rigidbodys and
+
+    /**
+     * Getting the physical collision world of this scene. Here rigidbodys and
      * vehicles can be added or the gravity can be changed.
      * 
      * @return Dynamics physics world of the scene

@@ -31,48 +31,52 @@ import de.coreengine.rendering.programs.pp.PPShader;
 
 import java.util.List;
 
-/**Represents a template for an effect for the postprocesser
+/**
+ * Represents a template for an effect for the postprocesser
  *
  * @author Darius Dinger
  */
 public abstract class PostProcessingEffect {
-    
-    //Shader of the effect
+
+    // Shader of the effect
     protected final PPShader shader;
-    
-    /**Creating newpost processing effect and setting its
-     * shader.
+
+    /**
+     * Creating newpost processing effect and setting its shader.
      * 
      * @param shader Shader of the pp effect
      */
     public PostProcessingEffect(PPShader shader) {
         this.shader = shader;
     }
-    
-    //Setting uniforms of the ppe shader
+
+    // Setting uniforms of the ppe shader
     protected abstract void setUniforms();
-    
-    /**Preparing the effect
+
+    /**
+     * Preparing the effect
      * 
      * @param color Color input texture for the effect
      * @param depth Depth input texture for the effect
      */
-    public void prepare(int color, int depth){
+    public void prepare(int color, int depth) {
         shader.start();
         shader.setBaseTexture(color, depth);
-        
+
         setUniforms();
     }
-    
-    /**Adding all effects that will be implied by this effect to the list.
+
+    /**
+     * Adding all effects that will be implied by this effect to the list.
      * 
      * @param effects List to add implied effects
      */
     public abstract void addImpliedEffects(List<PostProcessingEffect> effects);
-    
-    /**Exiting the effect
+
+    /**
+     * Exiting the effect
      */
-    public void exit(){
+    public void exit() {
         shader.stop();
     }
 }

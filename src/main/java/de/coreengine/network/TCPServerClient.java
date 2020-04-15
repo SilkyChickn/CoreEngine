@@ -37,24 +37,26 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 
-/**A client of a tcp server
+/**
+ * A client of a tcp server
  *
  * @author Darius Dinger
  */
-public class TCPServerClient implements Runnable{
-    
-    //Client data
+public class TCPServerClient implements Runnable {
+
+    // Client data
     private final Socket socket;
     private final BufferedReader reader;
     private final PrintWriter writer;
     private boolean running = true;
     private final String prefix;
     private final PlayerGameObject player;
-    
-    //Clients message queues
+
+    // Clients message queues
     private static BlockedList<String> msgList = new BlockedList<>();
-    
-    /**Creating new client for a tcp server.
+
+    /**
+     * Creating new client for a tcp server.
      * 
      * @param reader Reader to listen from client messages
      * @param writer Writer to write to client
@@ -62,30 +64,36 @@ public class TCPServerClient implements Runnable{
      * @param prefix Prefix to identify the player in the network
      * @param player Player game object in the scene
      */
-    public TCPServerClient(BufferedReader reader, PrintWriter writer, 
-            Socket socket, String prefix, PlayerGameObject player) {
+    public TCPServerClient(BufferedReader reader, PrintWriter writer, Socket socket, String prefix,
+            PlayerGameObject player) {
         this.reader = reader;
         this.writer = writer;
         this.socket = socket;
         this.prefix = prefix;
         this.player = player;
     }
-    
-    /**@return Host address of the client
+
+    /**
+     * @return Host address of the client
      */
     public InetAddress getAddress() {
-        if(socket != null) return socket.getInetAddress();
-        else return null;
+        if (socket != null)
+            return socket.getInetAddress();
+        else
+            return null;
     }
-    
-    /**@return Is the client still connected
+
+    /**
+     * @return Is the client still connected
      */
-    public boolean isAlive(){
-        if(running && socket != null) running = !socket.isClosed();
+    public boolean isAlive() {
+        if (running && socket != null)
+            running = !socket.isClosed();
         return running;
     }
-    
-    /**Sending a message to the client
+
+    /**
+     * Sending a message to the client
      * 
      * @param message Message to send to the client
      */
@@ -93,68 +101,70 @@ public class TCPServerClient implements Runnable{
         writer.println(message);
         writer.flush();
     }
-    
-    /**@return List of all msgs from the client
+
+    /**
+     * @return List of all msgs from the client
      */
     BlockedList<String> getMsgList() {
         return msgList;
     }
-    
-    /**@return Get player prefix/id to identify the player in the network
+
+    /**
+     * @return Get player prefix/id to identify the player in the network
      */
     public String getPrefix() {
         return prefix;
     }
-    
-    /**Stopping clients connection to the server
+
+    /**
+     * Stopping clients connection to the server
      * 
      * @param message Message to send to client before close
      */
-    public void stop(String message){
+    public void stop(String message) {
         TCPServer.removeClient(this);
-        
-        //Sending exit message to client
+
+        // Sending exit message to client
         writer.println(message);
         writer.flush();
-        
-        if(player != null) player.onDisconnect();
-        TCPServer.sendToAll(Protocol.LEFT_BANNER +
-                Protocol.SEPERATOR + getPrefix());
-        
+
+        if (player != null)
+            player.onDisconnect();
+        TCPServer.sendToAll(Protocol.LEFT_BANNER + Protocol.SEPERATOR + getPrefix());
+
         try {
-            
-            //Closing clients connection
+
+            // Closing clients connection
             socket.close();
         } catch (IOException ex) {
-            Logger.warn("Error by closing client", 
-                    "The client could not be closed clean!");
+            Logger.warn("Error by closing client", "The client could not be closed clean!");
         }
-        
-        //Exit clients thread
+
+        // Exit clients thread
         running = false;
     }
-    
+
     @Override
     public void run() {
-        if(player != null) player.onJoin();
+        if (player != null)
+            player.onJoin();
 
         String line;
         try {
-            
-            //Read from clients stream while alive
-            while((line = reader.readLine()) != null){
+
+            // Read from clients stream while alive
+            while ((line = reader.readLine()) != null) {
                 msgList.add(line);
                 TCPServer.sendToAll(line);
             }
-            
-            //Clients stream has ended
-            Logger.warn("Client stream ended", "The stream of a client has been "
-                    + "ended!");
+
+            // Clients stream has ended
+            Logger.warn("Client stream ended", "The stream of a client has been " + "ended!");
             stop(Protocol.STREAM_ENDED);
         } catch (IOException ex) {
-            if(running){
-                
-                //Client timeout expired
+            if (running) {
+
+                // Client timeout expired
                 Logger.warn("Client timeout", "A clients timeout expired!");
                 stop(Protocol.TIMEOUT_EXPIRED);
             }

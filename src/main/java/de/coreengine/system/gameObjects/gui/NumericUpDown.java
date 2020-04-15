@@ -37,41 +37,40 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashSet;
 import java.util.Set;
 
-/**Class that represents a numeric input field
+/**
+ * Class that represents a numeric input field
  *
  * @author Darius Dinger
  */
-public class NumericUpDown extends GameObject{
-    private static final float DEFAULT_STEP = 
-            Configuration.getValuef("NUMERIC_DEFAULT_STEP");
-    private static final float DEFAULT_MAX = 
-            Configuration.getValuef("NUMERIC_DEFAULT_MAX");
-    private static final float DEFAULT_MIN = 
-            Configuration.getValuef("NUMERIC_DEFAULT_MIN");
+public class NumericUpDown extends GameObject {
+    private static final float DEFAULT_STEP = Configuration.getValuef("NUMERIC_DEFAULT_STEP");
+    private static final float DEFAULT_MAX = Configuration.getValuef("NUMERIC_DEFAULT_MAX");
+    private static final float DEFAULT_MIN = Configuration.getValuef("NUMERIC_DEFAULT_MIN");
     private static final String DEFAULT_UP_BUTTON_IMG = "res/up.png";
     private static final String DEFAULT_DOWN_BUTTON_IMG = "res/down.png";
-    
-    //Components
+
+    // Components
     private GUIPane pane;
     private Button upBt, downBt;
     private TextField textField;
-    
-    //Numeric
+
+    // Numeric
     private float value, step = DEFAULT_STEP, max = DEFAULT_MAX, min = DEFAULT_MIN;
     private Set<String> filter = new HashSet<>();
-    
-    /**Creating new Numeric up down and setting ts parent or null, if no parent gui
+
+    /**
+     * Creating new Numeric up down and setting ts parent or null, if no parent gui
      * exist
      * 
      * @param parent Parent gui or null
-     * @param font Font of the numeric
+     * @param font   Font of the numeric
      */
     public NumericUpDown(GUIPane parent, String font) {
         pane = new GUIPane(parent);
         textField = new TextField(pane, font);
         upBt = new Button(pane);
         downBt = new Button(pane);
-        
+
         filter.add("0");
         filter.add("1");
         filter.add("2");
@@ -88,10 +87,10 @@ public class NumericUpDown extends GameObject{
         TextureLoader.loadTextureFile("res/up.png", true, GL11.GL_LINEAR, true);
         TextureLoader.loadTextureFile("res/down.png", true, GL11.GL_LINEAR, true);
     }
-    
+
     @Override
     public void onInit() {
-        
+
         upBt.getPane().setPosX(0.75f);
         upBt.getPane().setPosY(0.5f);
         upBt.getPane().setPosZ(0.1f);
@@ -104,30 +103,31 @@ public class NumericUpDown extends GameObject{
         upBt.setListener(new ButtonListener() {
             @Override
             public void onClick() {
-                value = Float.max(Float.min(value +step, max), min);
-                String txt = (value % 1.0f == 0.0f) ? 
-                        Integer.toString((int)value) : Float.toString(value);
+                value = Float.max(Float.min(value + step, max), min);
+                String txt = (value % 1.0f == 0.0f) ? Integer.toString((int) value) : Float.toString(value);
                 textField.setText(txt);
             }
-            
+
             @Override
-            public void onPress() {}
-            
+            public void onPress() {
+            }
+
             @Override
-            public void onMouseOver() {}
-            
+            public void onMouseOver() {
+            }
+
             @Override
             public void onMouseLeave() {
                 upBt.getPane().getColor().set(textField.getBackgroundColor());
             }
-            
+
             @Override
             public void onMouseEnter() {
                 upBt.getPane().getColor().set(textField.getActiveColor());
             }
         });
         addChild(upBt);
-        
+
         downBt.getPane().setPosX(0.75f);
         downBt.getPane().setPosY(-0.5f);
         downBt.getPane().setPosZ(0.1f);
@@ -140,31 +140,32 @@ public class NumericUpDown extends GameObject{
         downBt.setListener(new ButtonListener() {
             @Override
             public void onClick() {
-                value = Float.max(Float.min(value -step, max), min);
+                value = Float.max(Float.min(value - step, max), min);
                 value -= value % step;
-                String txt = (value % 1.0f == 0.0f) ? 
-                        Integer.toString((int)value) : Float.toString(value);
+                String txt = (value % 1.0f == 0.0f) ? Integer.toString((int) value) : Float.toString(value);
                 textField.setText(txt);
             }
-            
+
             @Override
-            public void onPress() {}
-            
+            public void onPress() {
+            }
+
             @Override
-            public void onMouseOver() {}
-            
+            public void onMouseOver() {
+            }
+
             @Override
             public void onMouseLeave() {
                 downBt.getPane().getColor().set(textField.getBackgroundColor());
             }
-            
+
             @Override
             public void onMouseEnter() {
                 downBt.getPane().getColor().set(textField.getActiveColor());
             }
         });
         addChild(downBt);
-        
+
         textField.getPane().setPosX(-0.25f);
         textField.getPane().setPosY(0.0f);
         textField.getPane().setPosZ(0.1f);
@@ -172,76 +173,82 @@ public class NumericUpDown extends GameObject{
         textField.getPane().setScaleY(1.0f);
         textField.setCursor("");
         textField.setListener((String newText) -> {
-            if(newText.equals("")){
+            if (newText.equals("")) {
                 setValue(min);
                 return;
             }
-            try{
+            try {
                 value = Float.max(Float.min(Float.parseFloat(newText), max), min);
                 value -= value % step;
-                if(value != Float.parseFloat(newText)){
-                    String txt = (value % 1.0f == 0.0f) ? 
-                            Integer.toString((int)value) : Float.toString(value);
+                if (value != Float.parseFloat(newText)) {
+                    String txt = (value % 1.0f == 0.0f) ? Integer.toString((int) value) : Float.toString(value);
                     textField.setText(txt);
                 }
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 setValue(value);
             }
         });
         addChild(textField);
-        
+
         setValue(value);
-        
+
         super.onInit();
     }
-    
-    /**@return Frame pane component
+
+    /**
+     * @return Frame pane component
      */
     public GUIPane getPane() {
         return pane;
     }
-    
-    /**@return Down button component
+
+    /**
+     * @return Down button component
      */
     public Button getDownBt() {
         return downBt;
     }
-    
-    /**@return Up button component
+
+    /**
+     * @return Up button component
      */
     public Button getUpBt() {
         return upBt;
     }
-    
-    /**@return Textfield component
+
+    /**
+     * @return Textfield component
      */
     public TextField getTextField() {
         return textField;
     }
-    
-    /**@return Current value of the numeric
+
+    /**
+     * @return Current value of the numeric
      */
     public float getValue() {
         return value;
     }
-    
-    /**@param value New value of the text field
+
+    /**
+     * @param value New value of the text field
      */
     public void setValue(float value) {
         this.value = Float.max(Float.min(value, max), min);
         this.value -= this.value % step;
-        String txt = (value % 1.0f == 0.0f) ? 
-                Integer.toString((int)value) : Float.toString(value);
+        String txt = (value % 1.0f == 0.0f) ? Integer.toString((int) value) : Float.toString(value);
         textField.setText(txt);
     }
-    
-    /**@param max New maximum value
+
+    /**
+     * @param max New maximum value
      */
     public void setMax(float max) {
         this.max = max;
     }
-    
-    /**@param min New minimum value
+
+    /**
+     * @param min New minimum value
      */
     public void setMin(float min) {
         this.min = min;

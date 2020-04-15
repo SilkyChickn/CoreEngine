@@ -37,15 +37,16 @@ import javax.vecmath.Matrix4f;
 
 public class BoneParser {
 
-    //Input
+    // Input
     private final AIBone aiBone;
 
-    //Output
+    // Output
     private String name;
     private Matrix4f offsetMatrix;
     private Pair<Integer, Float>[] effectedVertices;
 
-    /**Creating new bone data that can parse data from an ai bone
+    /**
+     * Creating new bone data that can parse data from an ai bone
      *
      * @param aiBone AIBone to parse
      */
@@ -53,51 +54,54 @@ public class BoneParser {
         this.aiBone = aiBone;
     }
 
-    /**Parsing ai bone
+    /**
+     * Parsing ai bone
      */
-    public void parse(){
+    public void parse() {
 
-        //Get bone name
+        // Get bone name
         name = aiBone.mName().dataString();
 
-        //Get matrix
+        // Get matrix
         offsetMatrix = aiMatToMat(aiBone.mOffsetMatrix());
 
-        //Get effected vertices
+        // Get effected vertices
         int vertexCount = aiBone.mNumWeights();
         effectedVertices = new Pair[vertexCount];
-        for(int i = 0; i < vertexCount; i++){
+        for (int i = 0; i < vertexCount; i++) {
             AIVertexWeight aiVertexWeight = aiBone.mWeights().get(i);
             effectedVertices[i] = new Pair<>(aiVertexWeight.mVertexId(), aiVertexWeight.mWeight());
         }
     }
 
-    /**Converting AIMatrix4x4 into a Matrix4f
+    /**
+     * Converting AIMatrix4x4 into a Matrix4f
      *
      * @param aiMat AIMatrix4x4 input
      * @return Matrix4f output
      */
-    private Matrix4f aiMatToMat(AIMatrix4x4 aiMat){
-        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a4(),
-                aiMat.b1(), aiMat.b2(), aiMat.b3(), aiMat.b4(),
-                aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c4(),
-                aiMat.d1(), aiMat.d2(), aiMat.d3(), aiMat.d4()
-        );
+    private Matrix4f aiMatToMat(AIMatrix4x4 aiMat) {
+        return new Matrix4f(aiMat.a1(), aiMat.a2(), aiMat.a3(), aiMat.a4(), aiMat.b1(), aiMat.b2(), aiMat.b3(),
+                aiMat.b4(), aiMat.c1(), aiMat.c2(), aiMat.c3(), aiMat.c4(), aiMat.d1(), aiMat.d2(), aiMat.d3(),
+                aiMat.d4());
     }
 
-    /**@return Parsed effected vertices with its weight value
+    /**
+     * @return Parsed effected vertices with its weight value
      */
     public Pair<Integer, Float>[] getEffectedVertices() {
         return effectedVertices;
     }
 
-    /**@return Parsed offset matrix
+    /**
+     * @return Parsed offset matrix
      */
     public Matrix4f getOffsetMatrix() {
         return offsetMatrix;
     }
 
-    /**@return Parsed bones name
+    /**
+     * @return Parsed bones name
      */
     public String getName() {
         return name;

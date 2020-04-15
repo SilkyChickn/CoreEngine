@@ -27,64 +27,71 @@
  */
 package de.coreengine.util;
 
-/**Class that calculates the time since last second and the fps
+/**
+ * Class that calculates the time since last second and the fps
  *
  * @author Darius Dinger
  */
 public class FrameTimer {
-    
-    //Time since last frame
+
+    // Time since last frame
     private static float tslf = 0.017f;
-    
-    //Last second fps
+
+    // Last second fps
     private static int fps;
-    
-    //Should smooth fps be used
+
+    // Should smooth fps be used
     private static boolean smoothFps = true;
-    
-    //Current, last frame nd fps counter time stamps
+
+    // Current, last frame nd fps counter time stamps
     private static long lastFrame, fpsStamp;
-    
-    //Frames since last second
+
+    // Frames since last second
     private static int frames;
-    
-    /**Recalculate the fps and tslf. Must be called once at every frame
+
+    /**
+     * Recalculate the fps and tslf. Must be called once at every frame
      */
-    public static void update(){
-        
+    public static void update() {
+
         frames++;
 
         long currentFrame = System.nanoTime();
-        tslf = (float)(currentFrame -lastFrame) / 1000000000.0f;
+        tslf = (float) (currentFrame - lastFrame) / 1000000000.0f;
         lastFrame = currentFrame;
-        
-        if(currentFrame >= fpsStamp +1000000000.0f){
+
+        if (currentFrame >= fpsStamp + 1000000000.0f) {
             fpsStamp = currentFrame;
-            
-            if(smoothFps && fps != 0) fps = (fps +frames) / 2;
-            else fps = frames;
-            
+
+            if (smoothFps && fps != 0)
+                fps = (fps + frames) / 2;
+            else
+                fps = frames;
+
             frames = 0;
-            
-            //System.out.println("FPS: " + getFps());
+
+            // System.out.println("FPS: " + getFps());
         }
-        
+
     }
-    
-    /**@return Frames in the last second
+
+    /**
+     * @return Frames in the last second
      */
     public static int getFps() {
         return fps;
     }
-    
-    /**@return Time (seconds) since last frame
+
+    /**
+     * @return Time (seconds) since last frame
      */
     public static float getTslf() {
         return tslf;
     }
-    
-    /**If smooth fps is enabled, the fps will be calculated by the average of
-     * the last fps (fps = (fps + newFps) / 2)
+
+    /**
+     * If smooth fps is enabled, the fps will be calculated by the average of the
+     * last fps (fps = (fps + newFps) / 2)
      * 
      * @param smoothFps Should be used smooth fps
      */

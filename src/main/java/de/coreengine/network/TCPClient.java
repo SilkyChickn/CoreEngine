@@ -42,89 +42,89 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Objects;
 
-/**Client class for a tcp connection
+/**
+ * Client class for a tcp connection
  *
  * @author Darius Dinger
  */
-public class TCPClient implements Runnable{
-    private static final int TIMEOUT = 
-            Configuration.getValuei("CLIENT_TIMEOUT");
-    private static final int HANDSHAKE_TIMEOUT = 
-            Configuration.getValuei("HANDSHAKE_TIMEOUT");
-    
-    //Class to create player instance from
+public class TCPClient implements Runnable {
+    private static final int TIMEOUT = Configuration.getValuei("CLIENT_TIMEOUT");
+    private static final int HANDSHAKE_TIMEOUT = Configuration.getValuei("HANDSHAKE_TIMEOUT");
+
+    // Class to create player instance from
     private static Class<? extends PlayerGameObject> playerClass;
-    
-    //Map of all players
+
+    // Map of all players
     private static HashMap<String, PlayerGameObject> players = new HashMap<>();
-    
-    //Own player
+
+    // Own player
     private static PlayerGameObject player;
     private static String playerName;
-    
-    /**Result values for a tcp handshake
+
+    /**
+     * Result values for a tcp handshake
      */
     public enum HandshakeResult {
         ERROR, ACCEPTED, WRONG_PASSWORD, FULL, BANNED, NAME_TAKEN
     }
-    
-    //Instance of running client
+
+    // Instance of running client
     private static TCPClient instance;
-    
-    //Runnig client data
+
+    // Runnig client data
     private static Socket socket;
     private static BufferedReader reader;
     private static PrintWriter writer;
-    
-    //Clients message queues
+
+    // Clients message queues
     private static BlockedList<String> msgList;
-    
-    /**Connecting to a server by handle out a tcp handshake.
+
+    /**
+     * Connecting to a server by handle out a tcp handshake.
      * 
-     * @param address Address of the server to connect
-     * @param port Port of the server to connect
-     * @param password Password of the server to connect or "" for no password
+     * @param address    Address of the server to connect
+     * @param port       Port of the server to connect
+     * @param password   Password of the server to connect or "" for no password
      * @param playerName Player name on the server
      * @return Handshake result
      */
-    static HandshakeResult connect(InetAddress address, int port, String password, 
-            String playerName, Class<? extends PlayerGameObject> playerClass){
-        
+    static HandshakeResult connect(InetAddress address, int port, String password, String playerName,
+            Class<? extends PlayerGameObject> playerClass) {
+
         TCPClient.msgList = new BlockedList<>();
         TCPClient.players = new HashMap<>();
         TCPClient.playerClass = playerClass;
         TCPClient.playerName = playerName;
-        
+
         try {
-            
-            //Creating socket
+
+            // Creating socket
             socket = new Socket(address, port);
-            
-            //Setting socket timeout
+
+            // Setting socket timeout
             socket.setSoTimeout(HANDSHAKE_TIMEOUT);
-            
-            //Bind reader and writer
+
+            // Bind reader and writer
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream());
-            
-            //Request handshake
-            String handshakeMsg = Protocol.HANDSHAKE_BANNER +
-                    Protocol.SEPERATOR + playerName +
-                    Protocol.SEPERATOR + password;
+
+            // Request handshake
+            String handshakeMsg = Protocol.HANDSHAKE_BANNER + Protocol.SEPERATOR + playerName + Protocol.SEPERATOR
+                    + password;
             writer.println(handshakeMsg);
             writer.flush();
-            
-            //Await response
-            try{
+
+            // Await response
+            try {
                 String answer = reader.readLine();
                 String[] args = answer.split(Protocol.SEPERATOR);
-                
+
                 switch (args[0]) {
                     case Protocol.HANDSHAKE_ACCEPTED:
-                        
-                        //Setting timeout
+
+                        // Setting timeout
                         socket.setSoTimeout(TIMEOUT);
-                        
+
                         return HandshakeResult.ACCEPTED;
                     case Protocol.HANDSHAKE_FULL:
                         return HandshakeResult.FULL;
@@ -135,134 +135,136 @@ public class TCPClient implements Runnable{
                     case Protocol.HANDSHAKE_NAME_NOT_AVAILABLE:
                         return HandshakeResult.NAME_TAKEN;
                     default:
-                        Logger.warn("Response not readable", "The response of the "
-                                + "server doenst match any expected!");
+                        Logger.warn("Response not readable",
+                                "The response of the " + "server doenst match any expected!");
                         return HandshakeResult.ERROR;
                 }
-            }catch (IOException ex){
-                Logger.warn("Error by tcp handshake", "The timeout of " + 
-                        TIMEOUT + " expired without response!");
+            } catch (IOException ex) {
+                Logger.warn("Error by tcp handshake", "The timeout of " + TIMEOUT + " expired without response!");
                 return HandshakeResult.ERROR;
             }
-            
+
         } catch (NullPointerException ex) {
-            Logger.warn("Error by creating tcp socket", "The server address " + 
-                    address + " is null!");
+            Logger.warn("Error by creating tcp socket", "The server address " + address + " is null!");
             return HandshakeResult.ERROR;
         } catch (IllegalArgumentException ex) {
-            Logger.warn("Error by creating tcp socket", "The server port " + 
-                    port + " is outside the specified range!");
+            Logger.warn("Error by creating tcp socket", "The server port " + port + " is outside the specified range!");
             return HandshakeResult.ERROR;
         } catch (SecurityException ex) {
-            Logger.warn("Error by creating tcp socket", "The security manager " + 
-                    " does not allow the connection!");
+            Logger.warn("Error by creating tcp socket", "The security manager " + " does not allow the connection!");
             return HandshakeResult.ERROR;
         } catch (IOException ex) {
             Logger.warn("Error by creating tcp socket", "An IO Error occurs!");
             return HandshakeResult.ERROR;
         }
     }
-    
-    /**@return List of all msgs from the server
+
+    /**
+     * @return List of all msgs from the server
      */
     static BlockedList<String> getMsgList() {
         return msgList;
     }
-    
-    /**Sending a message to the server
+
+    /**
+     * Sending a message to the server
      * 
      * @param msg Message to send to the server
      */
-    static void sendToServer(String msg){
+    static void sendToServer(String msg) {
         writer.println(msg);
         writer.flush();
     }
-    
-    /**@return Is the client still connected to the server
+
+    /**
+     * @return Is the client still connected to the server
      */
-    public static boolean isRunning(){
+    public static boolean isRunning() {
         return !socket.isClosed();
     }
-    
-    /**@return Player name on the connected server
+
+    /**
+     * @return Player name on the connected server
      */
     public static String getPlayerName() {
         return playerName;
     }
-    
-    /**Stopping connection to the server
+
+    /**
+     * Stopping connection to the server
      * 
      * @param message Message to send to server before close
      */
-    public void stop(String message){
-        
-        //Sending exit message to server
+    public void stop(String message) {
+
+        // Sending exit message to server
         writer.println(message);
         writer.flush();
-        
-        if(player != null) player.onDisconnect();
-        
+
+        if (player != null)
+            player.onDisconnect();
+
         try {
-            
-            //Closing connection and reset state
-            if(NetworkManager.getState() == NetworkManager.NetworkState.HOSTER
-                    && TCPServer.isRunning()) TCPServer.stop(Protocol.HOSTER_CLOSED);
+
+            // Closing connection and reset state
+            if (NetworkManager.getState() == NetworkManager.NetworkState.HOSTER && TCPServer.isRunning())
+                TCPServer.stop(Protocol.HOSTER_CLOSED);
             socket.close();
             NetworkManager.setState(NetworkManager.NetworkState.SINGLEPLAYER);
         } catch (IOException ex) {
-            Logger.warn("Error by closing connection", 
-                    "The socket could not be closed clean!");
+            Logger.warn("Error by closing connection", "The socket could not be closed clean!");
         }
     }
-    
-    /**@return List of all other players
+
+    /**
+     * @return List of all other players
      */
     public static HashMap<String, PlayerGameObject> getPlayers() {
         return players;
     }
-    
-    /**Joining client on the current scene
+
+    /**
+     * Joining client on the current scene
      */
-    public static void join(){
-        
-        //Creating and start client instance
+    public static void join() {
+
+        // Creating and start client instance
         instance = new TCPClient();
         new Thread(instance).start();
     }
-    
+
     @Override
     public void run() {
-        
-        //Wait til network manager changes state
+
+        // Wait til network manager changes state
         while (NetworkManager.getState() == NetworkManager.NetworkState.SINGLEPLAYER) {
         }
-        
-        //Spawn player
+
+        // Spawn player
         try {
             player = playerClass.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.warn("Error by creating player", "Error by "
-                    + "creating player game object!");
+            Logger.warn("Error by creating player", "Error by " + "creating player game object!");
             stop(Protocol.LEFT_BANNER);
             return;
         }
-        
-        //Creating player in scene
+
+        // Creating player in scene
         player.setup(playerName, true);
         Objects.requireNonNull(Game.getCurrentScene()).addGameObject(player);
         player.onJoin();
 
         String line;
         try {
-            
-            //Read from clients stream while alive
-            while((line = reader.readLine()) != null){
-                if(NetworkManager.getState() == NetworkManager.NetworkState.CLIENT &&
-                        line.startsWith(Protocol.JOINED_BANNER)){
-                    
-                    //Player connecting to server
+
+            // Read from clients stream while alive
+            while ((line = reader.readLine()) != null) {
+                if (NetworkManager.getState() == NetworkManager.NetworkState.CLIENT
+                        && line.startsWith(Protocol.JOINED_BANNER)) {
+
+                    // Player connecting to server
                     String[] args = line.split(Protocol.SEPERATOR);
-                    
+
                     try {
                         PlayerGameObject newPlayer = playerClass.newInstance();
                         newPlayer.setup(args[1], false);
@@ -270,30 +272,29 @@ public class TCPClient implements Runnable{
                         Game.getCurrentScene().addGameObject(newPlayer);
                         newPlayer.onJoin();
                     } catch (IllegalAccessException | InstantiationException ex) {
-                        Logger.warn("Error by creating player", 
-                                "The game object for a joined player could not "
-                                        + "be created!");
+                        Logger.warn("Error by creating player",
+                                "The game object for a joined player could not " + "be created!");
                     }
 
-                }else if(NetworkManager.getState() == NetworkManager.NetworkState.CLIENT &&
-                        line.startsWith(Protocol.LEFT_BANNER)){
-                    
-                    //Player disconnects from server
+                } else if (NetworkManager.getState() == NetworkManager.NetworkState.CLIENT
+                        && line.startsWith(Protocol.LEFT_BANNER)) {
+
+                    // Player disconnects from server
                     String[] args = line.split(Protocol.SEPERATOR);
                     players.get(args[1]).onDisconnect();
                     players.remove(args[1]);
-                    
-                }else msgList.add(line);
+
+                } else
+                    msgList.add(line);
             }
-            
-            //Clients stream has ended
-            Logger.warn("Stream ended", "The stream to the server has been "
-                    + "ended!");
+
+            // Clients stream has ended
+            Logger.warn("Stream ended", "The stream to the server has been " + "ended!");
             stop(Protocol.LEFT_BANNER);
         } catch (IOException ex) {
-            if(isRunning()){
-                
-                //Client timeout expired
+            if (isRunning()) {
+
+                // Client timeout expired
                 Logger.warn("Server timeout", "The servers timeout expired!");
                 stop(Protocol.LEFT_BANNER);
             }

@@ -34,13 +34,14 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-/**Class that clean up memory after game quits
+/**
+ * Class that clean up memory after game quits
  *
  * @author Darius Dinger
  */
 public class MemoryDumper {
-    
-    //Arrays of all 'to dump' opengl ids
+
+    // Arrays of all 'to dump' opengl ids
     private static int[] VBOS = {};
     private static int[] VAOS = {};
     private static int[] SHADERS = {};
@@ -50,101 +51,113 @@ public class MemoryDumper {
     private static int[] TEXTURES = {};
     private static int[] SOUND_BUFFERS = {};
     private static int[] SOUND_SOURCES = {};
-    
-    /**Dumping all memory saved opengl stuff.
-     * ATTENTION: Only dump, if program is over (at exit)
+
+    /**
+     * Dumping all memory saved opengl stuff. ATTENTION: Only dump, if program is
+     * over (at exit)
      */
-    public static void dumpMemory(){
-        
-        //Dump vertex array objects and buffers
+    public static void dumpMemory() {
+
+        // Dump vertex array objects and buffers
         GL15.glDeleteBuffers(VBOS);
         GL30.glDeleteVertexArrays(VAOS);
-        
-        //Dump textures
+
+        // Dump textures
         GL11.glDeleteTextures(TEXTURES);
-        
-        //Dump shaders and shader programs
-        for(int shader: SHADERS) GL20.glDeleteShader(shader);
-        for(int program: PROGRAMS) GL20.glDeleteProgram(program);
-        
-        //Dump renderbuffers and fbos
+
+        // Dump shaders and shader programs
+        for (int shader : SHADERS)
+            GL20.glDeleteShader(shader);
+        for (int program : PROGRAMS)
+            GL20.glDeleteProgram(program);
+
+        // Dump renderbuffers and fbos
         GL30.glDeleteRenderbuffers(RENDERBUFFERS);
         GL30.glDeleteFramebuffers(FRAMEBUFFERS);
-        
-        //Dump audios and audio sources
+
+        // Dump audios and audio sources
         AL10.alDeleteBuffers(SOUND_BUFFERS);
         AL10.alDeleteSources(SOUND_SOURCES);
     }
-    
-    /**Adding vao to dump after program exits
+
+    /**
+     * Adding vao to dump after program exits
      * 
      * @param vaoId Vao to dump at exit
      */
     static void addVao(int vaoId) {
         VAOS = Toolbox.addElement(VAOS, vaoId);
     }
-    
-    /**Adding vbo to dump after program exits
+
+    /**
+     * Adding vbo to dump after program exits
      * 
      * @param vboId Vbo to dump at exit
      */
     static void addVbo(int vboId) {
         VBOS = Toolbox.addElement(VBOS, vboId);
     }
-    
-    /**Adding shader program to dump after program exits
+
+    /**
+     * Adding shader program to dump after program exits
      * 
      * @param programId Program to dump at exit
      */
-    public static void addProgramm(int programId){
+    public static void addProgramm(int programId) {
         PROGRAMS = Toolbox.addElement(PROGRAMS, programId);
     }
-    
-    /**Adding shader to dump after program exits
+
+    /**
+     * Adding shader to dump after program exits
      * 
      * @param shaderId Shader to dump at exit
      */
-    public static void addShader(int shaderId){
+    public static void addShader(int shaderId) {
         SHADERS = Toolbox.addElement(SHADERS, shaderId);
     }
-    
-    /**Adding framebuffer to dump after program exits
+
+    /**
+     * Adding framebuffer to dump after program exits
      * 
      * @param framebufferId Framebuffer to dump at exit
      */
-    public static void addFramebuffer(int framebufferId){
+    public static void addFramebuffer(int framebufferId) {
         FRAMEBUFFERS = Toolbox.addElement(FRAMEBUFFERS, framebufferId);
     }
-    
-    /**Adding renderbuffer to dump after program exits
+
+    /**
+     * Adding renderbuffer to dump after program exits
      * 
      * @param renderbufferId Renderbuffer to dump at exit
      */
-    public static void addRenderbuffer(int renderbufferId){
+    public static void addRenderbuffer(int renderbufferId) {
         RENDERBUFFERS = Toolbox.addElement(RENDERBUFFERS, renderbufferId);
     }
-    
-    /**Adding texture to dump after program exits
+
+    /**
+     * Adding texture to dump after program exits
      * 
      * @param textureId TextureData id to dump at exit
      */
-    public static void addTexture(int textureId){
+    public static void addTexture(int textureId) {
         TEXTURES = Toolbox.addElement(TEXTURES, textureId);
     }
-    
-    /**Adding audio buffer to dump after programm exits
+
+    /**
+     * Adding audio buffer to dump after programm exits
      * 
      * @param buffer Audio buffer id to dump at exit
      */
-    public static void addAudioBuffer(int buffer){
+    public static void addAudioBuffer(int buffer) {
         SOUND_BUFFERS = Toolbox.addElement(SOUND_BUFFERS, buffer);
     }
-    
-    /**Adding audio source to dump after programm exits
+
+    /**
+     * Adding audio source to dump after programm exits
      * 
      * @param source Audio source id to dump at exit
      */
-    public static void addAudioSource(int source){
+    public static void addAudioSource(int source) {
         SOUND_SOURCES = Toolbox.addElement(SOUND_SOURCES, source);
     }
 }

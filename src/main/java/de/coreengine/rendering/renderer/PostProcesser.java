@@ -38,91 +38,94 @@ import org.lwjgl.opengl.GL30;
 import java.util.LinkedList;
 import java.util.List;
 
-/**Can apply post processing effects to the scene
+/**
+ * Can apply post processing effects to the scene
  *
  * @author Darius Dinger
  */
 public class PostProcesser {
-    
-    //List of all active effect for the next frame
+
+    // List of all active effect for the next frame
     private static List<PostProcessingEffect> effects = new LinkedList<>();
-    
-    //Input and output fbo
+
+    // Input and output fbo
     private static FrameBufferObject input;
     private static FrameBufferObject output;
-    
-    public static void init(){
+
+    public static void init() {
         recreateFbos();
         Window.addWindowListener((x, y, aspect) -> recreateFbos());
     }
-    
-    /**(Re)creating the pp fbos
+
+    /**
+     * (Re)creating the pp fbos
      */
-    private static void recreateFbos(){
-        input = 
-            new FrameBufferObject(Window.getWidth(), Window.getHeight(), false);
-        output = 
-            new FrameBufferObject(Window.getWidth(), Window.getHeight(), false);
+    private static void recreateFbos() {
+        input = new FrameBufferObject(Window.getWidth(), Window.getHeight(), false);
+        output = new FrameBufferObject(Window.getWidth(), Window.getHeight(), false);
     }
-    
-    /**Applying all effects to the color and depth attatchment of the input fbo
-     * and render into the output fbo
+
+    /**
+     * Applying all effects to the color and depth attatchment of the input fbo and
+     * render into the output fbo
      */
-    static void render(){
-        
-        //If theres no effects, just blitting input to output
-        if(effects.isEmpty()){
+    static void render() {
+
+        // If theres no effects, just blitting input to output
+        if (effects.isEmpty()) {
             input.blitToFbo(output, GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
             return;
         }
-        
+
         Mesh model = Quad2D.getInstance();
-        
+
         model.getVao().bind();
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
-        
-        for(PostProcessingEffect effect: effects){
-            
+
+        for (PostProcessingEffect effect : effects) {
+
             effect.prepare(input.getColorAttachment0(), input.getDepthAttachment());
-            
+
             output.bind(GL30.GL_COLOR_ATTACHMENT0);
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            
-            GL11.glDrawElements(GL11.GL_TRIANGLES, 
-                    model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
-            
+
+            GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
             output.unbind();
             output.blitToFbo(input, GL11.GL_COLOR_BUFFER_BIT);
-            
+
             effect.exit();
         }
-        
+
         model.getIndexBuffer().unbind();
         model.getVao().disableAttributes();
         model.getVao().unbind();
-        
+
         input.blitToFbo(output, GL11.GL_DEPTH_BUFFER_BIT);
-        
+
         effects.clear();
     }
-    
-    /**Adding a new effect to the post processing pipeline
+
+    /**
+     * Adding a new effect to the post processing pipeline
      * 
      * @param effect Effect to add
      */
-    public static void addEffect(PostProcessingEffect effect){
+    public static void addEffect(PostProcessingEffect effect) {
         effects.add(effect);
         effect.addImpliedEffects(effects);
     }
-    
-    /** @return Input FBO of the post processer
+
+    /**
+     * @return Input FBO of the post processer
      */
     static FrameBufferObject getInput() {
         return input;
     }
-    
-    /** @return Output FBO of the post processer
+
+    /**
+     * @return Output FBO of the post processer
      */
     static FrameBufferObject getOutput() {
         return output;

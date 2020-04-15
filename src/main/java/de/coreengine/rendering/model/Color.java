@@ -29,111 +29,123 @@ package de.coreengine.rendering.model;
 
 import java.io.Serializable;
 
-/**Represent a color in syncron rgb, hsb and srgb color models
+/**
+ * Represent a color in syncron rgb, hsb and srgb color models
  *
  * @author Darius Dinger
  */
-public class Color implements Serializable{
-    
-    //Represent the red, blue and green value of the rgb color model
+public class Color implements Serializable {
+
+    // Represent the red, blue and green value of the rgb color model
     private final float[] rgb = new float[3];
-    
-    /**Creates a new white color
+
+    /**
+     * Creates a new white color
      */
     public Color() {
         rgb[0] = 1.0f;
         rgb[1] = 1.0f;
         rgb[2] = 1.0f;
     }
-    
-    /**Creating new color with init rgb values
+
+    /**
+     * Creating new color with init rgb values
      * 
      * @param r Red value of the color
      * @param g Green value of the color
      * @param b Blue value of the color
      */
-    public Color(float r, float g, float b){
+    public Color(float r, float g, float b) {
         rgb[0] = r;
         rgb[1] = g;
         rgb[2] = b;
     }
-    
-    /**Setting new rgb value of this color
+
+    /**
+     * Setting new rgb value of this color
      * 
      * @param r New red value
      * @param g New green value
      * @param b New blue value
      */
-    public void set(float r, float g, float b){
+    public void set(float r, float g, float b) {
         rgb[0] = r;
         rgb[1] = g;
         rgb[2] = b;
     }
-    
-    /**Sets the value of this color to the value of c
+
+    /**
+     * Sets the value of this color to the value of c
      * 
      * @param c Color to get value from
      */
-    public void set(Color c){
+    public void set(Color c) {
         rgb[0] = c.rgb[0];
         rgb[1] = c.rgb[1];
         rgb[2] = c.rgb[2];
     }
-    
-    /**Sets the Red value of the rgb model and reclaculate the hsb and srgb
+
+    /**
+     * Sets the Red value of the rgb model and reclaculate the hsb and srgb
      * 
      * @param val New red value
      */
-    public void setRed(float val){
+    public void setRed(float val) {
         rgb[0] = val;
     }
-    
-    /**Sets the Green value of the rgb model and reclaculate the hsb and srgb
+
+    /**
+     * Sets the Green value of the rgb model and reclaculate the hsb and srgb
      * 
      * @param val New green value
      */
-    public void setGreen(float val){
+    public void setGreen(float val) {
         rgb[1] = val;
     }
-    
-    /**Sets the Blue value of the rgb model and reclaculate the hsb and srgb
+
+    /**
+     * Sets the Blue value of the rgb model and reclaculate the hsb and srgb
      * 
      * @param val New blue value
      */
-    public void setBlue(float val){
+    public void setBlue(float val) {
         rgb[2] = val;
     }
-    
-    /**@return The red value of the rgb model
+
+    /**
+     * @return The red value of the rgb model
      */
-    public float getRed(){
+    public float getRed() {
         return rgb[0];
     }
-    
-    /**@return The green value of the rgb model
+
+    /**
+     * @return The green value of the rgb model
      */
-    public float getGreen(){
+    public float getGreen() {
         return rgb[1];
     }
-    
-    /**@return The blue value of the rgb model
+
+    /**
+     * @return The blue value of the rgb model
      */
-    public float getBlue(){
+    public float getBlue() {
         return rgb[2];
     }
-    
+
     @Override
     public String toString() {
         return "RGB[" + rgb[0] + ";" + rgb[1] + ";" + rgb[2] + "] ";
     }
-    
-    /**Comparing the rgb values of this color and the the parameter color
-     * and returning result
+
+    /**
+     * Comparing the rgb values of this color and the the parameter color and
+     * returning result
      * 
      * @param col Other color to compare with
      * @return Is RGB value identical
      */
-    public boolean compare(Color col){
+    public boolean compare(Color col) {
         return rgb[0] == col.rgb[0] && rgb[1] == col.rgb[1] && rgb[2] == col.rgb[2];
     }
 }

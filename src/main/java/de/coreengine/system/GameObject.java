@@ -35,116 +35,135 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-/**Class that represents an object in the game
+/**
+ * Class that represents an object in the game
  *
  * @author Darius Dinger
  */
 public abstract class GameObject {
-    
-    //Parent game object
+
+    // Parent game object
     protected GameObject parent = null;
-    
-    //List with all child game objects
+
+    // List with all child game objects
     private final List<GameObject> childs = new LinkedList<>();
     private final Semaphore childsSem = new Semaphore(1);
-    
-    //Scene, the game object currently belongs to
+
+    // Scene, the game object currently belongs to
     private Scene scene = null;
-    
-    //Is the game object initialized
+
+    // Is the game object initialized
     private boolean initialized = false;
-    
-    /**This method gets called once in the GameObject life cycle. Even if the GameObject gets removed and readded,
-     * this method dont gets called again. Its like an additional constructor, except that its not gets called when
-     * the GameObject gets created, but when its first has to action.
+
+    /**
+     * This method gets called once in the GameObject life cycle. Even if the
+     * GameObject gets removed and readded, this method dont gets called again. Its
+     * like an additional constructor, except that its not gets called when the
+     * GameObject gets created, but when its first has to action.
      */
-    public void onInit(){
+    public void onInit() {
         initialized = true;
     }
-    
-    /**This method gets called, every time a network update occurs. Here the GameObject has to syncronize all used
-     * network variables, like SyncFloats, SimpleEvents, ChatEvents, SyncMatrices, ...
+
+    /**
+     * This method gets called, every time a network update occurs. Here the
+     * GameObject has to syncronize all used network variables, like SyncFloats,
+     * SimpleEvents, ChatEvents, SyncMatrices, ...
      */
-    public void onSyncronize(){
+    public void onSyncronize() {
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-                if(!child.initialized) child.onInit();
+                if (!child.initialized)
+                    child.onInit();
                 child.onSyncronize();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while syncrinizing childs!");
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while syncrinizing childs!");
         }
     }
-    
-    /**This method gets called every frame before the render method. Here is place for the GameObject logic updates,
-     * e.g. input handling, physics, actions, ...
+
+    /**
+     * This method gets called every frame before the render method. Here is place
+     * for the GameObject logic updates, e.g. input handling, physics, actions, ...
      */
-    public void onUpdate(){
+    public void onUpdate() {
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-                if(!child.initialized) child.onInit();
+                if (!child.initialized)
+                    child.onInit();
                 child.onUpdate();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while updating childs!");
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while updating childs!");
         }
-        
+
     }
-    
-    /**In this method the GameObject gets rendered onto the screen (if it has an graphical representation).
-     * Its primary used for MasterRenderer calls.
+
+    /**
+     * In this method the GameObject gets rendered onto the screen (if it has an
+     * graphical representation). Its primary used for MasterRenderer calls.
      */
-    public void onRender(){
+    public void onRender() {
         try {
             childsSem.acquire();
             childs.forEach((child) -> {
-                if(!child.initialized) child.onInit();
+                if (!child.initialized)
+                    child.onInit();
                 child.onRender();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while rendering childs!");
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while rendering childs!");
         }
     }
 
-    /**This method gets called once, when the GameObject is added to a scene, or to another GameObject as child.
-     * If the GameObject gets removed and readded, the method will be called again.
+    /**
+     * This method gets called once, when the GameObject is added to a scene, or to
+     * another GameObject as child. If the GameObject gets removed and readded, the
+     * method will be called again.
      */
-    private void onAdd(){}
+    private void onAdd() {
+    }
 
-    /**This method gets called once, when the GameObject gets removed from a scene or its parent GameObject
-     * (if it had one). If the GameObject gets added and removed again, the method will be called again.
+    /**
+     * This method gets called once, when the GameObject gets removed from a scene
+     * or its parent GameObject (if it had one). If the GameObject gets added and
+     * removed again, the method will be called again.
      */
-    private void onRemove(){}
+    private void onRemove() {
+    }
 
-    /**This method gets called asynchronous, when the game wants the GameObject to save its current state. If you have
-     * to save your current state, convert the relevant data into bytes and return them in this method.
+    /**
+     * This method gets called asynchronous, when the game wants the GameObject to
+     * save its current state. If you have to save your current state, convert the
+     * relevant data into bytes and return them in this method.
      *
      * @return Current state in bytes
      */
-    public byte[] onSave(){
+    public byte[] onSave() {
         return null;
     }
 
-    /**This method gets called asynchronous, when the game wants to GameObject to recreate its state from saved data.
-     * This method passing a byte array, which contains the data, the GameObject saved/returned with the onSave method.
+    /**
+     * This method gets called asynchronous, when the game wants to GameObject to
+     * recreate its state from saved data. This method passing a byte array, which
+     * contains the data, the GameObject saved/returned with the onSave method.
      *
      * @param state Loaded state in bytes
      */
-    public void onLoad(byte[] state){}
+    public void onLoad(byte[] state) {
+    }
 
-    /**Adding a new child game object to the childs and setting this as parent
+    /**
+     * Adding a new child game object to the childs and setting this as parent
      * 
      * @param child Child to add
      */
-    public final void addChild(GameObject child){
+    public final void addChild(GameObject child) {
         try {
             childsSem.acquire();
             childs.add(child);
@@ -152,16 +171,16 @@ public abstract class GameObject {
             child.parent = this;
             child.onAdd();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while adding a new child!");
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while adding a new child!");
         }
     }
-    
-    /**Removing child game object from childs
+
+    /**
+     * Removing child game object from childs
      * 
      * @param child Game object to remove
      */
-    public final void removeChild(GameObject child){
+    public final void removeChild(GameObject child) {
         try {
             childsSem.acquire();
             childs.remove(child);
@@ -169,42 +188,47 @@ public abstract class GameObject {
             child.parent = null;
             child.onRemove();
         } catch (InterruptedException ex) {
-            Logger.err("Interrupted Exception", "An Interrupted exception occurs "
-                    + "while removing a child!");
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while removing a child!");
         }
     }
-    
-    /**Setting the scene of this game object
+
+    /**
+     * Setting the scene of this game object
      * 
      * @param scene New scene of the game object
      */
     void setScene(Scene scene) {
         this.scene = scene;
     }
-    
-    /**Getting scene of this game object, by getting scene of the root game
-     * object of the tree
+
+    /**
+     * Getting scene of this game object, by getting scene of the root game object
+     * of the tree
      * 
      * @return Scene of the game object
      */
-    public Scene getScene(){
-        if(parent == null) return scene;
-        else return parent.getScene();
+    public Scene getScene() {
+        if (parent == null)
+            return scene;
+        else
+            return parent.getScene();
     }
-    
-    /**Adding rigidbody to the physics world of the game objects scene
+
+    /**
+     * Adding rigidbody to the physics world of the game objects scene
      * 
      * @param rb Rigidbody to add to physics world
      */
-    protected void addRigidBodyToWorld(RigidBody rb){
+    protected void addRigidBodyToWorld(RigidBody rb) {
         getScene().getPhysicWorld().addRigidBody(rb);
     }
-    
-    /**Adding action interface object to the physics world of the scene
+
+    /**
+     * Adding action interface object to the physics world of the scene
      * 
      * @param ai Action interface object to add
      */
-    protected void addActionToPhysicWorld(ActionInterface ai){
+    protected void addActionToPhysicWorld(ActionInterface ai) {
         getScene().getPhysicWorld().addAction(ai);
     }
 }

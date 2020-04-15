@@ -29,39 +29,44 @@ package de.coreengine.rendering.renderable.terrain;
 
 import de.coreengine.rendering.model.Material;
 
-/**Class that represents a texture pack for a terrain
+/**
+ * Class that represents a texture pack for a terrain
  *
  * @author Darius Dinger
  */
 public class TerrainTexturePack {
-    
-    //Materials for the terrain 
-    //main material and red, green, blue material from blend map
+
+    // Materials for the terrain
+    // main material and red, green, blue material from blend map
     private final Material material = new Material();
     private final Material rMaterial = new Material();
     private final Material gMaterial = new Material();
     private final Material bMaterial = new Material();
-    
-    /**@return Main material of the terrain.
-     * (no r,g, b in blend map or no blend map)
+
+    /**
+     * @return Main material of the terrain. (no r,g, b in blend map or no blend
+     *         map)
      */
     public Material getMaterial() {
         return material;
     }
-    
-    /**@return Red material of the terrain (red in blend map)
+
+    /**
+     * @return Red material of the terrain (red in blend map)
      */
     public Material getRedMaterial() {
         return rMaterial;
     }
-    
-    /**@return Green material of the terrain (green in blend map)
+
+    /**
+     * @return Green material of the terrain (green in blend map)
      */
     public Material getGreenMaterial() {
         return gMaterial;
     }
-    
-    /**@return Blue material of the terrain (blue in blend map)
+
+    /**
+     * @return Blue material of the terrain (blue in blend map)
      */
     public Material getBlueMaterial() {
         return bMaterial;

@@ -34,26 +34,26 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector4f;
 
-/**Shader for the light scattering effect
+/**
+ * Shader for the light scattering effect
  *
  * @author Darius Dinger
  */
-public class LightScatteringPPShader extends PPShader{
-    
+public class LightScatteringPPShader extends PPShader {
+
     private final int sunTextureUnit = 2;
-    
-    //Uniform locations
-    private int sizeLoc, originLoc, intensityLoc, brightnessLoc, qualityLoc,
-            colorLoc;
-    
-    //Sun position buffer
+
+    // Uniform locations
+    private int sizeLoc, originLoc, intensityLoc, brightnessLoc, qualityLoc, colorLoc;
+
+    // Sun position buffer
     private Vector4f sunPos = new Vector4f();
-    
+
     @Override
     protected String getPPFragShaderFile() {
         return "lightScattering.frag";
     }
-    
+
     @Override
     protected void setUniformLocations() {
         bindTextureUnit("sunTexture", sunTextureUnit);
@@ -64,54 +64,57 @@ public class LightScatteringPPShader extends PPShader{
         qualityLoc = getUniformLocation("quality");
         colorLoc = getUniformLocation("color");
     }
-    
-    /**@param texture TextureData id of the sun buffer
+
+    /**
+     * @param texture TextureData id of the sun buffer
      */
-    public void setSunTexture(int texture){
+    public void setSunTexture(int texture) {
         bindTexture(texture, sunTextureUnit, GL11.GL_TEXTURE_2D);
     }
-    
-    /**Preparing shader for the next sun
+
+    /**
+     * Preparing shader for the next sun
      * 
-     * @param intensity Intensity of the light scatters
+     * @param intensity  Intensity of the light scatters
      * @param brightness Brightness of the light scatters
-     * @param quality Quality of the light scatters
+     * @param quality    Quality of the light scatters
      */
-    public void prepareEffect(float intensity, float brightness, int quality){
+    public void prepareEffect(float intensity, float brightness, int quality) {
         setUniform(intensityLoc, intensity);
         setUniform(brightnessLoc, brightness);
         setUniform(qualityLoc, quality);
     }
-    
-    /**Realoading sun origin into shader
+
+    /**
+     * Realoading sun origin into shader
      */
-    public void reloadSun(){
+    public void reloadSun() {
         Matrix4f vpMat = MasterRenderer.getCamera().getViewProjectionMatrix();
-        
-        sunPos.set(MasterRenderer.getSun().getPosition().x,
-                MasterRenderer.getSun().getPosition().y,
+
+        sunPos.set(MasterRenderer.getSun().getPosition().x, MasterRenderer.getSun().getPosition().y,
                 MasterRenderer.getSun().getPosition().z, 1.0f);
         vpMat.transform(sunPos);
-        
+
         sunPos.x /= sunPos.w;
         sunPos.y /= sunPos.w;
-        
+
         sunPos.x *= 0.5f;
         sunPos.x += 0.5f;
-        
+
         sunPos.y *= 0.5f;
         sunPos.y += 0.5f;
-        
+
         setUniform(originLoc, sunPos.x, sunPos.y);
         setUniform(colorLoc, MasterRenderer.getSun().getColor());
     }
-    
-    /**Setting the size of the next to blur image texel.<br>
+
+    /**
+     * Setting the size of the next to blur image texel.<br>
      * vec2(1.0f / image.width, 1.0f / image.height)
      * 
      * @param size Size of a texel of the next to blur image
      */
-    public void setSize(Vector2f size){
+    public void setSize(Vector2f size) {
         setUniform(sizeLoc, size.x, size.y);
     }
 }

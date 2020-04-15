@@ -30,51 +30,56 @@ package de.coreengine.rendering.renderable;
 import de.coreengine.util.Configuration;
 import de.coreengine.util.Toolbox;
 
-/**Class that represent a lens flare effect to render
+/**
+ * Class that represent a lens flare effect to render
  *
  * @author Darius Dinger
  */
 public class LensFlare {
-    private static final float DEFAULT_SIZE = 
-            Configuration.getValuef("LENS_FLARE_DEFAULT_SIZE");
-    
-    //Lens flare textures to place onto the lens flare vector
+    private static final float DEFAULT_SIZE = Configuration.getValuef("LENS_FLARE_DEFAULT_SIZE");
+
+    // Lens flare textures to place onto the lens flare vector
     private int[] textures = new int[0];
-    
-    //Size of the lens flare textures
+
+    // Size of the lens flare textures
     private float size = DEFAULT_SIZE;
-    
-    /**Setting lens flare textures to place onto the lens flare vector
+
+    /**
+     * Setting lens flare textures to place onto the lens flare vector
      * 
      * @param textures New lens flare textures
      */
     public void setTextures(int[] textures) {
         this.textures = textures;
     }
-    
-    /**@return Lens flare textures to place onto the lens flare vector
+
+    /**
+     * @return Lens flare textures to place onto the lens flare vector
      */
     public int[] getTextures() {
         return textures;
     }
-    
-    /**@return Size of the lens flare textures
+
+    /**
+     * @return Size of the lens flare textures
      */
     public float getSize() {
         return size;
     }
-    
-    /**@param size New size of the lens flare textures
+
+    /**
+     * @param size New size of the lens flare textures
      */
     public void setSize(float size) {
         this.size = size;
     }
-    
-    /**Adding texture to the lens flare effect
+
+    /**
+     * Adding texture to the lens flare effect
      * 
      * @param tex TextureData to add
      */
-    public void addTexture(int tex){
+    public void addTexture(int tex) {
         textures = Toolbox.addElement(textures, tex);
     }
 }

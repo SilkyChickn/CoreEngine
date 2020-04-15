@@ -38,24 +38,24 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for the animated entity renderer
+/**
+ * Shader for the animated entity renderer
  *
  * @author Darius Dinger
  */
-public class AnimatedEntityShader extends Shader{
+public class AnimatedEntityShader extends Shader {
     private static final int MAX_JOINTS = 50;
 
-    private final int diffuseMapUnit = 0, normalMapUnit = 1, specularMapUnit = 2,
-            displacementMapUnit = 3, aoMapUnit = 4, glowMapUnit = 5;
+    private final int diffuseMapUnit = 0, normalMapUnit = 1, specularMapUnit = 2, displacementMapUnit = 3,
+            aoMapUnit = 4, glowMapUnit = 5;
 
-    private int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, displacementFactorLoc,
-            reflectivityLoc, shineDamperLoc, diffuseColorLoc, pickingColorLoc,
-            glowColorLoc, clipPlaneLoc, jointMatLoc;
+    private int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, displacementFactorLoc, reflectivityLoc, shineDamperLoc,
+            diffuseColorLoc, pickingColorLoc, glowColorLoc, clipPlaneLoc, jointMatLoc;
 
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "animatedEntity.vert", true),
-                GL20.GL_VERTEX_SHADER, "AnimatedEntity Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "animatedEntity.vert", true), GL20.GL_VERTEX_SHADER,
+                "AnimatedEntity Vertex Shader");
         addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "animatedEntity.frag", true),
                 GL20.GL_FRAGMENT_SHADER, "AnimatedEntity Fragment Shader");
     }
@@ -93,76 +93,81 @@ public class AnimatedEntityShader extends Shader{
         bindTextureUnit("glowMap", glowMapUnit);
     }
 
-    /**Setting clip plane for next entity
+    /**
+     * Setting clip plane for next entity
      *
      * @param x X value of the plane normal
      * @param y Y value of the plane normal
      * @param z Z value of the plane normal
      * @param w Distance of the plane normal
      */
-    public void setClipPlane(float x, float y, float z, float w){
+    public void setClipPlane(float x, float y, float z, float w) {
         setUniform(clipPlaneLoc, x, y, z, w);
     }
 
-    /**@param cam camera to render next models from
+    /**
+     * @param cam camera to render next models from
      */
-    public void setCamera(Camera cam){
+    public void setCamera(Camera cam) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
-        setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y,
-                cam.getPosition().z);
+        setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
     }
 
-    /**Preparing an animated entity
+    /**
+     * Preparing an animated entity
      *
      * @param entity Animated entity to prepare
      */
-    public void prepareEntity(AnimatedEntity entity){
+    public void prepareEntity(AnimatedEntity entity) {
         setUniform(transMatLoc, entity.getTransform().getTransMatArr());
         prepareSkeleton(entity.getSkeleton());
-        //Prepare pick color
+        // Prepare pick color
     }
 
-    /**Preparing skeleton of an animated entity
+    /**
+     * Preparing skeleton of an animated entity
      *
      * @param skeleton Skeleton to prepare
      */
-    private void prepareSkeleton(Joint skeleton){
+    private void prepareSkeleton(Joint skeleton) {
         float[] matrices = new float[MAX_JOINTS * 16];
         addJointMatrices(skeleton, matrices);
         setUniform(jointMatLoc, matrices);
     }
 
-    /**Adding this joints matrices and all children joint matrices to the matrices float array at their specific
-     * position
+    /**
+     * Adding this joints matrices and all children joint matrices to the matrices
+     * float array at their specific position
      *
-     * @param joint Joint to add matrices from
+     * @param joint    Joint to add matrices from
      * @param matrices Array to fill in matrices
      */
-    private void addJointMatrices(Joint joint, float[] matrices){
+    private void addJointMatrices(Joint joint, float[] matrices) {
 
-        //Check if joint fits into array
-        if(joint.getIndex() >= 0 || joint.getIndex() < MAX_JOINTS){
+        // Check if joint fits into array
+        if (joint.getIndex() >= 0 || joint.getIndex() < MAX_JOINTS) {
 
-            //Fill up matrix
-            for(int r = 0; r < 4; r++){
-                for(int c = 0; c < 4; c++){
+            // Fill up matrix
+            for (int r = 0; r < 4; r++) {
+                for (int c = 0; c < 4; c++) {
                     float val = joint.getAnimatedTransform().getElement(c, r);
                     matrices[(joint.getIndex() * 16) + (r * 4) + c] = val;
                 }
             }
         }
 
-        //Fill up children matrices
-        for(Joint child: joint.getChildren()){
+        // Fill up children matrices
+        for (Joint child : joint.getChildren()) {
             addJointMatrices(child, matrices);
         }
     }
 
-    /**Preparing shader for next material
+    /**
+     * Preparing shader for next material
      *
      * @param mat Material to prepare
      */
-    public void prepareMaterial(Material mat){
+    public void prepareMaterial(Material mat) {
         setUniform(tilingLoc, mat.tiling);
         setUniform(diffuseColorLoc, mat.diffuseColor);
         setUniform(displacementFactorLoc, mat.displacementFactor);

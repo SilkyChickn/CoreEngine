@@ -34,48 +34,50 @@ import de.coreengine.util.gl.VertexArrayObject;
 
 import javax.vecmath.Vector3f;
 
-/**Representing a simple 3 dimensional cube model
+/**
+ * Representing a simple 3 dimensional cube model
  *
  * @author Darius Dinger
  */
 public class Cube3D {
-    
-    //Instance of a 3D cube model
+
+    // Instance of a 3D cube model
     private static Mesh instance = null;
-    
-    /**@return Instance of a 3D cube model
+
+    /**
+     * @return Instance of a 3D cube model
      */
     public static Mesh getInstance() {
-        if(instance == null) create();
+        if (instance == null)
+            create();
         return instance;
     }
-    
-    /**Creating instance
+
+    /**
+     * Creating instance
      */
-    private static void create(){
+    private static void create() {
         VertexArrayObject vao = new VertexArrayObject();
-        
-        vao.addVertexBuffer(new float[]{
-            
-            //Front
-            0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, //BL //BR
-            0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, //TL //TR
-            
-            //Back
-            0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, //BL //BR
-            0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, //TL //TR
+
+        vao.addVertexBuffer(new float[] {
+
+                // Front
+                0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, // BL //BR
+                0.5f, 0.5f, 0.5f, -0.5f, 0.5f, 0.5f, // TL //TR
+
+                // Back
+                0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f, // BL //BR
+                0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f, // TL //TR
         }, 3, 0);
-        
-        IndexBuffer index = vao.addIndexBuffer(new int[]{
-            7, 5, 4, 4, 6, 7, //Front
-            1, 5, 7, 7, 3, 1, //Left
-            4, 0, 2, 2, 6, 4, //Right
-            1, 3, 2, 2, 0, 1, //Back
-            7, 6, 2, 2, 3, 7, //Top
-            5, 1, 4, 4, 1, 0 //Bottom
+
+        IndexBuffer index = vao.addIndexBuffer(new int[] { 7, 5, 4, 4, 6, 7, // Front
+                1, 5, 7, 7, 3, 1, // Left
+                4, 0, 2, 2, 6, 4, // Right
+                1, 3, 2, 2, 0, 1, // Back
+                7, 6, 2, 2, 3, 7, // Top
+                5, 1, 4, 4, 1, 0 // Bottom
         });
-        
-        instance = new Mesh(vao, index, new BoxShape(
-                new Vector3f(0.5f, 0.5f, 0.5f)));
+
+        instance = new Mesh(vao, index, new BoxShape(new Vector3f(0.5f, 0.5f, 0.5f)));
     }
 }

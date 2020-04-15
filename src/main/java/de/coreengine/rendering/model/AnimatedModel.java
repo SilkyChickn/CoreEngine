@@ -33,18 +33,19 @@ import de.coreengine.animation.Joint;
 
 import java.util.HashMap;
 
-public class AnimatedModel extends Model{
+public class AnimatedModel extends Model {
 
-    //Skeleton blueprint for animated entities
+    // Skeleton blueprint for animated entities
     private final Joint skeleton;
 
-    //Animations that can be played by this model
+    // Animations that can be played by this model
     private final HashMap<String, Animation> animations;
 
-    /**Creating new animated model
+    /**
+     * Creating new animated model
      *
-     * @param meshes Meshes of the model
-     * @param skeleton Skeleton blueprint for animated entities
+     * @param meshes     Meshes of the model
+     * @param skeleton   Skeleton blueprint for animated entities
      * @param animations Animations that can be played by this model
      */
     public AnimatedModel(Mesh[] meshes, Joint skeleton, HashMap<String, Animation> animations) {
@@ -54,8 +55,9 @@ public class AnimatedModel extends Model{
         this.animations = animations;
     }
 
-    /**Creating a new instanceof the skeleton of this model. So every entity can have its own skeleton, for
-     * individual animation poses
+    /**
+     * Creating a new instanceof the skeleton of this model. So every entity can
+     * have its own skeleton, for individual animation poses
      *
      * @return New skeleton instance
      */
@@ -63,7 +65,8 @@ public class AnimatedModel extends Model{
         return new Joint(skeleton);
     }
 
-    /**@return Animations that can be played by this model
+    /**
+     * @return Animations that can be played by this model
      */
     public HashMap<String, Animation> getAnimations() {
         return animations;

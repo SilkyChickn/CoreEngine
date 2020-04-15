@@ -34,31 +34,37 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
-/**Utilities with byte arrays
+/**
+ * Utilities with byte arrays
  *
  * @author Darius Dinger
  */
 public class ByteArrayUtils {
 
-    /**Combining multiple byte arrays
+    /**
+     * Combining multiple byte arrays
      *
      * @param in Byte arrays to combine
      * @return Combined byte array
      */
-    public static byte[] combine(byte[]... in){
+    public static byte[] combine(byte[]... in) {
         int newSize = 0, counter = 0;
-        for(byte[] b: in) newSize += b.length;
+        for (byte[] b : in)
+            newSize += b.length;
         byte[] out = new byte[newSize];
-        for(byte[] ba: in) for(byte b: ba) out[counter++] = b;
+        for (byte[] ba : in)
+            for (byte b : ba)
+                out[counter++] = b;
         return out;
     }
-    
-    /**Converting a float array into a byte array
+
+    /**
+     * Converting a float array into a byte array
      *
      * @param in Float array to convert
      * @return Converted byte array
      */
-    public static byte[] toBytes(float[] in){
+    public static byte[] toBytes(float[] in) {
         byte[] out = new byte[in.length * 4];
         ByteBuffer byteBuffer = ByteBuffer.wrap(out);
         FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
@@ -66,12 +72,13 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting a byte array into a float array
+    /**
+     * Converting a byte array into a float array
      *
      * @param in Byte array to convert
      * @return Converted float array
      */
-    public static float[] fromBytesf(byte[] in){
+    public static float[] fromBytesf(byte[] in) {
         float[] out = new float[in.length / 4];
         ByteBuffer byteBuffer = ByteBuffer.wrap(in);
         FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
@@ -79,12 +86,13 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting an int array into a byte array
+    /**
+     * Converting an int array into a byte array
      *
      * @param in Int array to convert
      * @return Converted byte array
      */
-    public static byte[] toBytes(int[] in){
+    public static byte[] toBytes(int[] in) {
         byte[] out = new byte[in.length * 4];
         ByteBuffer byteBuffer = ByteBuffer.wrap(out);
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
@@ -92,12 +100,13 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting a byte array into a int array
+    /**
+     * Converting a byte array into a int array
      *
      * @param in Byte array to convert
      * @return Converted int array
      */
-    public static int[] fromBytesi(byte[] in){
+    public static int[] fromBytesi(byte[] in) {
         int[] out = new int[in.length / 4];
         ByteBuffer byteBuffer = ByteBuffer.wrap(in);
         IntBuffer intBuffer = byteBuffer.asIntBuffer();
@@ -105,12 +114,13 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting a short array into a byte array
+    /**
+     * Converting a short array into a byte array
      *
      * @param in Short array to convert
      * @return Converted byte array
      */
-    public static byte[] toBytes(short[] in){
+    public static byte[] toBytes(short[] in) {
         byte[] out = new byte[in.length * 2];
         ByteBuffer byteBuffer = ByteBuffer.wrap(out);
         ShortBuffer shortBuffer = byteBuffer.asShortBuffer();
@@ -118,12 +128,13 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting a byte array into a short array
+    /**
+     * Converting a byte array into a short array
      *
      * @param in Byte array to convert
      * @return Converted short array
      */
-    public static short[] fromBytess(byte[] in){
+    public static short[] fromBytess(byte[] in) {
         short[] out = new short[in.length / 2];
         ByteBuffer byteBuffer = ByteBuffer.wrap(in);
         ShortBuffer shortBuffer = byteBuffer.asShortBuffer();
@@ -131,36 +142,38 @@ public class ByteArrayUtils {
         return out;
     }
 
-    /**Converting a matrix4f array into a byte array
+    /**
+     * Converting a matrix4f array into a byte array
      *
      * @param in Matrix4f array to convert
      * @return Converted byte array
      */
-    public static byte[] toBytes(Matrix4f[] in){
+    public static byte[] toBytes(Matrix4f[] in) {
         float[] floats = new float[in.length * 16];
-        for(int i = 0; i < in.length; i++) {
-            for(int r = 0; r < 4; r++){
-                for(int c = 0; c < 4; c++){
-                    floats[i*16 +r*4 +c] = in[i].getElement(r, c);
+        for (int i = 0; i < in.length; i++) {
+            for (int r = 0; r < 4; r++) {
+                for (int c = 0; c < 4; c++) {
+                    floats[i * 16 + r * 4 + c] = in[i].getElement(r, c);
                 }
             }
         }
         return toBytes(floats);
     }
 
-    /**Converting a byte array into a matrix4f array
+    /**
+     * Converting a byte array into a matrix4f array
      *
      * @param in Byte array to convert
      * @return Converted matrix4f array
      */
-    public static Matrix4f[] fromBytesm4(byte[] in){
+    public static Matrix4f[] fromBytesm4(byte[] in) {
         float[] floats = fromBytesf(in);
         Matrix4f[] matrices = new Matrix4f[floats.length / 16];
-        for(int i = 0; i < matrices.length; i++) {
+        for (int i = 0; i < matrices.length; i++) {
             matrices[i] = new Matrix4f();
-            for(int r = 0; r < 4; r++){
-                for(int c = 0; c < 4; c++){
-                    matrices[i].setElement(r, c, floats[i*16 +r*4 +c]);
+            for (int r = 0; r < 4; r++) {
+                for (int c = 0; c < 4; c++) {
+                    matrices[i].setElement(r, c, floats[i * 16 + r * 4 + c]);
                 }
             }
         }

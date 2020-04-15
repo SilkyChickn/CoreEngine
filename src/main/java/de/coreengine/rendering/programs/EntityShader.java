@@ -36,27 +36,27 @@ import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
-/**Shader for the object renderer
+/**
+ * Shader for the object renderer
  *
  * @author Darius Dinger
  */
-public class EntityShader extends Shader{
-    
-    private final int diffuseMapUnit = 0, normalMapUnit = 1, specularMapUnit = 2, 
-            displacementMapUnit = 3, aoMapUnit = 4, glowMapUnit = 5;
-    
-    private int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, displacementFactorLoc, 
-            reflectivityLoc, shineDamperLoc, diffuseColorLoc, pickingColorLoc, 
-            glowColorLoc, clipPlaneLoc;
-    
+public class EntityShader extends Shader {
+
+    private final int diffuseMapUnit = 0, normalMapUnit = 1, specularMapUnit = 2, displacementMapUnit = 3,
+            aoMapUnit = 4, glowMapUnit = 5;
+
+    private int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, displacementFactorLoc, reflectivityLoc, shineDamperLoc,
+            diffuseColorLoc, pickingColorLoc, glowColorLoc, clipPlaneLoc;
+
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.vert", true),
-                GL20.GL_VERTEX_SHADER, "Entity Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.frag", true), 
-                GL20.GL_FRAGMENT_SHADER, "Entity Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.vert", true), GL20.GL_VERTEX_SHADER,
+                "Entity Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Entity Fragment Shader");
     }
-    
+
     @Override
     protected void bindAttribs() {
         bindAttribute(0, "position");
@@ -64,7 +64,7 @@ public class EntityShader extends Shader{
         bindAttribute(2, "normal");
         bindAttribute(3, "tangent");
     }
-    
+
     @Override
     protected void loadUniforms() {
         vpMatLoc = getUniformLocation("vpMat");
@@ -78,7 +78,7 @@ public class EntityShader extends Shader{
         pickingColorLoc = getUniformLocation("pickingColor");
         glowColorLoc = getUniformLocation("glowColor");
         clipPlaneLoc = getUniformLocation("clipPlane");
-        
+
         bindTextureUnit("diffuseMap", diffuseMapUnit);
         bindTextureUnit("normalMap", normalMapUnit);
         bindTextureUnit("specularMap", specularMapUnit);
@@ -86,36 +86,42 @@ public class EntityShader extends Shader{
         bindTextureUnit("aoMap", aoMapUnit);
         bindTextureUnit("glowMap", glowMapUnit);
     }
-    
-    /**Setting clip plane for next entity
+
+    /**
+     * Setting clip plane for next entity
      * 
      * @param x X value of the plane normal
      * @param y Y value of the plane normal
      * @param z Z value of the plane normal
      * @param w Distance of the plane normal
      */
-    public void setClipPlane(float x, float y, float z, float w){
+    public void setClipPlane(float x, float y, float z, float w) {
         setUniform(clipPlaneLoc, x, y, z, w);
     }
-    
-    /**@param cam camera to render next models from
+
+    /**
+     * @param cam           Camera to render next models from
+     * @param rotateWithCam Should the entity rotate and move with the camera
      */
-    public void setCamera(Camera cam){
-        setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
-        setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y,
-                cam.getPosition().z);
+    public void setCamera(Camera cam, boolean rotateWithCam) {
+        if (rotateWithCam)
+            setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getProjectionMatrix()));
+        else
+            setUniform(vpMatLoc, Toolbox.matrixToFloatArray(cam.getViewProjectionMatrix()));
+        setUniform(camPosLoc, cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
     }
-    
-    public void prepareEntity(Entity entity){
+
+    public void prepareEntity(Entity entity) {
         setUniform(transMatLoc, entity.getTransform().getTransMatArr());
-        //Prepare pick color
+        // Prepare pick color
     }
-    
-    /**Preparing shader for next material
+
+    /**
+     * Preparing shader for next material
      * 
      * @param mat Material to prepare
      */
-    public void prepareMaterial(Material mat){
+    public void prepareMaterial(Material mat) {
         setUniform(tilingLoc, mat.tiling);
         setUniform(diffuseColorLoc, mat.diffuseColor);
         setUniform(displacementFactorLoc, mat.displacementFactor);

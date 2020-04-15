@@ -27,16 +27,18 @@
  */
 package de.coreengine.rendering.model;
 
-/**Class that represents a complex model with variouse meshes
+/**
+ * Class that represents a complex model with variouse meshes
  *
  * @author Darius Dinger
  */
 public class Model {
 
-    //Meshes of the model
+    // Meshes of the model
     private final Mesh[] meshes;
 
-    /**Creating new model with its meshes
+    /**
+     * Creating new model with its meshes
      *
      * @param meshes Meshes of the model
      */
@@ -44,7 +46,8 @@ public class Model {
         this.meshes = meshes;
     }
 
-    /**@return Meshes of this model
+    /**
+     * @return Meshes of this model
      */
     public Mesh[] getMeshes() {
         return meshes;

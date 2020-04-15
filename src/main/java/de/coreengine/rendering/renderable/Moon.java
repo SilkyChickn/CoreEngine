@@ -35,76 +35,85 @@ import de.coreengine.util.Configuration;
 
 import javax.vecmath.Vector3f;
 
-/**Class that reprsents a moon for post processing and lighting calculation
+/**
+ * Class that reprsents a moon for post processing and lighting calculation
  *
  * @author Darius Dinger
  */
-public class Moon{
-    private static final float DEFAULT_SIZE = 
-            Configuration.getValuef("MOON_DEFAULT_SIZE");
-    
-    //Moon size
+public class Moon {
+    private static final float DEFAULT_SIZE = Configuration.getValuef("MOON_DEFAULT_SIZE");
+
+    // Moon size
     private float size = DEFAULT_SIZE;
-    
-    //Moon texture
+
+    // Moon texture
     private String texture = Material.TEXTURE_BLANK;
-    
-    //Moon light sources
+
+    // Moon light sources
     private PointLight pointLight = new PointLight();
-    
-    /**Creating new white moon and setting its attenuation to infinity
+
+    /**
+     * Creating new white moon and setting its attenuation to infinity
      */
     public Moon() {
         pointLight.getAttenuation().set(0.0f, 0.0f);
     }
-    
-    /**@return Size of the moon
+
+    /**
+     * @return Size of the moon
      */
     public final float getSize() {
         return size;
     }
-    
-    /**@param size New sizeof the moon
+
+    /**
+     * @param size New sizeof the moon
      */
     public final void setSize(float size) {
         this.size = size;
     }
-    
-    /**@return TextureData of the moon
+
+    /**
+     * @return TextureData of the moon
      */
     public final String getTexture() {
         return texture;
     }
-    
-    /**@param texture New texture of the moon
+
+    /**
+     * @param texture New texture of the moon
      */
     public final void setTexture(String texture) {
         this.texture = texture;
     }
-    
-    /**Adding lights of the moon to the masterrenderer
+
+    /**
+     * Adding lights of the moon to the masterrenderer
      */
-    public final void addLights(){
+    public final void addLights() {
         MasterRenderer.renderPointLight(pointLight);
     }
-    
-    /**@return Color of the moon
+
+    /**
+     * @return Color of the moon
      */
-    public final Color getColor(){
+    public final Color getColor() {
         return pointLight.getColor();
     }
-    
-    /**@return Worldposition of the moon
+
+    /**
+     * @return Worldposition of the moon
      */
-    public final Vector3f getPosition(){
+    public final Vector3f getPosition() {
         return pointLight.getPosition();
     }
-    
-    /**Setting light intensity
+
+    /**
+     * Setting light intensity
      * 
      * @param intensity New intensity of the light
      */
-    public final void setIntensity(float intensity){
+    public final void setIntensity(float intensity) {
         pointLight.setIntensity(intensity);
     }
 }

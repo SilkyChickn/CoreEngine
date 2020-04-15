@@ -41,16 +41,18 @@ import java.util.Objects;
 
 public class MeshParser {
 
-    //Input
+    // Input
     private final AIMesh aiMesh;
     private final MaterialData[] materials;
 
-    //Output
+    // Output
     private MeshData meshData = null;
 
-    /**Creating new mesh data that can parse ai meshes into meshes and dataStructures meshes
+    /**
+     * Creating new mesh data that can parse ai meshes into meshes and
+     * dataStructures meshes
      *
-     * @param aiMesh AIMesh to parse
+     * @param aiMesh    AIMesh to parse
      * @param materials Materials of the AIScene
      */
     public MeshParser(AIMesh aiMesh, MaterialData[] materials) {
@@ -58,34 +60,35 @@ public class MeshParser {
         this.materials = materials;
     }
 
-    /**Parse ai meshes into meshes and dataStructures meshes
+    /**
+     * Parse ai meshes into meshes and dataStructures meshes
      *
-     * @param bones Bone list to add bones or null to dont load bones
+     * @param bones          Bone list to add bones or null to dont load bones
      * @param collisionShape Collision shape to use
      */
-    public void parse(String collisionShape, List<BoneParser> bones){
+    public void parse(String collisionShape, List<BoneParser> bones) {
 
-        //Get material, load empty material if id not exist
+        // Get material, load empty material if id not exist
         MaterialData material;
-        if(aiMesh.mMaterialIndex() >= 0 && aiMesh.mMaterialIndex() < materials.length){
+        if (aiMesh.mMaterialIndex() >= 0 && aiMesh.mMaterialIndex() < materials.length) {
             material = materials[aiMesh.mMaterialIndex()];
-        }else{
+        } else {
             material = new MaterialData();
         }
 
-        //Get data from mesh
+        // Get data from mesh
         float[] vertices = bufferToArray(aiMesh.mVertices(), true);
         float[] texCoords = bufferToArray(Objects.requireNonNull(aiMesh.mTextureCoords(0)), false);
         float[] normals = bufferToArray(Objects.requireNonNull(aiMesh.mNormals()), true);
         float[] tangents = bufferToArray(Objects.requireNonNull(aiMesh.mTangents()), true);
         int[] indices = getIndices();
 
-        //Load bones if requested
+        // Load bones if requested
         int[] jointIds = new int[aiMesh.mNumVertices() * 4];
         float[] weights = new float[aiMesh.mNumVertices() * 4];
-        if(bones != null) {
+        if (bones != null) {
 
-            //Load and parse bones
+            // Load and parse bones
             int boneCount = aiMesh.mNumBones();
             for (int i = 0; i < boneCount; i++) {
                 AIBone aiBone = AIBone.create(aiMesh.mBones().get(i));
@@ -94,42 +97,43 @@ public class MeshParser {
                 bones.add(bone);
             }
 
-            //Fill up arrays
-            //Iterate through all vertices
-            for(int vertexId = 0; vertexId < aiMesh.mNumVertices(); vertexId++){
+            // Fill up arrays
+            // Iterate through all vertices
+            for (int vertexId = 0; vertexId < aiMesh.mNumVertices(); vertexId++) {
 
-                //List to store all joints that effect this vertex
+                // List to store all joints that effect this vertex
                 List<Pair<Integer, Float>> joints = new ArrayList<>();
 
-                //Iterate through bones
-                for(int jointId = 0; jointId < bones.size(); jointId++){
+                // Iterate through bones
+                for (int jointId = 0; jointId < bones.size(); jointId++) {
                     BoneParser bone = bones.get(jointId);
 
-                    //Iterate through bones effected vertices, to see if this vertex is effected by this bone
-                    for(Pair<Integer, Float> effectedVertex: bone.getEffectedVertices()){
+                    // Iterate through bones effected vertices, to see if this vertex is effected by
+                    // this bone
+                    for (Pair<Integer, Float> effectedVertex : bone.getEffectedVertices()) {
 
-                        //If this vertex gets effected by this bone -> add to effected bones/joints
-                        if(effectedVertex.getKey() == vertexId){
+                        // If this vertex gets effected by this bone -> add to effected bones/joints
+                        if (effectedVertex.getKey() == vertexId) {
                             joints.add(new Pair<>(jointId, effectedVertex.getValue()));
                         }
                     }
                 }
 
-                //Add joints to joint ids and weights
-                for(int i = 0; i < 4; i++){
+                // Add joints to joint ids and weights
+                for (int i = 0; i < 4; i++) {
                     int id = 0;
                     float weight = 0;
-                    if(i < joints.size()){
+                    if (i < joints.size()) {
                         id = joints.get(i).getKey();
                         weight = joints.get(i).getValue();
                     }
-                    jointIds[vertexId*4+i] = id;
-                    weights[vertexId*4+i] = weight;
+                    jointIds[vertexId * 4 + i] = id;
+                    weights[vertexId * 4 + i] = weight;
                 }
             }
         }
 
-        //Construct dataStructures mesh
+        // Construct dataStructures mesh
         meshData = new MeshData();
         meshData.vertices = vertices;
         meshData.texCoords = texCoords;
@@ -138,45 +142,51 @@ public class MeshParser {
         meshData.indices = indices;
         meshData.material = material;
         meshData.shape = collisionShape;
-        if(bones != null) meshData.jointIds = jointIds;
-        if(bones != null) meshData.weights = weights;
+        if (bones != null)
+            meshData.jointIds = jointIds;
+        if (bones != null)
+            meshData.weights = weights;
     }
 
-    /**Extract indices from ai scene
+    /**
+     * Extract indices from ai scene
      *
      * @return Indices array
      */
-    private int[] getIndices(){
+    private int[] getIndices() {
         int faceCount = aiMesh.mNumFaces();
         int[] indices = new int[faceCount * 3];
-        for(int i = 0; i < faceCount; i++){
-            for(int j = 0; j < 3; j++){
-                indices[i*3+j] = aiMesh.mFaces().get(i).mIndices().get(j);
+        for (int i = 0; i < faceCount; i++) {
+            for (int j = 0; j < 3; j++) {
+                indices[i * 3 + j] = aiMesh.mFaces().get(i).mIndices().get(j);
             }
         }
         return indices;
     }
 
-    /**Transfer float from vec3d buffer to a float array
+    /**
+     * Transfer float from vec3d buffer to a float array
      *
-     * @param buffer Buffer to convert
+     * @param buffer  Buffer to convert
      * @param loadAll If true the whole vector will be loaded, else only x and y
      * @return Float from vec3d buffer as (x0, y0, (z0), x1, y1, (z1), ...)
      */
-    private float[] bufferToArray(AIVector3D.Buffer buffer, boolean loadAll){
+    private float[] bufferToArray(AIVector3D.Buffer buffer, boolean loadAll) {
         int c = 0, s = (loadAll ? 3 : 2);
         float[] out = new float[buffer.remaining() * s];
-        while(buffer.remaining() > 0){
+        while (buffer.remaining() > 0) {
             AIVector3D vector = buffer.get();
-            out[c*s] = vector.x();
-            out[c*s+1] = vector.y();
-            if(loadAll)out[c*s+2] = vector.z();
+            out[c * s] = vector.x();
+            out[c * s + 1] = vector.y();
+            if (loadAll)
+                out[c * s + 2] = vector.z();
             c++;
         }
         return out;
     }
 
-    /**@return Parsed dataStructures mesh
+    /**
+     * @return Parsed dataStructures mesh
      */
     public MeshData getMeshData() {
         return meshData;

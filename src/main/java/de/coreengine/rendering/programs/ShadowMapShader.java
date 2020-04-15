@@ -41,10 +41,10 @@ public class ShadowMapShader extends Shader {
 
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "shadowMap.vert", true),
-                GL20.GL_VERTEX_SHADER, "Shadow Map Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "shadowMap.frag", true),
-                GL20.GL_FRAGMENT_SHADER, "Shadow Map Fragment Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "shadowMap.vert", true), GL20.GL_VERTEX_SHADER,
+                "Shadow Map Vertex Shader");
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "shadowMap.frag", true), GL20.GL_FRAGMENT_SHADER,
+                "Shadow Map Fragment Shader");
     }
 
     @Override
@@ -58,19 +58,21 @@ public class ShadowMapShader extends Shader {
         vpMatLoc = getUniformLocation("vpMat");
     }
 
-    /**Prepare shader for next entity to render
+    /**
+     * Prepare shader for next entity to render
      *
      * @param entity Next entity to render
      */
-    public void prepareEntity(Entity entity){
+    public void prepareEntity(Entity entity) {
         setUniform(transMatLoc, entity.getTransform().getTransMatArr());
     }
 
-    /**Setting the vpMat variable of the shader
+    /**
+     * Setting the vpMat variable of the shader
      *
      * @param mat Matrix to set as vpMat
      */
-    public void setVPMat(Matrix4f mat){
+    public void setVPMat(Matrix4f mat) {
         setUniform(vpMatLoc, Toolbox.matrixToFloatArray(mat));
     }
 }

@@ -29,45 +29,49 @@ package de.coreengine.network.events;
 
 import de.coreengine.network.Event;
 
-/**Event class for chats
+/**
+ * Event class for chats
  *
  * @author Darius Dinger
  */
-public class ChatEvent extends Event{
+public class ChatEvent extends Event {
 
     private String msgToSend = null;
     private String msgGet = null;
-    
-    /**Creating chat event handler
+
+    /**
+     * Creating chat event handler
      * 
      * @param tag Tag of the chat object in the network
      */
     public ChatEvent(String tag) {
         super(tag);
     }
-    
-    /**Sending a message to the network
+
+    /**
+     * Sending a message to the network
      * 
      * @param msg Message to send
      */
-    public void sendMessage(String msg){
+    public void sendMessage(String msg) {
         eventOccured();
         msgToSend = msg;
     }
-    
-    /**Getting last message from network or null, if no messsage came
+
+    /**
+     * Getting last message from network or null, if no messsage came
      * 
      * @return Last message or null
      */
-    public String getMessage(){
+    public String getMessage() {
         return msgGet;
     }
-    
+
     @Override
     protected void event(String event) {
         msgGet = event;
     }
-    
+
     @Override
     protected String event() {
         return msgToSend;

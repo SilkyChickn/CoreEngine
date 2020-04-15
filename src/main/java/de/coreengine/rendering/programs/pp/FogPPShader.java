@@ -30,44 +30,47 @@ package de.coreengine.rendering.programs.pp;
 import de.coreengine.rendering.model.Color;
 import org.lwjgl.opengl.GL11;
 
-/**Shader for fog effect
+/**
+ * Shader for fog effect
  *
  * @author Darius Dinger
  */
-public class FogPPShader extends PPShader{
-    
+public class FogPPShader extends PPShader {
+
     private final int strengthTextureUnit = 2;
-    
+
     private int areaLoc, colorLoc;
-    
+
     @Override
     protected String getPPFragShaderFile() {
         return "fog.frag";
     }
-    
+
     @Override
     protected void setUniformLocations() {
         areaLoc = getUniformLocation("area");
         colorLoc = getUniformLocation("color");
         bindTextureUnit("strengthTexture", strengthTextureUnit);
     }
-    
-    /**Setting strength texture, where the g value represent the strength of
-     * the fog at this point.
+
+    /**
+     * Setting strength texture, where the g value represent the strength of the fog
+     * at this point.
      * 
      * @param tex New strength texture
      */
-    public void setStrengthTexture(int tex){
+    public void setStrengthTexture(int tex) {
         bindTexture(tex, strengthTextureUnit, GL11.GL_TEXTURE_2D);
     }
-    
-    /**Setting values for the fog shader
+
+    /**
+     * Setting values for the fog shader
      * 
-     * @param density Fog density
+     * @param density  Fog density
      * @param gradient Fog gradient
-     * @param color Fog color
+     * @param color    Fog color
      */
-    public void setValues(float density, float gradient, Color color){
+    public void setValues(float density, float gradient, Color color) {
         setUniform(areaLoc, density, gradient);
         setUniform(colorLoc, color);
     }

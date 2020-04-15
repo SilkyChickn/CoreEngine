@@ -31,20 +31,22 @@ import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.system.GameObject;
 
-/**Game object of a simple entity, that does nothing
+/**
+ * Game object of a simple entity, that does nothing
  *
  * @author Darius Dinger
  */
-public class Simple extends GameObject{
-    
+public class Simple extends GameObject {
+
     private Entity entity = new Entity();
-    
-    /**@return Read/writeable entity
+
+    /**
+     * @return Read/writeable entity
      */
     public Entity getEntity() {
         return entity;
     }
-    
+
     @Override
     public void onRender() {
         MasterRenderer.renderEntity(entity);

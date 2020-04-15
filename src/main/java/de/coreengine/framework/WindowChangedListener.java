@@ -27,16 +27,18 @@
  */
 package de.coreengine.framework;
 
-/**Listener that calls window changes (size, aspect, ...)
+/**
+ * Listener that calls window changes (size, aspect, ...)
  *
  * @author Darius Dinger
  */
 public interface WindowChangedListener {
-    
-    /**Getting called, when the window resolution gets changed
+
+    /**
+     * Getting called, when the window resolution gets changed
      * 
-     * @param x New window width
-     * @param y New window height
+     * @param x      New window width
+     * @param y      New window height
      * @param aspect New window aspect
      */
     void resolutionChanged(int x, int y, float aspect);

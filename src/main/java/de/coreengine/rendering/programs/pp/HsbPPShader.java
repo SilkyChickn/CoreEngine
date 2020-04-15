@@ -27,31 +27,34 @@
  */
 package de.coreengine.rendering.programs.pp;
 
-/**Hue, saturation and brightness post processing shader for the hsb effect renderer
+/**
+ * Hue, saturation and brightness post processing shader for the hsb effect
+ * renderer
  *
  * @author Darius Dinger
  */
-public class HsbPPShader extends PPShader{
-    
+public class HsbPPShader extends PPShader {
+
     private int hsbLoc;
-    
+
     @Override
     protected String getPPFragShaderFile() {
         return "hsb.frag";
     }
-    
+
     @Override
     protected void setUniformLocations() {
         hsbLoc = getUniformLocation("hsb");
     }
-    
-    /**Setting hsb for next render call
+
+    /**
+     * Setting hsb for next render call
      * 
      * @param h Next hue value
      * @param s Next saturation value
      * @param b Next brightness value
      */
-    public void setHsb(float h, float s, float b){
+    public void setHsb(float h, float s, float b) {
         setUniform(hsbLoc, h, s, b);
     }
 }

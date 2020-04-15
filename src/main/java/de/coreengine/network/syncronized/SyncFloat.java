@@ -29,39 +29,43 @@ package de.coreengine.network.syncronized;
 
 import de.coreengine.network.Syncronized;
 
-/**Float that can be syncronized in a network
+/**
+ * Float that can be syncronized in a network
  *
  * @author Darius Dinger
  */
 public class SyncFloat extends Syncronized {
     private float val;
-    
-    /**@param tag Tag of the syncronized float
+
+    /**
+     * @param tag Tag of the syncronized float
      */
     public SyncFloat(String tag) {
         super(tag);
     }
-    
-    /**@return Current value of the float
+
+    /**
+     * @return Current value of the float
      */
-    public float get(){
+    public float get() {
         return val;
     }
-    
-    /**@param f New value of the float
+
+    /**
+     * @param f New value of the float
      */
-    public void set(float f){
+    public void set(float f) {
         change();
         val = f;
     }
-    
+
     @Override
     protected void sync(String sync) {
         val = Float.parseFloat(sync);
     }
-    
+
     @Override
     protected String sync() {
-       return val + "";
+        return val + "";
     }
 }

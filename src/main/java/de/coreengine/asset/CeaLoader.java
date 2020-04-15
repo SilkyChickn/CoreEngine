@@ -34,85 +34,93 @@ import de.coreengine.util.Logger;
 import java.io.*;
 import java.net.URL;
 
-/**Class that can load cea (Core Engine Animated Model) files (see de.coreengine.asset.dataStructures)
+/**
+ * Class that can load cea (Core Engine Animated Model) files (see
+ * de.coreengine.asset.dataStructures)
  *
  * @author Darius
  */
 public class CeaLoader {
 
-    /**Loading an animated model from a file into the asset database.
-     * If the model already loaded, this method does nothing.
+    /**
+     * Loading an animated model from a file into the asset database. If the model
+     * already loaded, this method does nothing.
      *
-     * @param file File to load
-     * @param texPath Location of the models textures
+     * @param file       File to load
+     * @param texPath    Location of the models textures
      * @param asResource Loading model and textures from resources
      */
-    public static void loadAnimatedModel(String file, String texPath, boolean asResource){
-        if(AssetDatabase.animatedModels.containsKey(file)) return;
+    public static void loadAnimatedModel(String file, String texPath, boolean asResource) {
+        if (AssetDatabase.animatedModels.containsKey(file))
+            return;
         AnimatedModelData modelData = loadAnimatedModelData(file, asResource);
-        if(modelData != null)AssetDatabase.animatedModels.put(file, modelData.getInstance(texPath, asResource));
+        if (modelData != null)
+            AssetDatabase.animatedModels.put(file, modelData.getInstance(texPath, asResource));
     }
 
-    /**Saving dataStructures model to a file
+    /**
+     * Saving dataStructures model to a file
      *
-     * @param file Filename to save
+     * @param file      Filename to save
      * @param modelData Meta model to save
      */
-    public static void saveAnimatedModelData(String file, AnimatedModelData modelData){
+    public static void saveAnimatedModelData(String file, AnimatedModelData modelData) {
 
         try {
 
-            //Construct data from dataStructures model
+            // Construct data from dataStructures model
             byte[] data = modelData.toBytes();
 
-            //Read bytes from file
+            // Read bytes from file
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(data);
             fos.close();
 
         } catch (FileNotFoundException e0) {
-            Logger.err("Error by saving animated model data", "The animated model data file " +
-                    file + " could not be found! Returning null!");
+            Logger.err("Error by saving animated model data",
+                    "The animated model data file " + file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.err("Error by saving animated model data", "The animated model data file " +
-                    file + " could not be saved! Returning null!");
+            Logger.err("Error by saving animated model data",
+                    "The animated model data file " + file + " could not be saved! Returning null!");
         }
     }
 
-    /**Loading animated model data from a file
+    /**
+     * Loading animated model data from a file
      *
-     * @param file File to load
+     * @param file       File to load
      * @param asResource Loading animated model data from resources
      * @return Loaded animated model data
      */
-    public static AnimatedModelData loadAnimatedModelData(String file, boolean asResource){
+    public static AnimatedModelData loadAnimatedModelData(String file, boolean asResource) {
 
         try {
 
             File f;
-            if(asResource) {
+            if (asResource) {
                 URL url = Thread.currentThread().getContextClassLoader().getResource(file);
                 assert url != null;
                 f = new File(url.getFile());
-            }else f = new File(file);
+            } else
+                f = new File(file);
 
-            //Read bytes from file
+            // Read bytes from file
             FileInputStream fis = new FileInputStream(f);
             byte[] data = new byte[fis.available()];
             fis.read(data);
             fis.close();
 
-            //Construct dataStructures model from bytes
+            // Construct dataStructures model from bytes
             AnimatedModelData modelData = new AnimatedModelData();
             modelData.fromBytes(data);
             return modelData;
 
         } catch (FileNotFoundException e0) {
-            Logger.warn("Error by loading animated model data", "The animated model data file " +
-                    file + " could not be found! Returning null!");
+            Logger.warn("Error by loading animated model data",
+                    "The animated model data file " + file + " could not be found! Returning null!");
         } catch (IOException e) {
-            Logger.warn("Error by loading animated model data", "The animated model data file " +
-                    file + " could not be loaded! Returning null!");
+            Logger.warn("Error by loading animated model data",
+                    "The animated model data file " + file + " could not be loaded! Returning null!");
         }
 
         return null;

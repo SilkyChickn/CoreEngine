@@ -32,25 +32,24 @@ import de.coreengine.util.Configuration;
 import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 
-/**Class that represents a spot light, basical a point light with a specific
+/**
+ * Class that represents a spot light, basical a point light with a specific
  * direction and light cone angle
  *
  * @author Darius Dinger
  */
 public class SpotLight extends PointLight {
-    private static final float DEFAULT_INNER_LIGHT_CONE = 
-            Configuration.getValuef("LIGHT_DEFAULT_INNER_LIGHT_CONE");
-    private static final float DEFAULT_OUTER_LIGHT_CONE = 
-            Configuration.getValuef("LIGHT_DEFAULT_OUTER_LIGHT_CONE");
-    
-    //Direction, the light is pointing
+    private static final float DEFAULT_INNER_LIGHT_CONE = Configuration.getValuef("LIGHT_DEFAULT_INNER_LIGHT_CONE");
+    private static final float DEFAULT_OUTER_LIGHT_CONE = Configuration.getValuef("LIGHT_DEFAULT_OUTER_LIGHT_CONE");
+
+    // Direction, the light is pointing
     private Vector3f direction = new Vector3f();
-    
-    //Angle of the light cone
-    private Vector2f lightCone = new Vector2f(DEFAULT_INNER_LIGHT_CONE, 
-            DEFAULT_OUTER_LIGHT_CONE);
-    
-    /**Getting the direction, the light is pointing to as vector (x, y, z).<br>
+
+    // Angle of the light cone
+    private Vector2f lightCone = new Vector2f(DEFAULT_INNER_LIGHT_CONE, DEFAULT_OUTER_LIGHT_CONE);
+
+    /**
+     * Getting the direction, the light is pointing to as vector (x, y, z).<br>
      * f.e. (0, 1, 0) is pointing upwards.
      * 
      * @return Direction of the light
@@ -58,10 +57,11 @@ public class SpotLight extends PointLight {
     public Vector3f getDirection() {
         return direction;
     }
-    
-    /**Getting the light cone of the spotlight as vec2f for read and writing. 
-     * The x value is the inner light cone and the y value is the outer light 
-     * cone. Tha light fades between the inner and outer cone out.<br>
+
+    /**
+     * Getting the light cone of the spotlight as vec2f for read and writing. The x
+     * value is the inner light cone and the y value is the outer light cone. Tha
+     * light fades between the inner and outer cone out.<br>
      * 90 degrees = 0.0 | 0 degrees = 1.0.
      * 
      * @return Getting the angle of the spotlights cone

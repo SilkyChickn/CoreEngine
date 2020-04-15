@@ -33,53 +33,51 @@ import de.coreengine.util.Configuration;
 
 import javax.vecmath.Vector2f;
 
-/**Class that represent a grassland for a terrain
+/**
+ * Class that represent a grassland for a terrain
  *
  * @author Darius Dinger
  */
 public class Grassland {
-    private static final int DEFAULT_DENSITY = 
-            Configuration.getValuei("GRASSLAND_DEFAULT_DENSITY");
-    private static final float DEFAULT_DISTANCE = 
-            Configuration.getValuef("GRASSLAND_DEFAULT_DISTANCE");
-    private static final float DEFAULT_RANGE = 
-            Configuration.getValuef("GRASSLAND_DEFAULT_RANGE");
-    private static final float DEFAULT_GRADIENT = 
-            Configuration.getValuef("GRASSLAND_DEFAULT_GRADIENT");
-    private static final float DEFAULT_WIND_INTENSITIVITY = 
-            Configuration.getValuef("GRASSLAND_DEFAULT_WIND_INTENSITIVITY");
-    
-    //Mesh1 that contains the grass blade positions and its scale
+    private static final int DEFAULT_DENSITY = Configuration.getValuei("GRASSLAND_DEFAULT_DENSITY");
+    private static final float DEFAULT_DISTANCE = Configuration.getValuef("GRASSLAND_DEFAULT_DISTANCE");
+    private static final float DEFAULT_RANGE = Configuration.getValuef("GRASSLAND_DEFAULT_RANGE");
+    private static final float DEFAULT_GRADIENT = Configuration.getValuef("GRASSLAND_DEFAULT_GRADIENT");
+    private static final float DEFAULT_WIND_INTENSITIVITY = Configuration
+            .getValuef("GRASSLAND_DEFAULT_WIND_INTENSITIVITY");
+
+    // Mesh1 that contains the grass blade positions and its scale
     private Mesh mesh = null;
     private float tuftScale = 0.0f;
-    
-    //Intesitivity of the wind map
+
+    // Intesitivity of the wind map
     private float windIntensitivity = DEFAULT_WIND_INTENSITIVITY;
-    
-    //Grass tufts in a row/column
+
+    // Grass tufts in a row/column
     private int density = DEFAULT_DENSITY;
-    
-    //Distance between two gras tufts
+
+    // Distance between two gras tufts
     private float distance = DEFAULT_DISTANCE;
-    
-    //Area of the grassland around the player
+
+    // Area of the grassland around the player
     private final Vector2f area = new Vector2f(DEFAULT_RANGE, DEFAULT_GRADIENT);
-    
-    //Map that contains the locations, where grass to draw, and color
+
+    // Map that contains the locations, where grass to draw, and color
     private String densityMap = Material.TEXTURE_BLANK;
-    
-    //Map that contains the grass vector transformation by wind
+
+    // Map that contains the grass vector transformation by wind
     private String windMap = Material.TEXTURE_BLACK;
-    
-    //Tiling for the windmap
+
+    // Tiling for the windmap
     private float windMapTiling = 1.0f;
-    
-    //Offset for the wind map
+
+    // Offset for the wind map
     private float windOffset = 0;
-    
-    /**Getting the area of the grassland around the player as 2d vector. 
-     * The x value is the range and the y value is the gradient. The grassblade 
-     * visibility will be calculated by this formula:<br>
+
+    /**
+     * Getting the area of the grassland around the player as 2d vector. The x value
+     * is the range and the y value is the gradient. The grassblade visibility will
+     * be calculated by this formula:<br>
      * g(x) = e^-(range * x)^gradient
      * 
      * @return Area of the grassland
@@ -87,131 +85,149 @@ public class Grassland {
     public Vector2f getArea() {
         return area;
     }
-    
-    /**Returning the densitymap for this grassland. Darker means smaller grass
-     * and lighter means bigger gras. Black is no gras.
+
+    /**
+     * Returning the densitymap for this grassland. Darker means smaller grass and
+     * lighter means bigger gras. Black is no gras.
      * 
      * @return Density of the grassland
      */
     public String getDensityMap() {
         return densityMap;
     }
-    
-    /**@return Mesh1 that contains the grass blade positions
+
+    /**
+     * @return Mesh1 that contains the grass blade positions
      */
     public Mesh getMesh() {
         return mesh;
     }
-    
-    /**@return Scale of the tuft mesh
+
+    /**
+     * @return Scale of the tuft mesh
      */
     public float getTuftScale() {
         return tuftScale;
     }
-    
-    /**@param mesh New gras mesh
+
+    /**
+     * @param mesh  New gras mesh
      * @param scale Scale of the tuft mesh
      */
     public void setMesh(Mesh mesh, float scale) {
         this.mesh = mesh;
         this.tuftScale = scale;
     }
-    
-    /**@return Map that contains the grass vector transformation by wind
+
+    /**
+     * @return Map that contains the grass vector transformation by wind
      */
     public String getWindMap() {
         return windMap;
     }
-    
-    /**Setting the densitymap for this grassland. Darker means smaller grass
-     * and lighter means bigger gras. Black is no gras.
+
+    /**
+     * Setting the densitymap for this grassland. Darker means smaller grass and
+     * lighter means bigger gras. Black is no gras.
      * 
      * @param density New densitymap
      */
     public void setDensityMap(String density) {
         this.densityMap = density;
     }
-    
-    /**Setting map that contains the grass vector transformation by wind
+
+    /**
+     * Setting map that contains the grass vector transformation by wind
      * 
      * @param windMap New windmap
      */
     public void setWindMap(String windMap) {
         this.windMap = windMap;
     }
-    
-    /**Setting the area of the grassland around the player. 
-     * The grassblade visibility will be calculated by this formula:<br>
+
+    /**
+     * Setting the area of the grassland around the player. The grassblade
+     * visibility will be calculated by this formula:<br>
      * g(x) = e^-(range * x)^gradient
      * 
-     * @param range Range of the grassland
+     * @param range    Range of the grassland
      * @param gradient Gradient at the grassland end
      */
     public void setArea(float range, float gradient) {
         this.area.x = (range);
         this.area.y = (gradient);
     }
-    
-    /**Setting the density for the grassland model. If the max range is increasing,
+
+    /**
+     * Setting the density for the grassland model. If the max range is increasing,
      * the density is decreasing and must be reconfigured.
      * 
      * @param density New mesh density
      */
-    public void setDensity(int density){
+    public void setDensity(int density) {
         this.density = density;
     }
-    
-    /**@param windOffset New offset of the windmap over the terrain
+
+    /**
+     * @param windOffset New offset of the windmap over the terrain
      */
     public void setWindOffset(float windOffset) {
         this.windOffset = windOffset;
     }
-    
-    /**@return Offset of the windmap over the terrain
+
+    /**
+     * @return Offset of the windmap over the terrain
      */
     public float getWindOffset() {
         return windOffset;
     }
-    
-    /**@return Intensitivity of the windmap onto the blade vectors
+
+    /**
+     * @return Intensitivity of the windmap onto the blade vectors
      */
     public float getWindIntensitivity() {
         return windIntensitivity;
     }
-    
-    /**Setting the intensiveness, the windmap effects the grass blades
+
+    /**
+     * Setting the intensiveness, the windmap effects the grass blades
      * 
      * @param windIntensitivity New intensiveness
      */
     public void setWindIntensitivity(float windIntensitivity) {
         this.windIntensitivity = windIntensitivity;
     }
-    
-    /**@return Density of the gras (gras Per Row/Column)
+
+    /**
+     * @return Density of the gras (gras Per Row/Column)
      */
     public int getDensity() {
         return density;
     }
-    
-    /**@return Distance between two grass tufts
+
+    /**
+     * @return Distance between two grass tufts
      */
     public float getDistance() {
         return distance;
     }
-    
-    /**@param distance Distance between two grass tufts
+
+    /**
+     * @param distance Distance between two grass tufts
      */
     public void setDistance(int distance) {
         this.distance = distance;
     }
-    
-    /**@return Tiling for the windmap
+
+    /**
+     * @return Tiling for the windmap
      */
     public float getWindMapTiling() {
         return windMapTiling;
     }
-    
-    /**@param windMapTiling New tiling for the windmap
+
+    /**
+     * @param windMapTiling New tiling for the windmap
      */
     public void setWindMapTiling(float windMapTiling) {
         this.windMapTiling = windMapTiling;

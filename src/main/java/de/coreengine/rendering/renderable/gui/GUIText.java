@@ -36,41 +36,42 @@ import de.coreengine.util.Logger;
 import java.util.LinkedList;
 import java.util.List;
 
-/**Class that represents a renderable text
+/**
+ * Class that represents a renderable text
  *
  * @author Darius Dinger
  */
 public class GUIText {
-    private static final float DEFAULT_PADDING = 
-            Configuration.getValuef("GUI_TEXT_DEFAULT_PADDING");
-    private static final float DEFAULT_FONT_SIZE = 
-            Configuration.getValuef("GUI_TEXT_DEFAULT_FONT_SIZE");
-    
-    //Text of the GUIText
+    private static final float DEFAULT_PADDING = Configuration.getValuef("GUI_TEXT_DEFAULT_PADDING");
+    private static final float DEFAULT_FONT_SIZE = Configuration.getValuef("GUI_TEXT_DEFAULT_FONT_SIZE");
+
+    // Text of the GUIText
     private String text = "";
-    
-    //Font of the text
+
+    // Font of the text
     private String font;
-    
-    //Size of the font
+
+    // Size of the font
     private float fontSize = DEFAULT_FONT_SIZE;
-    
-    //Color ofthe font
+
+    // Color ofthe font
     private Color fontColor = new Color();
-    
-    //Chars of the text to render
+
+    // Chars of the text to render
     private GUIChar[] chars = new GUIChar[0];
-    
-    //Padding at the border
+
+    // Padding at the border
     private float padding = DEFAULT_PADDING;
 
-    //Width of a line
+    // Width of a line
     private float lineWidth = 1.0f;
 
-    //Package only constructor
-    GUIText() {}
-    
-    /**Setting text and recreating chars
+    // Package only constructor
+    GUIText() {
+    }
+
+    /**
+     * Setting text and recreating chars
      * 
      * @param text New text of the GUIText
      */
@@ -78,14 +79,16 @@ public class GUIText {
         this.text = text;
         recreateChars();
     }
-    
-    /**@return Text of the GUIText
+
+    /**
+     * @return Text of the GUIText
      */
     public String getText() {
         return text;
     }
-    
-    /**Setting font of the text and recreating chars
+
+    /**
+     * Setting font of the text and recreating chars
      * 
      * @param font New font of the text
      */
@@ -94,106 +97,114 @@ public class GUIText {
         recreateChars();
     }
 
-    /**Setting width of a line, when to make a line break
+    /**
+     * Setting width of a line, when to make a line break
      *
      * @param width New line width
      */
-    void setLineWidth(float width){
+    void setLineWidth(float width) {
         this.lineWidth = width;
     }
 
-    /**Recreating all characters to render
+    /**
+     * Recreating all characters to render
      */
-    private void recreateChars(){
+    private void recreateChars() {
         float cursor = 0;
         float line = 0.0f;
-        
+
         List<GUIChar> lineChars = new LinkedList<>();
         List<GUIChar> textChars = new LinkedList<>();
-        
-        for(int i = 0; i < text.length(); i++){
+
+        for (int i = 0; i < text.length(); i++) {
             int ascii = text.charAt(i);
-            
-            //Next line?
-            if(cursor > lineWidth -padding || ascii == 10){
-                for(GUIChar lineChar: lineChars){
+
+            // Next line?
+            if (cursor > lineWidth - padding || ascii == 10) {
+                for (GUIChar lineChar : lineChars) {
                     lineChar.getOffset().x -= cursor / 2.0f;
                 }
-                
+
                 line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
                 cursor = 0;
-                
+
                 lineChars.clear();
-                
-                if(ascii == 10) continue;
+
+                if (ascii == 10)
+                    continue;
             }
 
             Character c = AssetDatabase.getFont(font).getCharacter(ascii);
-            
-            //Check if char exist in font
-            if(c == null){
-                Logger.warn("Char not found", "Character '" + text.charAt(i) +
-                        "' not found in the font! (Skipping)");
+
+            // Check if char exist in font
+            if (c == null) {
+                Logger.warn("Char not found", "Character '" + text.charAt(i) + "' not found in the font! (Skipping)");
                 continue;
             }
-            
-            //Transform char
+
+            // Transform char
             GUIChar gc = new GUIChar();
             gc.setIndex(c.getIndex());
             gc.getOffset().set(cursor, line);
             textChars.add(gc);
             lineChars.add(gc);
-            
-            //Move cursor
+
+            // Move cursor
             cursor += c.getAdvancex() * fontSize;
         }
-        
-        //Center last line horizontal
-        for(GUIChar lineChar: lineChars){
+
+        // Center last line horizontal
+        for (GUIChar lineChar : lineChars) {
             lineChar.getOffset().x -= cursor / 2.0f;
         }
-        
-        //Center all chars vertical
+
+        // Center all chars vertical
         line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
         chars = new GUIChar[textChars.size()];
-        for(int i = 0; i < textChars.size(); i++){
+        for (int i = 0; i < textChars.size(); i++) {
             textChars.get(i).getOffset().y -= line / 2.0f;
             chars[i] = textChars.get(i);
         }
     }
-    
-    /**@return Font of the text
+
+    /**
+     * @return Font of the text
      */
     public String getFont() {
         return font;
     }
-    
-    /**@param fontSize New size of the font
+
+    /**
+     * @param fontSize New size of the font
      */
     public void setFontSize(float fontSize) {
         this.fontSize = fontSize;
         recreateChars();
     }
-    
-    /**@return Characters of the text to render
+
+    /**
+     * @return Characters of the text to render
      */
     public GUIChar[] getChars() {
         return chars;
     }
-    
-    /**@return Font size of the text
+
+    /**
+     * @return Font size of the text
      */
     public float getFontSize() {
         return fontSize;
     }
-    
-    /**@param padding Padding of the gui text to the pane border
+
+    /**
+     * @param padding Padding of the gui text to the pane border
      */
     public void setPadding(float padding) {
         this.padding = padding;
     }
-    
-    /**@return Read/writeable color of the text/font
+
+    /**
+     * @return Read/writeable color of the text/font
      */
     public Color getFontColor() {
         return fontColor;

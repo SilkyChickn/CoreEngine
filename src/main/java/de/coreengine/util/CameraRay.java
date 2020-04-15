@@ -32,34 +32,37 @@ import javax.vecmath.Vector2f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-/**Class that can calcthe ray, the camera is looking to
+/**
+ * Class that can calcthe ray, the camera is looking to
  *
  * @author Darius Dinger
  */
 public class CameraRay {
-    
+
     private Vector3f ray = new Vector3f();
-    
+
     private Vector2f offset = new Vector2f();
-    
-    /**Recalculate the current camera ray
+
+    /**
+     * Recalculate the current camera ray
      * 
      * @param inverseVMat Inverse view matrix of the camera
      * @param inversePMat Inverse projection matrix of the camera
      */
-    public void recalcRay(Matrix4f inverseVMat, Matrix4f inversePMat){
+    public void recalcRay(Matrix4f inverseVMat, Matrix4f inversePMat) {
         Vector4f coords = new Vector4f(offset.x, offset.y, -1.0f, 1.0f);
-        
+
         inversePMat.transform(coords);
         coords.z = (-1.0f);
         coords.w = (0.0f);
-        
+
         inverseVMat.transform(coords);
         ray.set(coords.x, coords.y, coords.z);
         ray.normalize();
     }
-    
-    /**@return Current ray, the camera is looking to
+
+    /**
+     * @return Current ray, the camera is looking to
      */
     public Vector3f getRay() {
         return ray;

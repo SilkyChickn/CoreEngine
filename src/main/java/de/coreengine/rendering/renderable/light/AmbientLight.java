@@ -30,33 +30,36 @@ package de.coreengine.rendering.renderable.light;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.util.Configuration;
 
-/**Class that represents an ambient light in the scene
+/**
+ * Class that represents an ambient light in the scene
  *
  * @author Darius Dinger
  */
 public class AmbientLight {
-    private static final float DEFAULT_INTENSITY = 
-            Configuration.getValuef("LIGHT_DEFAULT_INTENSITY");
-    
-    //Color of the light
+    private static final float DEFAULT_INTENSITY = Configuration.getValuef("LIGHT_DEFAULT_INTENSITY");
+
+    // Color of the light
     private Color color = new Color();
-    
-    //Intensity of the light
+
+    // Intensity of the light
     private float intensity = DEFAULT_INTENSITY;
-    
-    /**@return Lights color to read or write
+
+    /**
+     * @return Lights color to read or write
      */
     public Color getColor() {
         return color;
     }
-    
-    /**@param intensity New light intensity
+
+    /**
+     * @param intensity New light intensity
      */
     public void setIntensity(float intensity) {
         this.intensity = intensity;
     }
-    
-    /**@return Current light intensity
+
+    /**
+     * @return Current light intensity
      */
     public float getIntensity() {
         return intensity;

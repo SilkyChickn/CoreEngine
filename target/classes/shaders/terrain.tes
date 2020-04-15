@@ -1,0 +1,27 @@
+#version 400 core
+
+layout(triangles, fractional_odd_spacing, cw) in;
+
+in vec2 pos_tes_in[];
+in vec2 tex_tes_in[];
+
+out vec2 tex_geo_in;
+
+uniform float amplitude;
+uniform sampler2D heightMap;
+
+vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2){
+    return vec2(gl_TessCoord.x) * v0 + vec2(gl_TessCoord.y) * v1 + vec2(gl_TessCoord.z) * v2;
+}
+
+void main(void){
+    
+    // Interpolate the attributes of the output vertex using the barycentric coordinates
+    vec2 worldPos = interpolate2D(pos_tes_in[0], pos_tes_in[1], pos_tes_in[2]);
+    tex_geo_in = interpolate2D(tex_tes_in[0], tex_tes_in[1], tex_tes_in[2]);
+	
+    //Height Mapping
+    float height = texture(heightMap, tex_geo_in).x * amplitude;
+    
+    gl_Position = vec4(worldPos.x, height, worldPos.y, 1.0);
+}

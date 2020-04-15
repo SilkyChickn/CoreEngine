@@ -43,48 +43,52 @@ import de.coreengine.util.bullet.Physics;
 
 import javax.vecmath.Vector3f;
 
-/**Represents a first person camera to walk around
+/**
+ * Represents a first person camera to walk around
  *
  * @author Darius Dinger
  */
-public class FPCamera extends GameObject{
-    
+public class FPCamera extends GameObject {
+
     private final int MIN_PICH = Configuration.getValuei("FPC_CAMERA_MIN_PITCH");
     private final int MAX_PICH = Configuration.getValuei("FPC_CAMERA_MAX_PITCH");
-    
-    //Controls/key bindings (load from config)
+
+    // Controls/key bindings (load from config)
     private final int keyForward = Configuration.getValuei("FPC_DEFAULT_KEY_FORWARD");
     private final int keyBackward = Configuration.getValuei("FPC_DEFAULT_KEY_BACKWARD");
     private final int keyLeft = Configuration.getValuei("FPC_DEFAULT_KEY_LEFT");
     private final int keyRight = Configuration.getValuei("FPC_DEFAULT_KEY_RIGHT");
     private final int keyUp = Configuration.getValuei("FPC_DEFAULT_KEY_UP");
-    //private final int keyDown = Configuration.getValuei("FPC_DEFAULT_KEY_DOWN");
+    // private final int keyDown = Configuration.getValuei("FPC_DEFAULT_KEY_DOWN");
     private final int keySprint = Configuration.getValuei("FPC_DEFAULT_KEY_SPRINT");
-    
-    //Settings (load from config)
+
+    // Settings (load from config)
     private final float mouseIntensiveness = Configuration.getValuef("FPC_DEFAULT_MOUSE_INTENSIVENESS");
     private final float walkSpeed = Configuration.getValuef("FPC_DEFAULT_WALK_SPEED");
     private final float sprintSpeed = Configuration.getValuef("FPC_DEFAULT_SPRINT_SPEED");
-    
-    //Player size
+    private final float jumpPower = Configuration.getValuef("FPC_DEFAULT_JUMP_POWER");
+
+    // Player size
     private final float playSizeX = Configuration.getValuef("FPC_DEFAULT_PLAYER_SIZE_X");
     private final float playSizeY = Configuration.getValuef("FPC_DEFAULT_PLAYER_SIZE_Y");
     private final float playerMass = Configuration.getValuef("FPC_DEFAULT_PLAYER_MASS");
-    
-    //Physics
+
+    // Physics
     private final Vector3f move = new Vector3f();
     private final RigidBody rigidBody;
     private final Transform transform = new Transform();
-    
+
     private boolean spacePressed = false;
-    
-    //Camera to render
+
+    // Camera to render
     private Camera camera = new Camera();
-    
-    //Audio listener of the camera
+
+    // Audio listener of the camera
     private AudioListener listener = new AudioListener();
-    
-    /**Create new fp cam and grab mouse
+
+    /**
+     * Create new fp cam and grab mouse
+     * 
      * @param x Initial X position
      * @param y Initial Y position
      * @param z Initial Z position
@@ -92,98 +96,106 @@ public class FPCamera extends GameObject{
     public FPCamera(float x, float y, float z) {
         Mouse.setGrabbed(true);
         Mouse.setVisible(false);
-        
-        rigidBody = Physics.createRigidBody(playerMass, 
-                new CapsuleShape(playSizeX, playSizeY), false);
-        
+
+        rigidBody = Physics.createRigidBody(playerMass, new CapsuleShape(playSizeX, playSizeY), false);
+
         transform.origin.set(x, y, z);
         rigidBody.setWorldTransform(transform);
         rigidBody.setActivationState(CollisionObject.DISABLE_DEACTIVATION);
-        rigidBody.setDamping(0.75f, 1.0f);
-        rigidBody.setFriction(1.25f);
-        
+        rigidBody.setDamping(0.999f, 1.0f);
+        rigidBody.setAngularFactor(0);
+
         camera.setX(x);
         camera.setY(y);
         camera.setZ(z);
     }
-    
+
     @Override
     public void onInit() {
+
         addRigidBodyToWorld(rigidBody);
+
+        super.onInit();
     }
-    
+
     @Override
     public void onUpdate() {
-        super.onUpdate();
-        
+
         rigidBody.getWorldTransform(transform);
         camera.setX(transform.origin.x);
         camera.setY(transform.origin.y);
         camera.setZ(transform.origin.z);
-        
-        //Looking
-        float miw = 1.0f * mouseIntensiveness * FrameTimer.getTslf();
-        camera.setYaw(camera.getYaw() +(Mouse.getDx() * miw));
-        camera.setPitch(camera.getPitch() +(Mouse.getDy() * miw));
-        
-        //Check that cameras pitch is between -90 and 90
-        if(camera.getPitch() < -MAX_PICH) camera.setPitch(-MAX_PICH);
-        else if(camera.getPitch() > -MIN_PICH) camera.setPitch(-MIN_PICH);
-        
-        //Check if player sprinting
+
+        // Looking
+        camera.setYaw(camera.getYaw() + (Mouse.getDx() * mouseIntensiveness));
+        camera.setPitch(camera.getPitch() + (Mouse.getDy() * mouseIntensiveness));
+
+        // camera.setYaw(camera.getYaw() + mouseIntensiveness * 0.1f);
+
+        // Check that cameras pitch is between -90 and 90
+        if (camera.getPitch() < -MAX_PICH)
+            camera.setPitch(-MAX_PICH);
+        else if (camera.getPitch() > -MIN_PICH)
+            camera.setPitch(-MIN_PICH);
+
+        // Check if player sprinting
         float speed = Keyboard.isKeyPressed(keySprint) ? sprintSpeed : walkSpeed;
-        
-        //Moving key checking
+
+        // Moving key checking
         float speedx = 0, speedz = 0;
-        if(Keyboard.isKeyPressed(keyLeft))
+        if (Keyboard.isKeyPressed(keyLeft))
             speedx = -speed;
-        if(Keyboard.isKeyPressed(keyRight))
+        if (Keyboard.isKeyPressed(keyRight))
             speedx = speed;
-        if(Keyboard.isKeyPressed(keyForward))
+        if (Keyboard.isKeyPressed(keyForward))
             speedz = -speed;
-        if(Keyboard.isKeyPressed(keyBackward))
+        if (Keyboard.isKeyPressed(keyBackward))
             speedz = speed;
-        
-        if(Keyboard.isKeyPressed(keyUp)){
-            if(!spacePressed){
-                move.set(0, 5, 0);
+
+        if (Keyboard.isKeyPressed(keyUp)) {
+            if (!spacePressed) {
+                move.y = jumpPower;
                 rigidBody.setLinearVelocity(move);
                 spacePressed = true;
             }
-        }else spacePressed = false;
-        
-        if(speedx != 0 || speedz != 0){
-            
-            //Calc moving directions
+        } else {
+            spacePressed = false;
+        }
+
+        if (speedx != 0 || speedz != 0) {
+
+            // Calc moving directions
             float moveZforward = (float) (speedz * Math.cos(Math.toRadians(-camera.getYaw())));
             float moveXforward = (float) (speedz * Math.sin(Math.toRadians(-camera.getYaw())));
             float moveZside = (float) (speedx * Math.cos(Math.toRadians(-camera.getYaw() + 90)));
             float moveXside = (float) (speedx * Math.sin(Math.toRadians(-camera.getYaw() + 90)));
-            
-            //Apply force camera
-            move.set(moveXforward +moveXside, 0, moveZforward +moveZside);
-            rigidBody.applyCentralImpulse(move);
+
+            // Apply force camera
+            move.x = moveXforward + moveXside;
+            move.z = moveZforward + moveZside;
+            rigidBody.applyCentralForce(move);
         }
-        
+
         camera.updateViewMatrix();
 
-        //Replace audio listener
+        // Replace audio listener
         listener.getPosition().set(camera.getPosition());
-        listener.setOrientation(camera.getRay().getRay().x, 0,
-                camera.getRay().getRay().z);
+        listener.setOrientation(camera.getRay().getRay().x, 0, camera.getRay().getRay().z);
         listener.apply();
 
         move.set(0, 0, 0);
+
+        super.onUpdate();
     }
-    
+
     @Override
     public void onRender() {
-        super.onRender();
-        
         MasterRenderer.setCamera(camera);
+        super.onRender();
     }
-    
-    /**@return Camera object that used by the first person camera
+
+    /**
+     * @return Camera object that used by the first person camera
      */
     public Camera getCamera() {
         return camera;

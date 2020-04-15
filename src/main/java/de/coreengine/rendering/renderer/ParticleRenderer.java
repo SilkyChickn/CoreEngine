@@ -39,18 +39,20 @@ import org.lwjgl.opengl.GL11;
 import java.util.HashMap;
 import java.util.List;
 
-/**Renderer that can render 3d particles
+/**
+ * Renderer that can render 3d particles
  */
 public class ParticleRenderer {
 
     private ParticleShader shader = new ParticleShader();
 
-    /**Rendering a batch of particles sortet by texture
+    /**
+     * Rendering a batch of particles sortet by texture
      *
      * @param particles Particle batches, sortet by textures
-     * @param cam Camera to render particles from
+     * @param cam       Camera to render particles from
      */
-    public void render(HashMap<String, List<Particle>> particles, Camera cam){
+    public void render(HashMap<String, List<Particle>> particles, Camera cam) {
 
         Mesh model = Quad2D.getInstance();
 
@@ -60,13 +62,13 @@ public class ParticleRenderer {
         model.getVao().bind();
         model.getVao().enableAttributes();
 
-        //Iterate particle textures
-        for(String tex: particles.keySet()){
+        // Iterate particle textures
+        for (String tex : particles.keySet()) {
             int texId = AssetDatabase.getTexture(tex);
             shader.prepareParticles(texId);
 
-            //Iterate particles for texture
-            for(Particle particle: particles.get(tex)){
+            // Iterate particles for texture
+            for (Particle particle : particles.get(tex)) {
                 shader.setNextTransform(particle.getSize(), particle.getPosition());
                 GL11.glDrawArrays(GL11.GL_POINTS, 0, 1);
             }

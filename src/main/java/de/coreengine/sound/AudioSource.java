@@ -30,100 +30,112 @@ package de.coreengine.sound;
 import de.coreengine.util.gl.MemoryDumper;
 import org.lwjgl.openal.AL10;
 
-/**Class that represents a audio source to play audio from
+/**
+ * Class that represents a audio source to play audio from
  *
  * @author Darius Dinger
  */
 public class AudioSource {
-    
-    //Id of the audio source
+
+    // Id of the audio source
     private final int id;
-    
-    /**Create new audio source
+
+    /**
+     * Create new audio source
      */
     public AudioSource() {
         id = AL10.alGenSources();
         MemoryDumper.addAudioSource(id);
     }
-    
-    /**Setting sound for this source and play
+
+    /**
+     * Setting sound for this source and play
      * 
      * @param sound Sound to play from source
      */
-    public void play(int sound){
+    public void play(int sound) {
         setSound(sound);
         play();
     }
-    
-    /**@param sound Setting sound to play from this source
+
+    /**
+     * @param sound Setting sound to play from this source
      */
-    public void setSound(int sound){
+    public void setSound(int sound) {
         AL10.alSourcei(id, AL10.AL_BUFFER, sound);
     }
-    
-    /**@param vol New volume of the source
+
+    /**
+     * @param vol New volume of the source
      */
-    public void setVolume(int vol){
+    public void setVolume(int vol) {
         AL10.alSourcef(id, AL10.AL_GAIN, vol);
     }
-    
-    /**Stop source from playing audio
+
+    /**
+     * Stop source from playing audio
      */
-    public void stop(){
+    public void stop() {
         AL10.alSourceStop(id);
     }
-    
-    /**Pause source from playing audio
+
+    /**
+     * Pause source from playing audio
      */
-    public void pause(){
+    public void pause() {
         AL10.alSourcePause(id);
     }
-    
-    /**Continue playing after pause
+
+    /**
+     * Continue playing after pause
      */
-    public void play(){
+    public void play() {
         AL10.alSourcePlay(id);
     }
-    
-    /**@param loop Should source playing in loop?
+
+    /**
+     * @param loop Should source playing in loop?
      */
-    public void setLoop(boolean loop){
+    public void setLoop(boolean loop) {
         AL10.alSourcei(id, AL10.AL_LOOPING, loop ? AL10.AL_TRUE : AL10.AL_FALSE);
     }
-    
-    /**Setting position of the source in the 3d world
+
+    /**
+     * Setting position of the source in the 3d world
      * 
      * @param x X Position of the source
      * @param y Y Position of the source
      * @param z Z Position of the source
      */
-    public void setPosition(float x, float y, float z){
+    public void setPosition(float x, float y, float z) {
         AL10.alSource3f(id, AL10.AL_POSITION, x, y, z);
     }
-    
-    /**Setting direction and range of the source in the 3d world as
-     * 3d vector
+
+    /**
+     * Setting direction and range of the source in the 3d world as 3d vector
      * 
      * @param x X Direction of the source
      * @param y Y Direction of the source
      * @param z Z Direction of the source
      */
-    public void setVelocity(float x, float y, float z){
+    public void setVelocity(float x, float y, float z) {
         AL10.alSource3f(id, AL10.AL_VELOCITY, x, y, z);
     }
-    
-    /**Setting rolloff factor for this source in the distance. Zero will b
-     * no rolloff.
+
+    /**
+     * Setting rolloff factor for this source in the distance. Zero will b no
+     * rolloff.
      * 
      * @param rolloff New rolloff factor
      */
-    public void setRolloff(float rolloff){
+    public void setRolloff(float rolloff) {
         AL10.alSourcef(id, AL10.AL_ROLLOFF_FACTOR, rolloff);
     }
-    
-    /**@param rel Is the source relative?
+
+    /**
+     * @param rel Is the source relative?
      */
-    public void setRelative(boolean rel){
+    public void setRelative(boolean rel) {
         AL10.alSourcei(id, AL10.AL_SOURCE_RELATIVE, rel ? AL10.AL_TRUE : AL10.AL_FALSE);
     }
 }

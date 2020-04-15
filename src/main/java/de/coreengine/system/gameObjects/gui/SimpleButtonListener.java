@@ -27,24 +27,25 @@
  */
 package de.coreengine.system.gameObjects.gui;
 
-/**Simple version of the button listener
+/**
+ * Simple version of the button listener
  *
  * @author Darius Dinger
  */
-public interface SimpleButtonListener extends ButtonListener{
-    
+public interface SimpleButtonListener extends ButtonListener {
+
     @Override
     default void onMouseEnter() {
     }
-    
+
     @Override
     default void onMouseLeave() {
     }
-    
+
     @Override
     default void onMouseOver() {
     }
-    
+
     @Override
     default void onPress() {
     }

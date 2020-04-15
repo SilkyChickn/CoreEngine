@@ -38,98 +38,94 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.vecmath.Vector3f;
 
-/**Tird person camera game object
+/**
+ * Tird person camera game object
  *
  * @author Darius Dinger
  */
-public class TPCamera extends GameObject{
-    private static final float DEFAULT_DISTANCE = 
-            Configuration.getValuef("TPC_DEFAULT_DISTANCE");
-    private static final float[] DEFAULT_DISTANCE_LIMIT = 
-            Configuration.getValuefa("TPC_DEFAULT_DISTANCE_LIMIT");
-    private static final float DEFAULT_PITCH = 
-            Configuration.getValuef("TPC_DEFAULT_PITCH");
-    private static final float DEFAULT_ROTATE_SPEED = 
-            Configuration.getValuef("TPC_DEFAULT_ROTATE_SPEED");
-    private static final float DEFAULT_MOVE_SPEED = 
-            Configuration.getValuef("TPC_DEFAULT_MOVE_SPEED");
-    private static final float DEFAULT_ZOOM_SPEED = 
-            Configuration.getValuef("TPC_DEFAULT_ZOOM_SPEED");
-    private static final float DEFAULT_COOLDOWN = 
-            Configuration.getValuef("TPC_DEFAULT_COOLDOWN");
-    private static final float[] DEFAULT_PITCH_LIMIT =
-            Configuration.getValuefa("TPC_DEFAULT_PITCH_LIMIT");
+public class TPCamera extends GameObject {
+    private static final float DEFAULT_DISTANCE = Configuration.getValuef("TPC_DEFAULT_DISTANCE");
+    private static final float[] DEFAULT_DISTANCE_LIMIT = Configuration.getValuefa("TPC_DEFAULT_DISTANCE_LIMIT");
+    private static final float DEFAULT_PITCH = Configuration.getValuef("TPC_DEFAULT_PITCH");
+    private static final float DEFAULT_ROTATE_SPEED = Configuration.getValuef("TPC_DEFAULT_ROTATE_SPEED");
+    private static final float DEFAULT_MOVE_SPEED = Configuration.getValuef("TPC_DEFAULT_MOVE_SPEED");
+    private static final float DEFAULT_ZOOM_SPEED = Configuration.getValuef("TPC_DEFAULT_ZOOM_SPEED");
+    private static final float DEFAULT_COOLDOWN = Configuration.getValuef("TPC_DEFAULT_COOLDOWN");
+    private static final float[] DEFAULT_PITCH_LIMIT = Configuration.getValuefa("TPC_DEFAULT_PITCH_LIMIT");
 
-    private static final int MOVE_VERTICAL_KEY =
-            Configuration.getValuei("TPC_MOVE_VERTICAL_KEY");
+    private static final int MOVE_VERTICAL_KEY = Configuration.getValuei("TPC_MOVE_VERTICAL_KEY");
 
-    //Target to look at
+    // Target to look at
     private Vector3f target = new Vector3f();
-    
-    //Camera to render
+
+    // Camera to render
     private Camera camera = new Camera();
-    
-    //Limits for the distance
+
+    // Limits for the distance
     private float[] distanceLimit = DEFAULT_DISTANCE_LIMIT;
 
-    //Limits for the pitch
+    // Limits for the pitch
     private float[] pitchLimit = DEFAULT_PITCH_LIMIT;
 
-    //State variables
+    // State variables
     private float distance = DEFAULT_DISTANCE, pitch = DEFAULT_PITCH, rotation;
     private float curDistanceSpeed, curPitchSpeed, curRotationSpeed;
     private Vector3f curMoveSpeed = new Vector3f();
-    
-    //Speeds
+
+    // Speeds
     private float zoomSpeed = DEFAULT_ZOOM_SPEED, rotateSpeed = DEFAULT_ROTATE_SPEED, moveSpeed = DEFAULT_MOVE_SPEED;
     private float cooldown = DEFAULT_COOLDOWN;
-    
+
     @Override
     public void onUpdate() {
-        
-        //Rotate
-        if(Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)){
+
+        // Rotate
+        if (Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_LEFT)) {
             curRotationSpeed = Mouse.getDx() * FrameTimer.getTslf() * rotateSpeed;
             curPitchSpeed = Mouse.getDy() * FrameTimer.getTslf() * rotateSpeed;
-        }else{
+        } else {
             curRotationSpeed *= cooldown;
             curPitchSpeed *= cooldown;
         }
-        
-        //Zooming
-        if(Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT)){
+
+        // Zooming
+        if (Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_RIGHT)) {
             curDistanceSpeed = -Mouse.getDx() * FrameTimer.getTslf() * zoomSpeed * distance;
-        }else{
+        } else {
             curDistanceSpeed *= cooldown;
         }
 
-        //Moving
-        if(Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_MIDDLE)){
-            if(Keyboard.isKeyPressed(MOVE_VERTICAL_KEY)){
+        // Moving
+        if (Mouse.isButtonPressed(GLFW.GLFW_MOUSE_BUTTON_MIDDLE)) {
+            if (Keyboard.isKeyPressed(MOVE_VERTICAL_KEY)) {
                 curMoveSpeed.y = -Mouse.getDy() * FrameTimer.getTslf() * moveSpeed;
-            }else{
+            } else {
                 curMoveSpeed.x = Mouse.getDx() * FrameTimer.getTslf() * moveSpeed;
                 curMoveSpeed.z = Mouse.getDy() * FrameTimer.getTslf() * moveSpeed;
             }
-        }else{
+        } else {
             curMoveSpeed.scale(cooldown);
         }
 
-        //Applying changes
+        // Applying changes
         distance += curDistanceSpeed;
         pitch += curPitchSpeed;
         rotation += curRotationSpeed;
         target.add(curMoveSpeed);
-        
-        //Clamp distance
-        if(distance < distanceLimit[0]) distance = distanceLimit[0];
-        if(distance > distanceLimit[1]) distance = distanceLimit[1];
 
-        //Clamp pitch
-        if(pitch < pitchLimit[0]) pitch = pitchLimit[0];
-        if(pitch > pitchLimit[1]) pitch = pitchLimit[1];
+        // Clamp distance
+        if (distance < distanceLimit[0])
+            distance = distanceLimit[0];
+        if (distance > distanceLimit[1])
+            distance = distanceLimit[1];
 
-        //Calculate Positions / Rotations
+        // Clamp pitch
+        if (pitch < pitchLimit[0])
+            pitch = pitchLimit[0];
+        if (pitch > pitchLimit[1])
+            pitch = pitchLimit[1];
+
+        // Calculate Positions / Rotations
         float pitchRadians = (float) Math.toRadians(pitch);
         float horizontalDistance = (float) (distance * Math.cos(pitchRadians));
         float verticalDistance = (float) (distance * Math.sin(pitchRadians));
@@ -138,25 +134,27 @@ public class TPCamera extends GameObject{
         float xOffset = (float) (horizontalDistance * Math.sin(rotationRadians));
         float zOffset = (float) (horizontalDistance * Math.cos(rotationRadians));
 
-        camera.setX(target.x -xOffset);
-        camera.setY(target.y +verticalDistance);
-        camera.setZ(target.z +zOffset);
-        
+        camera.setX(target.x - xOffset);
+        camera.setY(target.y + verticalDistance);
+        camera.setZ(target.z + zOffset);
+
         camera.setPitch(pitch);
         camera.setYaw(rotation);
-        
+
         camera.updateViewMatrix();
 
         super.onUpdate();
     }
-    
-    /**@return Renderable camera of the tp camera
+
+    /**
+     * @return Renderable camera of the tp camera
      */
     public Camera getCamera() {
         return camera;
     }
 
-    /**Setting distance of the third person camera to the target
+    /**
+     * Setting distance of the third person camera to the target
      *
      * @param distance New distance to target
      */
@@ -164,7 +162,8 @@ public class TPCamera extends GameObject{
         this.distance = distance;
     }
 
-    /**Setting pitch of the third person camera over the target
+    /**
+     * Setting pitch of the third person camera over the target
      *
      * @param pitch New pitch
      */
@@ -172,7 +171,8 @@ public class TPCamera extends GameObject{
         this.pitch = pitch;
     }
 
-    /**Setting rotation of the third person camera around the target
+    /**
+     * Setting rotation of the third person camera around the target
      *
      * @param rotation New rotation around target
      */
@@ -185,8 +185,9 @@ public class TPCamera extends GameObject{
         MasterRenderer.setCamera(camera);
         super.onRender();
     }
-    
-    /**@return Read/writeable vector of the target to look at
+
+    /**
+     * @return Read/writeable vector of the target to look at
      */
     public Vector3f getTarget() {
         return target;
