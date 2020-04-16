@@ -93,6 +93,7 @@ public class Transformation {
         transMat.setIdentity();
         localTransMat.setIdentity();
         rotPosMat.setIdentity();
+        recalcTransMat();
     }
 
     public void addChild(Transformation child) {

@@ -64,6 +64,7 @@ public class FPCamera extends GameObject {
 
     // Settings (load from config)
     private final float mouseIntensiveness = Configuration.getValuef("FPC_DEFAULT_MOUSE_INTENSIVENESS");
+    private final float mouseSpringiness = Configuration.getValuef("FPC_DEFAULT_MOUSE_SPRINGINESS");
     private final float walkSpeed = Configuration.getValuef("FPC_DEFAULT_WALK_SPEED");
     private final float sprintSpeed = Configuration.getValuef("FPC_DEFAULT_SPRINT_SPEED");
     private final float jumpPower = Configuration.getValuef("FPC_DEFAULT_JUMP_POWER");
@@ -85,6 +86,12 @@ public class FPCamera extends GameObject {
 
     // Audio listener of the camera
     private AudioListener listener = new AudioListener();
+
+    // Is player walking at the moment
+    private boolean walking = false;
+
+    // Is player sprinting at the moment
+    private boolean sprinting = false;
 
     /**
      * Create new fp cam and grab mouse
@@ -120,6 +127,8 @@ public class FPCamera extends GameObject {
 
     @Override
     public void onUpdate() {
+        walking = false;
+        sprinting = false;
 
         rigidBody.getWorldTransform(transform);
         camera.setX(transform.origin.x);
@@ -127,10 +136,14 @@ public class FPCamera extends GameObject {
         camera.setZ(transform.origin.z);
 
         // Looking
-        camera.setYaw(camera.getYaw() + (Mouse.getDx() * mouseIntensiveness));
-        camera.setPitch(camera.getPitch() + (Mouse.getDy() * mouseIntensiveness));
-
-        // camera.setYaw(camera.getYaw() + mouseIntensiveness * 0.1f);
+        // camera.setYaw(camera.getYaw() + (Mouse.getDx() * mouseIntensiveness *
+        // FrameTimer.getTslf()));
+        // camera.setPitch(camera.getPitch() + (Mouse.getDy() * mouseIntensiveness *
+        // FrameTimer.getTslf()));
+        float d = (1.0f - (float) Math.exp(Math.log(0.5) * mouseSpringiness * FrameTimer.getTslf()))
+                * mouseIntensiveness;
+        camera.setYaw(camera.getYaw() + (Mouse.getDx() * d));
+        camera.setPitch(camera.getPitch() + (Mouse.getDy() * d));
 
         // Check that cameras pitch is between -90 and 90
         if (camera.getPitch() < -MAX_PICH)
@@ -163,6 +176,8 @@ public class FPCamera extends GameObject {
         }
 
         if (speedx != 0 || speedz != 0) {
+            walking = true;
+            sprinting = Keyboard.isKeyPressed(keySprint) ? true : false;
 
             // Calc moving directions
             float moveZforward = (float) (speedz * Math.cos(Math.toRadians(-camera.getYaw())));
@@ -199,5 +214,19 @@ public class FPCamera extends GameObject {
      */
     public Camera getCamera() {
         return camera;
+    }
+
+    /**
+     * @return Is the player currently walking
+     */
+    public boolean isWalking() {
+        return walking;
+    }
+
+    /**
+     * @return Is the player currently sprinting
+     */
+    public boolean isSprinting() {
+        return sprinting;
     }
 }

@@ -31,7 +31,6 @@ package de.coreengine.util;
 import de.coreengine.rendering.renderable.Camera;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 public class ShadowBox {

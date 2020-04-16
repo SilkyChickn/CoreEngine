@@ -71,6 +71,8 @@ vec2 getParallaxDistortion(mat3 tbnMat){
 void main(void){
     mat3 tbnMat = mat3(tan_frag_in, bit_frag_in, nrm_frag_in);
     vec2 texCoords = getParallaxDistortion(tbnMat);
+    texCoords = tex_frag_in; //Parallax distortion disabled atm. (little buggy)
+    texCoords.y = 1.0 - texCoords.y;
 
     out_Color[0] = getDiffuseColor(texCoords);
     out_Color[1] = pos_frag_in;

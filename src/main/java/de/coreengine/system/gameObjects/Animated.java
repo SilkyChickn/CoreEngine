@@ -43,7 +43,7 @@ import java.util.Set;
 public class Animated extends GameObject {
 
     // Animated entity to play animation on
-    private AnimatedEntity animatedEntity = null;
+    private AnimatedEntity animatedEntity = new AnimatedEntity();
 
     // Current playing animation name
     private String currentAnimation = null;
@@ -204,7 +204,7 @@ public class Animated extends GameObject {
     /**
      * @return Current set entity
      */
-    public AnimatedEntity getEntity() {
+    public AnimatedEntity getAnimatedEntity() {
         return animatedEntity;
     }
 }

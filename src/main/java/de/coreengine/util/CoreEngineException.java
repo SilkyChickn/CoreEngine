@@ -35,6 +35,11 @@ package de.coreengine.util;
 class CoreEngineException extends Exception {
 
     /**
+     *
+     */
+    private static final long serialVersionUID = -5915414475906890202L;
+
+    /**
      * Create new CoreEngineException with specific error message
      * 
      * @param msg Error message
