@@ -30,7 +30,8 @@ package de.coreengine.asset.modelLoader;
 
 import de.coreengine.asset.dataStructures.MaterialData;
 import de.coreengine.asset.dataStructures.MeshData;
-import javafx.util.Pair;
+import de.coreengine.util.Pair;
+
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AIVector3D;

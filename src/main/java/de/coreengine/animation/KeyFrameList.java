@@ -28,10 +28,10 @@
 
 package de.coreengine.animation;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import de.coreengine.util.Pair;
 
 /**
  * Class that stores a list of keyframes for a specific component

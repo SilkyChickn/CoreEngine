@@ -68,8 +68,9 @@ public class LensFlareShader extends Shader {
     }
 
     /**
-     * * @param tex Next lens flare texture
+     * Prepare next lens flare tile
      * 
+     * @param tex  Next lens flare texture
      * @param size Next lens flare size
      * @param x    Next lens flare x position
      * @param y    Next lens flare y position

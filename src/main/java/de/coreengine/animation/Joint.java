@@ -29,7 +29,7 @@
 package de.coreengine.animation;
 
 import de.coreengine.util.ByteArrayUtils;
-import javafx.util.Pair;
+import de.coreengine.util.Pair;
 
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
@@ -73,6 +73,7 @@ public class Joint {
      * @param index             Index of the joint in the skeleton
      * @param name              Name of the joint
      * @param inverseBindMatrix Inverse matrix of joints default position
+     * @param bindLocalPose     Matrix of joints binding local pose
      */
     public Joint(int index, String name, Matrix4f inverseBindMatrix, Matrix4f bindLocalPose) {
         this.index = index;

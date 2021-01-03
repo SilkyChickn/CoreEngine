@@ -28,10 +28,11 @@
 
 package de.coreengine.asset.modelLoader;
 
-import javafx.util.Pair;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIVertexWeight;
+
+import de.coreengine.util.Pair;
 
 import javax.vecmath.Matrix4f;
 

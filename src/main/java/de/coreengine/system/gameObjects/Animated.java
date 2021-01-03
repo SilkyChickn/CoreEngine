@@ -190,6 +190,9 @@ public class Animated extends GameObject {
      * returns false. Pass null to unset animation
      *
      * @param animation Animation to play
+     * 
+     * @return Animation not setted (Animation dont exist or animated entitiy isnt
+     *         set)
      */
     public boolean setAnimation(String animation) {
         AnimatedModel model = AssetDatabase.getAnimatedModel(animatedEntity.getModel());

@@ -176,6 +176,8 @@ public class ModelLoader {
      * @param file  Model file to load
      * @param shape Collision shape, or "convex" / "triangleMesh" / null to auto
      *              generate
+     * 
+     * @return Loaded Model as AnimatedModelData
      */
     public static AnimatedModelData loadAnimatedModelFileData(String file, String shape) {
 

@@ -158,6 +158,8 @@ public class MeshData {
          *
          * @param texPath    Path to get mesh textures from
          * @param asResource Load mesh textures from resources
+         * @param animated   Is model animated
+         * 
          * @return New mesh instance
          */
         public Mesh getInstance(String texPath, boolean asResource, boolean animated) {

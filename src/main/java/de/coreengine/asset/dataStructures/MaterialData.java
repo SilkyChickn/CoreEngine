@@ -196,6 +196,9 @@ public class MaterialData {
         /**
          * Getting a new instance of the dataStructure material
          *
+         * @param texPath    Location of the texture files
+         * @param asResource Load from resources
+         * 
          * @return New material instance
          */
         public Material getInstance(String texPath, boolean asResource) {

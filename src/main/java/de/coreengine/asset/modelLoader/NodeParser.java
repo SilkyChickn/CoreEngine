@@ -54,6 +54,8 @@ public class NodeParser {
 
     /**
      * Parsing data from the ai node
+     * 
+     * @param bones Ai Node bones
      */
     public void parse(List<BoneParser> bones) {
         skeleton = createJoint(aiNode, bones);

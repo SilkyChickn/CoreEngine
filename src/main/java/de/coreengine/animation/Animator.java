@@ -28,11 +28,11 @@
 
 package de.coreengine.animation;
 
-import javafx.util.Pair;
-
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+
+import de.coreengine.util.Pair;
 
 public class Animator {
 
