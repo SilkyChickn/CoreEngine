@@ -121,7 +121,7 @@ public class AnimatedEntityShader extends Shader {
     public void prepareEntity(AnimatedEntity entity) {
         setUniform(transMatLoc, entity.getTransform().getTransMatArr());
         prepareSkeleton(entity.getSkeleton());
-        // Prepare pick color
+        setUniform(pickingColorLoc, entity.getPickColor());
     }
 
     /**

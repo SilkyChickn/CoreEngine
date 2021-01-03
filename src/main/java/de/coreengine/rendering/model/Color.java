@@ -36,6 +36,11 @@ import java.io.Serializable;
  */
 public class Color implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
     // Represent the red, blue and green value of the rgb color model
     private final float[] rgb = new float[3];
 

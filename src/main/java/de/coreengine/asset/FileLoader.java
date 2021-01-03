@@ -159,6 +159,7 @@ public class FileLoader {
         while (sc.hasNext()) {
             data.add(sc.next().replace("\r", "") + lb);
         }
+        sc.close();
 
         return data.toArray(new String[0]);
     }

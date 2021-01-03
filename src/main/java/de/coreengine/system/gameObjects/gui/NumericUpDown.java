@@ -28,7 +28,6 @@
 package de.coreengine.system.gameObjects.gui;
 
 import de.coreengine.asset.TextureLoader;
-import de.coreengine.rendering.model.Font;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.system.GameObject;
 import de.coreengine.util.Configuration;

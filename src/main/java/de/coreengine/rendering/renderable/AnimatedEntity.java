@@ -30,7 +30,10 @@ package de.coreengine.rendering.renderable;
 
 import de.coreengine.animation.Joint;
 import de.coreengine.asset.AssetDatabase;
+import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Transformation;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.util.Toolbox;
 
 /**
  * Class that represents an animated entity in the world
@@ -47,6 +50,13 @@ public class AnimatedEntity {
 
     // Root joint of the models skeleton
     private Joint skeleton = null;
+
+    // Color for picking
+    private final Color pickColor;
+
+    public AnimatedEntity() {
+        this.pickColor = Toolbox.generateRandomColor();
+    }
 
     /**
      * @param model New model of the entity
@@ -75,5 +85,23 @@ public class AnimatedEntity {
      */
     public Joint getSkeleton() {
         return skeleton;
+    }
+
+    /**
+     * @return Color of this Entity in the mouse picker
+     */
+    public Color getPickColor() {
+        return pickColor;
+    }
+
+    /**
+     * Returns true if mouse is over entity. <br>
+     * 
+     * <b>Only works, if picking is enabled!!!</b>
+     * 
+     * @return Is mouse over entity
+     */
+    public boolean isMouseOver() {
+        return pickColor.compare(MasterRenderer.getPickedColor());
     }
 }

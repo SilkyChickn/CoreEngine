@@ -27,7 +27,10 @@
  */
 package de.coreengine.rendering.renderable;
 
+import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Transformation;
+import de.coreengine.rendering.renderer.MasterRenderer;
+import de.coreengine.util.Toolbox;
 
 /**
  * Class that represents an entity in the world
@@ -44,6 +47,13 @@ public class Entity {
 
     // Should the entity rotate and move with the camera
     private boolean rotateWithCam = false;
+
+    // Color for the mouse picking
+    private final Color pickColor;
+
+    public Entity() {
+        pickColor = Toolbox.generateRandomColor();
+    }
 
     /**
      * @param model New model of the entity
@@ -80,5 +90,23 @@ public class Entity {
      */
     public boolean isRotateWithCam() {
         return rotateWithCam;
+    }
+
+    /**
+     * @return Color of this Entity in the mouse picker
+     */
+    public Color getPickColor() {
+        return pickColor;
+    }
+
+    /**
+     * Returns true if mouse is over entity. <br>
+     * 
+     * <b>Only works, if picking is enabled!!!</b>
+     * 
+     * @return Is mouse over entity
+     */
+    public boolean isMouseOver() {
+        return pickColor.compare(MasterRenderer.getPickedColor());
     }
 }

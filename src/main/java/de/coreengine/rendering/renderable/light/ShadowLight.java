@@ -31,7 +31,6 @@ import de.coreengine.framework.Window;
 import de.coreengine.rendering.FrameBufferObject;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.util.Configuration;
-import de.coreengine.util.ShadowBox;
 
 import javax.vecmath.Matrix4f;
 

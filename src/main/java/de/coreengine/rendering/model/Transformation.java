@@ -27,12 +27,13 @@
  */
 package de.coreengine.rendering.model;
 
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.vecmath.Matrix4f;
+
+import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.linearmath.Transform;
 
 /**
  * Transformation class to store position, rotation and scale and calc the

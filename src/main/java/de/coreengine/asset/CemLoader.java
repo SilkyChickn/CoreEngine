@@ -32,7 +32,6 @@ import de.coreengine.asset.dataStructures.ModelData;
 import de.coreengine.util.Logger;
 
 import java.io.*;
-import java.net.URL;
 
 /**
  * Class that can load cem (Core Engine Model) files (see
@@ -96,19 +95,16 @@ public class CemLoader {
 
         try {
 
-            File f;
-            if (asResource) {
-                URL url = Thread.currentThread().getContextClassLoader().getResource(file);
-                assert url != null;
-                f = new File(url.getFile());
-            } else
-                f = new File(file);
+            InputStream is;
+            if (asResource)
+                is = CemLoader.class.getClassLoader().getResourceAsStream(file);
+            else
+                is = new FileInputStream(new File(file));
 
             // Read bytes from file
-            FileInputStream fis = new FileInputStream(f);
-            byte[] data = new byte[fis.available()];
-            fis.read(data);
-            fis.close();
+            byte[] data = new byte[is.available()];
+            is.read(data);
+            is.close();
 
             // Construct dataStructures model from bytes
             ModelData modelData = new ModelData();

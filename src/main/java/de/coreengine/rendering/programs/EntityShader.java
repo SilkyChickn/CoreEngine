@@ -113,7 +113,7 @@ public class EntityShader extends Shader {
 
     public void prepareEntity(Entity entity) {
         setUniform(transMatLoc, entity.getTransform().getTransMatArr());
-        // Prepare pick color
+        setUniform(pickingColorLoc, entity.getPickColor());
     }
 
     /**

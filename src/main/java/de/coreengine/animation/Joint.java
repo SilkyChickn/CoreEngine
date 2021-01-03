@@ -32,7 +32,6 @@ import de.coreengine.util.ByteArrayUtils;
 import javafx.util.Pair;
 
 import javax.vecmath.Matrix4f;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
