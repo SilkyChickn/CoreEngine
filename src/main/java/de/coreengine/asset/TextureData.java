@@ -94,7 +94,7 @@ public class TextureData implements Serializable {
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 
         // Load to asset database
-        AssetDatabase.textures.put(key, tex);
+        AssetDatabase.addTexture(key, tex);
     }
 
     /**

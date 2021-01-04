@@ -50,11 +50,11 @@ public class CemLoader {
      * @param asResource Loading model and textures from resources
      */
     public static void loadModel(String file, String texPath, boolean asResource) {
-        if (AssetDatabase.models.containsKey(file))
+        if (AssetDatabase.getModel(file) != null)
             return;
         ModelData modelData = loadModelData(file, asResource);
         if (modelData != null)
-            AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
+            AssetDatabase.addModel(file, modelData.getInstance(texPath, asResource));
     }
 
     /**

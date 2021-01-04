@@ -49,7 +49,7 @@ public class OggLoader {
      * @param file Ogg sound file
      */
     public static void loadSound(String file) {
-        if (AssetDatabase.sounds.containsKey(file))
+        if (AssetDatabase.getSound(file) != 0)
             return;
 
         ShortBuffer audioData;
@@ -94,6 +94,6 @@ public class OggLoader {
         assert audioData != null;
         AL10.alBufferData(sound, format, audioData, sampleRate);
 
-        AssetDatabase.sounds.put(file, sound);
+        AssetDatabase.addSound(file, sound);
     }
 }

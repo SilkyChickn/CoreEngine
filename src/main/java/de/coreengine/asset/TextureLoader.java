@@ -141,13 +141,13 @@ public class TextureLoader {
      * @param asResource  Loading TextureData from resources
      */
     public static void loadTextureFile(String textureFile, boolean mipmap, int filtering, boolean asResource) {
-        if (AssetDatabase.textures.containsKey(textureFile))
+        if (AssetDatabase.getTexture(textureFile) != 0)
             return;
         TextureData textureData = loadTextureFileMeta(textureFile, mipmap, filtering, asResource);
         if (textureData != null)
             textureData.generateKey(textureFile, mipmap, filtering);
         else
-            AssetDatabase.textures.put(textureFile, AssetDatabase.getTexture(Material.TEXTURE_WHITE));
+            AssetDatabase.addTexture(textureFile, AssetDatabase.getTexture(Material.TEXTURE_WHITE));
     }
 
     /**
@@ -178,7 +178,7 @@ public class TextureLoader {
      */
     public static void loadCubeMap(String key, String left, String right, String top, String bottom, String front,
             String back, boolean asResource) {
-        if (AssetDatabase.textures.containsKey(key))
+        if (AssetDatabase.getTexture(key) != 0)
             return;
 
         // Loading cube map Textures
@@ -224,6 +224,6 @@ public class TextureLoader {
 
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, 0);
 
-        AssetDatabase.textures.put(key, tex);
+        AssetDatabase.addTexture(key, tex);
     }
 }

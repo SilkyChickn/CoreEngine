@@ -40,11 +40,11 @@ import java.util.HashMap;
 public class AssetDatabase {
 
     // Databases
-    public static HashMap<String, Integer> textures = new HashMap<>();
-    static HashMap<String, Font> fonts = new HashMap<>();
-    static HashMap<String, Integer> sounds = new HashMap<>();
-    static HashMap<String, Model> models = new HashMap<>();
-    static HashMap<String, AnimatedModel> animatedModels = new HashMap<>();
+    private static HashMap<String, Integer> textures = new HashMap<>();
+    private static HashMap<String, Font> fonts = new HashMap<>();
+    private static HashMap<String, Integer> sounds = new HashMap<>();
+    private static HashMap<String, Model> models = new HashMap<>();
+    private static HashMap<String, AnimatedModel> animatedModels = new HashMap<>();
 
     /**
      * Getting texture by name from the database. Returns 0, if the texture could
@@ -59,6 +59,17 @@ public class AssetDatabase {
     }
 
     /**
+     * Manually store a texture into the database. If a texture with this name
+     * already exist, it will be overwritten!
+     * 
+     * @param name  Name of the texture
+     * @param model Texture to store
+     */
+    public static void addTexture(String name, Integer texture) {
+        textures.put(name, texture);
+    }
+
+    /**
      * Getting font by name from the database. Returns null, if the font could not
      * be found
      *
@@ -67,6 +78,17 @@ public class AssetDatabase {
      */
     public static Font getFont(String name) {
         return fonts.get(name);
+    }
+
+    /**
+     * Manually store a font into the database. If a font with this name already
+     * exist, it will be overwritten!
+     * 
+     * @param name  Name of the font
+     * @param model Font to store
+     */
+    public static void addFont(String name, Font font) {
+        fonts.put(name, font);
     }
 
     /**
@@ -82,6 +104,17 @@ public class AssetDatabase {
     }
 
     /**
+     * Manually store a sound into the database. If a sound with this name already
+     * exist, it will be overwritten!
+     * 
+     * @param name  Name of the sound
+     * @param model Sound to store
+     */
+    public static void addSound(String name, Integer sound) {
+        sounds.put(name, sound);
+    }
+
+    /**
      * Getting model by name from the database. Returns null, if the model could not
      * be found
      *
@@ -93,14 +126,36 @@ public class AssetDatabase {
     }
 
     /**
-     * Getting animated model by name from the database. Returns 0, if the animated
-     * model could not be found
+     * Manually store a model into the database. If a model with this name already
+     * exist, it will be overwritten!
+     * 
+     * @param name  Name of the model
+     * @param model Model to store
+     */
+    public static void addModel(String name, Model model) {
+        models.put(name, model);
+    }
+
+    /**
+     * Getting animated model by name from the database. Returns null, if the
+     * animated model could not be found
      *
      * @param name Name of the animated model in the database
      * @return Animated model with this name
      */
     public static AnimatedModel getAnimatedModel(String name) {
         return animatedModels.get(name);
+    }
+
+    /**
+     * Manually store an animated model into the database. If an animated model with
+     * this name already exist, it will be overwritten!
+     * 
+     * @param name  Name of the model
+     * @param model Model to store
+     */
+    public static void addAnimatedModel(String name, AnimatedModel model) {
+        animatedModels.put(name, model);
     }
 
     static {

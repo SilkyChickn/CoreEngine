@@ -120,11 +120,11 @@ public class ModelLoader {
      * @param asResource Load textures from resources
      */
     public static void loadModelFile(String file, String texPath, boolean asResource, String shape) {
-        if (AssetDatabase.models.containsKey(file))
+        if (AssetDatabase.getModel(file) != null)
             return;
         ModelData modelData = loadModelFileData(file, shape);
         if (modelData != null)
-            AssetDatabase.models.put(file, modelData.getInstance(texPath, asResource));
+            AssetDatabase.addModel(file, modelData.getInstance(texPath, asResource));
     }
 
     /**
@@ -137,11 +137,11 @@ public class ModelLoader {
      * @param asResource Load textures from resources
      */
     public static void loadAnimatedModelFile(String file, String texPath, boolean asResource, String shape) {
-        if (AssetDatabase.animatedModels.containsKey(file))
+        if (AssetDatabase.getAnimatedModel(file) != null)
             return;
         AnimatedModelData animatedModelData = loadAnimatedModelFileData(file, shape);
         if (animatedModelData != null)
-            AssetDatabase.animatedModels.put(file, animatedModelData.getInstance(texPath, asResource));
+            AssetDatabase.addAnimatedModel(file, animatedModelData.getInstance(texPath, asResource));
     }
 
     /**

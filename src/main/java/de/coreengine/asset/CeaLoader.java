@@ -50,11 +50,11 @@ public class CeaLoader {
      * @param asResource Loading model and textures from resources
      */
     public static void loadAnimatedModel(String file, String texPath, boolean asResource) {
-        if (AssetDatabase.animatedModels.containsKey(file))
+        if (AssetDatabase.getAnimatedModel(file) != null)
             return;
         AnimatedModelData modelData = loadAnimatedModelData(file, asResource);
         if (modelData != null)
-            AssetDatabase.animatedModels.put(file, modelData.getInstance(texPath, asResource));
+            AssetDatabase.addAnimatedModel(file, modelData.getInstance(texPath, asResource));
     }
 
     /**

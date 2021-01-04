@@ -56,7 +56,7 @@ public class FntLoader {
      * @param asResource Load font from resources
      */
     public static void loadFont(String file, boolean asResource) {
-        if (AssetDatabase.fonts.containsKey(file))
+        if (AssetDatabase.getFont(file) != null)
             return;
 
         try {
@@ -176,7 +176,7 @@ public class FntLoader {
             vao.addVertexBuffer(texCoordsArr, 2, 1);
             vao.addVertexBuffer(offsetsArr, 2, 2);
 
-            AssetDatabase.fonts.put(file, new Font(textureAtlas, chars, vao, LINE_HEIGHT));
+            AssetDatabase.addFont(file, new Font(textureAtlas, chars, vao, LINE_HEIGHT));
         } catch (IOException ex) {
             Logger.warn("Error by loading font", "The fnt file '" + file + "' could not be loaded!");
         }
