@@ -62,8 +62,8 @@ public class AssetDatabase {
      * Manually store a texture into the database. If a texture with this name
      * already exist, it will be overwritten!
      * 
-     * @param name  Name of the texture
-     * @param model Texture to store
+     * @param name    Name of the texture
+     * @param texture Texture to store
      */
     public static void addTexture(String name, Integer texture) {
         textures.put(name, texture);
@@ -84,8 +84,8 @@ public class AssetDatabase {
      * Manually store a font into the database. If a font with this name already
      * exist, it will be overwritten!
      * 
-     * @param name  Name of the font
-     * @param model Font to store
+     * @param name Name of the font
+     * @param font Font to store
      */
     public static void addFont(String name, Font font) {
         fonts.put(name, font);
@@ -108,7 +108,7 @@ public class AssetDatabase {
      * exist, it will be overwritten!
      * 
      * @param name  Name of the sound
-     * @param model Sound to store
+     * @param sound Sound to store
      */
     public static void addSound(String name, Integer sound) {
         sounds.put(name, sound);
