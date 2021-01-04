@@ -264,7 +264,7 @@ public class GUIPane {
      */
     public void setRotZ(float rotZ) {
         if (parent == null)
-            transform.setRotY(rotZ);
+            transform.setRotZ(rotZ);
         else
             transform.setRotZ(rotZ + parent.getRotZ());
     }
