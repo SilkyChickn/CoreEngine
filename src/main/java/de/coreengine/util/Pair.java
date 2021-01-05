@@ -55,4 +55,22 @@ public class Pair<KeyType, ValueType> {
     public ValueType getValue() {
         return value;
     }
+
+    /**
+     * Set the key
+     * 
+     * @param key New key
+     */
+    public void setKey(KeyType key) {
+        this.key = key;
+    }
+
+    /**
+     * Set the value
+     * 
+     * @param value New value
+     */
+    public void setValue(ValueType value) {
+        this.value = value;
+    }
 }
