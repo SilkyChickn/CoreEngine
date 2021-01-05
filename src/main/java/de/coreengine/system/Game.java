@@ -183,11 +183,11 @@ public class Game {
 
         MasterRenderer.render();
 
-        Window.update();
-
         Keyboard.update();
         Mouse.update();
         FrameTimer.update();
+
+        Window.update();
     }
 
     /**
