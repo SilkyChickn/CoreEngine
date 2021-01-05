@@ -58,6 +58,24 @@ public class CeaLoader {
     }
 
     /**
+     * Loading an animated model from a file into the asset database with a
+     * specified name. If a model with this name already loaded, this method does
+     * nothing.
+     *
+     * @param file       File to load
+     * @param texPath    Location of the models textures
+     * @param asResource Loading model and textures from resources
+     * @param name       Name of the model in the AssetDatabase
+     */
+    public static void loadAnimatedModel(String file, String texPath, boolean asResource, String name) {
+        if (AssetDatabase.getAnimatedModel(name) != null)
+            return;
+        AnimatedModelData modelData = loadAnimatedModelData(file, asResource);
+        if (modelData != null)
+            AssetDatabase.addAnimatedModel(name, modelData.getInstance(texPath, asResource));
+    }
+
+    /**
      * Saving dataStructures model to a file
      *
      * @param file      Filename to save
