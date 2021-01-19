@@ -293,13 +293,6 @@ public class GUIPane {
     }
 
     /**
-     * @return Rotation and position matrix of the gui
-     */
-    public float[] getRotPosMat() {
-        return Toolbox.matrixToFloatArray(transform.getRotPosMat());
-    }
-
-    /**
      * @return Picking color for this gui
      */
     public Color getPickColor() {

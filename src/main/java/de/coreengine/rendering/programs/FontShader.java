@@ -88,7 +88,7 @@ public class FontShader extends Shader {
     public void prepareText(GUIPane pane) {
         bindTexture(AssetDatabase.getTexture(AssetDatabase.getFont(pane.getText().getFont()).getTextureAtlas()),
                 fontAtlasUnit, GL11.GL_TEXTURE_2D);
-        setUniform(mMatTextLoc, pane.getRotPosMat());
+        setUniform(mMatTextLoc, pane.getTransMat());
         setUniform(scaleLoc, pane.getText().getFontSize());
         setUniform(fontColorLoc, pane.getText().getFontColor());
     }

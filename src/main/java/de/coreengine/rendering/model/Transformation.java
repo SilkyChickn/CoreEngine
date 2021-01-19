@@ -27,9 +27,6 @@
  */
 package de.coreengine.rendering.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.vecmath.Matrix4f;
 
 import com.bulletphysics.dynamics.RigidBody;
@@ -43,36 +40,33 @@ import com.bulletphysics.linearmath.Transform;
  */
 public class Transformation {
 
-    // Has rotation or scale changed since last update
-    private boolean recalcRotScale = false;
-
-    // Has translation changed since last update
-    private boolean recalcTrans = false;
+    // Has rotation, translation or scale changed since last update
+    private boolean recalc = false;
 
     // Rotation variables of the trans mat
-    private float rotx, roty, rotz;
+    private float localRotx, localRoty, localRotz;
+
+    // Matrices for the rotations
+    private Matrix4f localRotxMat = new Matrix4f(), localRotyMat = new Matrix4f(), localRotzMat = new Matrix4f();
 
     // Matrix that containsthe rotation
-    private Matrix4f rotMat = new Matrix4f();
+    private Matrix4f localRotMat = new Matrix4f();
 
     // Matrix that contains the translation
-    private Matrix4f posMat = new Matrix4f();
+    private Matrix4f localPosMat = new Matrix4f();
 
     // Matrix that contains the scale
-    private Matrix4f scaleMat = new Matrix4f();
+    private Matrix4f localScaleMat = new Matrix4f();
 
     // Matrix that contains the position and rotation
-    private Matrix4f rotPosMat = new Matrix4f();
-
-    // Transformation matrix for the transformation with
-    // Position, rotation and scale
-    private Matrix4f transMat = new Matrix4f();
+    private Matrix4f localRotPosMat = new Matrix4f();
 
     // Local transformation matrix without parent transform
     private Matrix4f localTransMat = new Matrix4f();
 
-    // Matrices for the rotations
-    private Matrix4f rotxMat = new Matrix4f(), rotyMat = new Matrix4f(), rotzMat = new Matrix4f();
+    // Transformation matrix for the transformation with
+    // Position, rotation and scale
+    private Matrix4f transMat = new Matrix4f();
 
     // Transformation matrix for the transformation with
     // Position, rotation and scale as array
@@ -83,17 +77,16 @@ public class Transformation {
 
     // Transformation tree
     private Transformation parent = null;
-    private List<Transformation> children = new ArrayList<>();
 
     /**
      * Creating new transformation and init matrices
      */
     public Transformation() {
-        posMat.setIdentity();
-        scaleMat.setIdentity();
+        localPosMat.setIdentity();
+        localScaleMat.setIdentity();
         transMat.setIdentity();
         localTransMat.setIdentity();
-        rotPosMat.setIdentity();
+        localRotPosMat.setIdentity();
         recalcTransMat();
     }
 
@@ -102,21 +95,12 @@ public class Transformation {
             child.parent.removeChild(child);
         }
         child.parent = this;
-        children.add(child);
         child.recalcTransMat();
     }
 
     public void removeChild(Transformation child) {
-        children.remove(child);
         child.parent = null;
         child.recalcTransMat();
-    }
-
-    /**
-     * @return Matrix that contains transformations position and rotation
-     */
-    public Matrix4f getRotPosMat() {
-        return rotPosMat;
     }
 
     /**
@@ -125,10 +109,7 @@ public class Transformation {
     public float[] getTransMatArr() {
 
         // Check if matrix changed
-        if (recalcRotScale)
-            recalcTransMat();
-        else if (recalcTrans)
-            transferTranslation();
+        recalcTransMat();
 
         return transMatArr;
     }
@@ -139,10 +120,7 @@ public class Transformation {
     public Matrix4f getTransMat() {
 
         // Check if matrix changed
-        if (recalcRotScale)
-            recalcTransMat();
-        else if (recalcTrans)
-            transferTranslation();
+        recalcTransMat();
 
         return transMat;
     }
@@ -156,7 +134,7 @@ public class Transformation {
         rb.getMotionState().getWorldTransform(bulletTransform);
 
         bulletTransform.getMatrix(transMat);
-        transMat.mul(scaleMat);
+        transMat.mul(localScaleMat);
 
         bulletTransform.set(transMat);
         bulletTransform.getOpenGLMatrix(transMatArr);
@@ -166,207 +144,207 @@ public class Transformation {
      * @return X Translation of the transformation
      */
     public float getPosX() {
-        return this.posMat.m03;
+        return this.localPosMat.m03;
     }
 
     /**
      * @return Y Translation of the transformation
      */
     public float getPosY() {
-        return this.posMat.m13;
+        return this.localPosMat.m13;
     }
 
     /**
      * @return Z Translation of the transformation
      */
     public float getPosZ() {
-        return this.posMat.m23;
+        return this.localPosMat.m23;
     }
 
     /**
      * @return X Scale of the transformation
      */
     public float getScaleX() {
-        return this.scaleMat.m00;
+        return this.localScaleMat.m00;
     }
 
     /**
      * @return Y Scale of the transformation
      */
     public float getScaleY() {
-        return this.scaleMat.m11;
+        return this.localScaleMat.m11;
     }
 
     /**
      * @return Z Scale of the transformation
      */
     public float getScaleZ() {
-        return this.scaleMat.m22;
+        return this.localScaleMat.m22;
     }
 
     /**
      * @return X Rotation of the transformation
      */
     public float getRotX() {
-        return this.rotx;
+        return this.localRotx;
     }
 
     /**
      * @return Y Rotation of the transformation
      */
     public float getRotY() {
-        return this.roty;
+        return this.localRoty;
     }
 
     /**
      * @return Z Rotation of the transformation
      */
     public float getRotZ() {
-        return this.rotz;
+        return this.localRotz;
     }
 
     /**
      * @param val new X Translation of the transformation
      */
     public void setPosX(float val) {
-        this.posMat.m03 = val;
-        this.recalcTrans = true;
+        this.localPosMat.m03 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Y Translation of the transformation
      */
     public void setPosY(float val) {
-        this.posMat.m13 = val;
-        this.recalcTrans = true;
+        this.localPosMat.m13 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Z Translation of the transformation
      */
     public void setPosZ(float val) {
-        this.posMat.m23 = val;
-        this.recalcTrans = true;
+        this.localPosMat.m23 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new X Scale of the transformation
      */
     public void setScaleX(float val) {
-        this.scaleMat.m00 = val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m00 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Y Scale of the transformation
      */
     public void setScaleY(float val) {
-        this.scaleMat.m11 = val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m11 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Z Scale of the transformation
      */
     public void setScaleZ(float val) {
-        this.scaleMat.m22 = val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m22 = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new X Rotation of the transformation
      */
     public void setRotX(float val) {
-        this.rotx = val;
-        this.recalcRotScale = true;
+        this.localRotx = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Y Rotation of the transformation
      */
     public void setRotY(float val) {
-        this.roty = val;
-        this.recalcRotScale = true;
+        this.localRoty = val;
+        this.recalc = true;
     }
 
     /**
      * @param val new Z Rotation of the transformation
      */
     public void setRotZ(float val) {
-        this.rotz = val;
-        this.recalcRotScale = true;
+        this.localRotz = val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the X Translation of the transformation
      */
     public void addPosX(float val) {
-        this.posMat.m03 += val;
-        this.recalcTrans = true;
+        this.localPosMat.m03 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Y Translation of the transformation
      */
     public void addPosY(float val) {
-        this.posMat.m13 += val;
-        this.recalcTrans = true;
+        this.localPosMat.m13 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Z Translation of the transformation
      */
     public void addPosZ(float val) {
-        this.posMat.m23 += val;
-        this.recalcTrans = true;
+        this.localPosMat.m23 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the X Scale of the transformation
      */
     public void addScaleX(float val) {
-        this.scaleMat.m00 += val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m00 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Y Scale of the transformation
      */
     public void addScaleY(float val) {
-        this.scaleMat.m11 += val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m11 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Z Scale of the transformation
      */
     public void addScaleZ(float val) {
-        this.scaleMat.m22 += val;
-        this.recalcRotScale = true;
+        this.localScaleMat.m22 += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the X Rotation of the transformation
      */
     public void addRotX(float val) {
-        this.rotx += val;
-        this.recalcRotScale = true;
+        this.localRotx += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Y Rotation of the transformation
      */
     public void addRotY(float val) {
-        this.roty += val;
-        this.recalcRotScale = true;
+        this.localRoty += val;
+        this.recalc = true;
     }
 
     /**
      * @param val Value to add to the Z Rotation of the transformation
      */
     public void addRotZ(float val) {
-        this.rotz += val;
-        this.recalcRotScale = true;
+        this.localRotz += val;
+        this.recalc = true;
     }
 
     /**
@@ -374,26 +352,30 @@ public class Transformation {
      * variables
      */
     private void recalcTransMat() {
+        if (parent != null)
+            parent.recalcTransMat();
+        if (!recalc)
+            return;
 
         // Reclalc rotation matrices
-        rotxMat.rotX((float) Math.toRadians(rotx));
-        rotyMat.rotY((float) Math.toRadians(roty));
-        rotzMat.rotZ((float) Math.toRadians(rotz));
+        localRotxMat.rotX((float) Math.toRadians(localRotx));
+        localRotyMat.rotY((float) Math.toRadians(localRoty));
+        localRotzMat.rotZ((float) Math.toRadians(localRotz));
 
         // Recalc rotation matrix
-        rotMat.set(rotxMat);
-        rotMat.mul(rotyMat);
-        rotMat.mul(rotzMat);
+        localRotMat.set(localRotxMat);
+        localRotMat.mul(localRotyMat);
+        localRotMat.mul(localRotzMat);
 
         // translate and rotate trans mat
-        localTransMat.set(posMat);
-        localTransMat.mul(rotMat);
+        localTransMat.set(localPosMat);
+        localTransMat.mul(localRotMat);
 
         // get current state into rot pos mat
-        rotPosMat.set(localTransMat);
+        localRotPosMat.set(localTransMat);
 
         // Scale transmat
-        localTransMat.mul(scaleMat);
+        localTransMat.mul(localScaleMat);
 
         // Align transMat with parent transMat
         if (this.parent != null)
@@ -401,36 +383,11 @@ public class Transformation {
         else
             transMat.set(localTransMat);
 
-        // Translate children
-        for (Transformation child : children) {
-            child.transMat.mul(transMat, child.localTransMat);
-            child.bulletTransform.set(child.transMat);
-            child.bulletTransform.getOpenGLMatrix(child.transMatArr);
-        }
-
         // Reset vars
-        this.recalcRotScale = false;
-        this.recalcTrans = false;
+        this.recalc = false;
 
         // Transfer to transmat array
         bulletTransform.set(transMat);
         bulletTransform.getOpenGLMatrix(transMatArr);
-    }
-
-    /**
-     * Transfer translation from posScaleMat into transMat
-     */
-    private void transferTranslation() {
-        localTransMat.m03 = (posMat.m03);
-        localTransMat.m13 = (posMat.m13);
-        localTransMat.m23 = (posMat.m23);
-
-        transMatArr[12] = posMat.m03;
-        transMatArr[13] = posMat.m13;
-        transMatArr[14] = posMat.m23;
-
-        rotPosMat.m03 = (posMat.m03);
-        rotPosMat.m13 = (posMat.m13);
-        rotPosMat.m23 = (posMat.m23);
     }
 }
