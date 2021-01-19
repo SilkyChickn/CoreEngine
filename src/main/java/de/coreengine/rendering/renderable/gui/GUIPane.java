@@ -33,21 +33,12 @@ import de.coreengine.rendering.model.Transformation;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.util.Toolbox;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Class that represent a pane for a gui
  *
  * @author Darius Dinger
  */
 public class GUIPane {
-
-    // Childrens of this pane
-    private final List<GUIPane> components = new LinkedList<>();
-
-    // Parent pane
-    private GUIPane parent;
 
     // Text of the pane
     private GUIText text = new GUIText();
@@ -73,9 +64,8 @@ public class GUIPane {
     public GUIPane(GUIPane parent) {
 
         // Add to parent if exist
-        this.parent = parent;
         if (parent != null)
-            parent.components.add(this);
+            parent.transform.addChild(transform);
 
         pickColor = Toolbox.generateRandomColor();
     }
@@ -123,31 +113,13 @@ public class GUIPane {
     }
 
     /**
-     * @return Count of children/components
-     */
-    public int getComponentCount() {
-        return components.size();
-    }
-
-    /**
-     * @param id ID of the child (between 0 and componentCount)
-     * @return Child with the ID id
-     */
-    public GUIPane getComponent(int id) {
-        return components.get(id);
-    }
-
-    /**
      * Setting vertical scale of the pane relative to the parent pane.<br>
      * scaleX = scaleX * parent.scaleX
      * 
      * @param scaleX Vertical scale
      */
     public void setScaleX(float scaleX) {
-        if (parent == null)
-            transform.setScaleX(scaleX);
-        else
-            transform.setScaleX(scaleX * parent.getScaleX());
+        transform.setScaleX(scaleX);
         text.setLineWidth(transform.getScaleX() * 2.0f);
     }
 
@@ -158,10 +130,7 @@ public class GUIPane {
      * @param scaleY Horizontal scale
      */
     public void setScaleY(float scaleY) {
-        if (parent == null)
-            transform.setScaleY(scaleY);
-        else
-            transform.setScaleY(scaleY * parent.getScaleY());
+        transform.setScaleY(scaleY);
     }
 
     /**
@@ -198,10 +167,7 @@ public class GUIPane {
      * @param posX X pos
      */
     public void setPosX(float posX) {
-        if (parent == null)
-            transform.setPosX(posX);
-        else
-            transform.setPosX(parent.getScaleX() * posX + parent.getPosX());
+        transform.setPosX(posX);
     }
 
     /**
@@ -211,10 +177,7 @@ public class GUIPane {
      * @param posY Y pos
      */
     public void setPosY(float posY) {
-        if (parent == null)
-            transform.setPosY(posY);
-        else
-            transform.setPosY(parent.getScaleY() * posY + parent.getPosY());
+        transform.setPosY(posY);
     }
 
     /**
@@ -224,10 +187,7 @@ public class GUIPane {
      * @param posZ Z pos
      */
     public void setPosZ(float posZ) {
-        if (parent == null)
-            transform.setPosZ(posZ);
-        else
-            transform.setPosZ(parent.getScaleZ() * posZ + parent.getPosZ());
+        transform.setPosZ(posZ);
     }
 
     /**
@@ -237,10 +197,7 @@ public class GUIPane {
      * @param rotX X rotation
      */
     public void setRotX(float rotX) {
-        if (parent == null)
-            transform.setRotX(rotX);
-        else
-            transform.setRotX(rotX + parent.getRotX());
+        transform.setRotX(rotX);
     }
 
     /**
@@ -250,10 +207,7 @@ public class GUIPane {
      * @param rotY Y rotation
      */
     public void setRotY(float rotY) {
-        if (parent == null)
-            transform.setRotY(rotY);
-        else
-            transform.setRotY(rotY + parent.getRotY());
+        transform.setRotY(rotY);
     }
 
     /**
@@ -263,10 +217,7 @@ public class GUIPane {
      * @param rotZ Z rotation
      */
     public void setRotZ(float rotZ) {
-        if (parent == null)
-            transform.setRotZ(rotZ);
-        else
-            transform.setRotZ(rotZ + parent.getRotZ());
+        transform.setRotZ(rotZ);
     }
 
     /**
