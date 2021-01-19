@@ -27,6 +27,9 @@
  */
 package de.coreengine.rendering.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.vecmath.Matrix4f;
 
 import com.bulletphysics.dynamics.RigidBody;
@@ -77,6 +80,7 @@ public class Transformation {
 
     // Transformation tree
     private Transformation parent = null;
+    private List<Transformation> children = new ArrayList<>();
 
     /**
      * Creating new transformation and init matrices
@@ -94,12 +98,14 @@ public class Transformation {
         if (child.parent != null) {
             child.parent.removeChild(child);
         }
+        children.add(child);
         child.parent = this;
         child.recalcTransMat();
     }
 
     public void removeChild(Transformation child) {
         child.parent = null;
+        children.remove(child);
         child.recalcTransMat();
     }
 
@@ -350,12 +356,25 @@ public class Transformation {
     /**
      * Recalculate the rotation part of the trans mat with the rotx, roty, rotz
      * variables
+     * 
+     * @return was matrix recalculated
      */
     private void recalcTransMat() {
-        if (parent != null)
+
+        // Recalc parent
+        if (parent != null) {
+
+            // If parent changed, recalc this too
             parent.recalcTransMat();
+        }
+
+        // Recalculation needed
         if (!recalc)
             return;
+
+        // Tell children to recalc
+        for (Transformation t : children)
+            t.recalc = true;
 
         // Reclalc rotation matrices
         localRotxMat.rotX((float) Math.toRadians(localRotx));
