@@ -116,8 +116,9 @@ public class Window implements GLFWWindowSizeCallbackI {
             glfwDestroyWindow(window);
         }
 
-        glfwWindowHint(GLFW_DECORATED, type == Type.BORDERLESS_WINDOW ? 0 : 1);
-        glfwWindowHint(GLFW_RESIZABLE, resizeable ? 1 : 0);
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_DECORATED, type == Type.BORDERLESS_WINDOW ? GLFW_FALSE : GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, resizeable ? GLFW_TRUE : GLFW_FALSE);
 
         // Create glfw window, sets height, width, title, monitor (if fullscreen
         // enabled)
@@ -180,7 +181,7 @@ public class Window implements GLFWWindowSizeCallbackI {
      * Destroy glfw window
      */
     public static void destroy() {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(contextWindow);
     }
 
     /**
