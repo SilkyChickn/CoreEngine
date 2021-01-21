@@ -181,7 +181,7 @@ public class Window implements GLFWWindowSizeCallbackI {
      * Destroy glfw window
      */
     public static void destroy() {
-        glfwDestroyWindow(contextWindow);
+        glfwDestroyWindow(window);
     }
 
     /**
