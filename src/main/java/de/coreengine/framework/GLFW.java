@@ -29,7 +29,6 @@ package de.coreengine.framework;
 
 import de.coreengine.system.Game;
 import de.coreengine.util.Logger;
-import org.lwjgl.glfw.GLFWVidMode;
 
 /**
  * Class to manage glfw context
@@ -37,9 +36,6 @@ import org.lwjgl.glfw.GLFWVidMode;
  * @author Darius Dinger
  */
 public class GLFW {
-
-    // ID of the primary monitor
-    static long primMonitor;
 
     /**
      * Initialize glfw
@@ -53,20 +49,8 @@ public class GLFW {
             Game.exit(1);
         }
 
-        // Get primary monitor
-        primMonitor = org.lwjgl.glfw.GLFW.glfwGetPrimaryMonitor();
-
         // Enable 1 interval vsync
         org.lwjgl.glfw.GLFW.glfwSwapInterval(1);
-    }
-
-    /**
-     * @return all supported video modes of the primary monitor
-     */
-    public static GLFWVidMode.Buffer getPrimaryMonitorVideoModes() {
-
-        // Get video mode of the primary monitor
-        return org.lwjgl.glfw.GLFW.glfwGetVideoModes(primMonitor);
     }
 
     /**

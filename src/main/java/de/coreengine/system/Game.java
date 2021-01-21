@@ -27,6 +27,7 @@
  */
 package de.coreengine.system;
 
+import de.coreengine.asset.TextureData;
 import de.coreengine.framework.GLFW;
 import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
@@ -65,16 +66,18 @@ public class Game {
     /**
      * Initializing the game and all relevant libraries
      * 
-     * @param windowWidth     Initial width of the game window
-     * @param windowHeight    Initial height of the game window
-     * @param windowTitle     Initial title of the game window
-     * @param startFullscreen Should game window start in fullscreen
+     * @param windowWidth  Initial width of the game window
+     * @param windowHeight Initial height of the game window
+     * @param windowTitle  Initial title of the game window
+     * @param windowType   Initial window type
+     * @param windowIcon   Icon of the window, or null for no icon
      */
-    public static void init(int windowWidth, int windowHeight, String windowTitle, boolean startFullscreen) {
+    public static void init(int windowWidth, int windowHeight, String windowTitle, Window.Type windowType,
+            TextureData windowIcon) {
 
         // Init glfw and create window
         GLFW.init();
-        Window.create(windowWidth, windowHeight, windowTitle, startFullscreen);
+        Window.create(windowWidth, windowHeight, windowTitle, windowType, windowIcon);
 
         // Init GL
         GL.createCapabilities();
@@ -197,6 +200,7 @@ public class Game {
      */
     public static void exit(int code) {
         MemoryDumper.dumpMemory();
+        Window.destroy();
         GLFW.deinit();
         AL.deinit();
 

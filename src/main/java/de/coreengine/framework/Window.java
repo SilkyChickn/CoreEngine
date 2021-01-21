@@ -29,10 +29,10 @@ package de.coreengine.framework;
 
 import de.coreengine.asset.TextureData;
 import de.coreengine.util.Logger;
-import org.lwjgl.glfw.GLFW;
+import static org.lwjgl.glfw.GLFW.*;
 import org.lwjgl.glfw.GLFWImage;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
+import org.lwjgl.glfw.GLFWVidMode.Buffer;
 
 import javax.vecmath.Matrix4f;
 import java.awt.*;
@@ -45,21 +45,23 @@ import java.util.List;
  * @author Darius Dinger
  */
 public class Window implements GLFWWindowSizeCallbackI {
+    public static enum Type {
+        WINDOWED, FULLSCREEN, BORDERLESS_WINDOW
+    }
 
     // ID of the glfw window
     private static long window = 0;
 
-    // Is fullscreen enabled
-    private static boolean fullscreen = false;
+    // Window type
+    private static Type type;
 
     // Windows current size/dimension
     private final static Dimension SIZE = new Dimension();
 
+    private static String title = "";
+
     // Windows current aspect
     private static float aspect = 1.0f;
-
-    // Video mode of the primary monitor
-    private static GLFWVidMode selectedVideoMode;
 
     // Orthogonal projection matrix of the window
     private static final Matrix4f ORTHO_MATRIX = new Matrix4f();
@@ -67,48 +69,90 @@ public class Window implements GLFWWindowSizeCallbackI {
     // List with all listener to call at window changes
     private static final List<WindowChangedListener> WINDOW_LISTENERS = new LinkedList<>();
 
+    // Instance of the window for resize callback
+    private static final Window callbackInstance = new Window();
+
+    // Window icon
+    private static TextureData icon = null;
+
+    // Is the window resizeable
+    private static boolean resizeable = true;
+
+    // Has the resolution changed
+    private static boolean resolutionChanged = false;
+
+    private Window() {
+    }
+
     /**
      * Create and show a new glfw-window
      * 
-     * @param width      Windows width in px
-     * @param height     Windows height in px
-     * @param title      Window title
-     * @param fullscreen true (fullscreen), false (windowed)
+     * @param width  Windows width in px
+     * @param height Windows height in px
+     * @param title  Window title
+     * @param type   Type of the window
+     * @param icon   Icon of the window or null for no icon
      */
-    public static void create(int width, int height, String title, boolean fullscreen) {
-        Window.fullscreen = fullscreen;
+    public static void create(int width, int height, String title, Type type, TextureData icon) {
+        Window.type = type;
         SIZE.setSize(width, height);
         Window.aspect = 1.0f * SIZE.width / SIZE.height;
+        Window.title = title;
+        Window.icon = icon;
 
         recalcOrthoMatrix();
 
+        recreate();
+    }
+
+    public static Buffer getSupportedVideoModes() {
+        return glfwGetVideoModes(glfwGetPrimaryMonitor());
+    }
+
+    private static void recreate() {
+
         // Exit old window if exist
         if (window != 0) {
-            GLFW.glfwDestroyWindow(window);
+            glfwDestroyWindow(window);
         }
 
-        // Disable Window Resizeable
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, 0);
+        glfwWindowHint(GLFW_DECORATED, type == Type.BORDERLESS_WINDOW ? 0 : 1);
+        glfwWindowHint(GLFW_RESIZABLE, resizeable ? 1 : 0);
 
         // Create glfw window, sets height, width, title, monitor (if fullscreen
         // enabled)
-        // Shared windowis set to 0
-        window = GLFW.glfwCreateWindow(width, height, title, fullscreen ? de.coreengine.framework.GLFW.primMonitor : 0,
+        // Shared window is set to 0
+        window = glfwCreateWindow(SIZE.width, SIZE.height, title, type == Type.FULLSCREEN ? glfwGetPrimaryMonitor() : 0,
                 0);
 
+        // Window resize callback
+        glfwSetWindowSizeCallback(window, callbackInstance);
+
         // Set input listeners for window
-        GLFW.glfwSetCursorPosCallback(window, Mouse.MOUSE_MOVED_LISTENER);
-        GLFW.glfwSetMouseButtonCallback(window, Mouse.MOUSE_BUTTON_LISTENER);
-        GLFW.glfwSetScrollCallback(window, Mouse.MOUSE_WHEEL_LISTENER);
+        glfwSetCursorPosCallback(window, Mouse.MOUSE_MOVED_LISTENER);
+        glfwSetMouseButtonCallback(window, Mouse.MOUSE_BUTTON_LISTENER);
+        glfwSetScrollCallback(window, Mouse.MOUSE_WHEEL_LISTENER);
 
-        GLFW.glfwSetKeyCallback(window, Keyboard.KEY_PRESSED_LISTENER);
-        GLFW.glfwSetCharCallback(window, Keyboard.CHAR_TYPED_LISTENER);
+        glfwSetKeyCallback(window, Keyboard.KEY_PRESSED_LISTENER);
+        glfwSetCharCallback(window, Keyboard.CHAR_TYPED_LISTENER);
 
-        // Set selected video mode to primary monitor default
-        selectedVideoMode = GLFW.glfwGetVideoMode(de.coreengine.framework.GLFW.primMonitor);
+        // Set Window icon, if one set
+        if (icon != null) {
+
+            // Create GLFWImage from ressource
+            GLFWImage glfwImage = GLFWImage.malloc();
+            glfwImage.set(icon.getWidth(), icon.getHeight(), icon.getData());
+
+            // Create GLFWImage-Buffer from GLFWImage
+            GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+            imagebf.put(0, glfwImage);
+
+            // Set window textureData from GLFWImage-Buffer
+            glfwSetWindowIcon(window, imagebf);
+        }
 
         // Bind OpenGL context
-        GLFW.glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(window);
     }
 
     /**
@@ -136,34 +180,40 @@ public class Window implements GLFWWindowSizeCallbackI {
      * Destroy glfw window
      */
     public static void destroy() {
-        GLFW.glfwDestroyWindow(window);
+        glfwDestroyWindow(window);
     }
 
     /**
-     * Set the window video mode
+     * Sets the size of the window. Only use supported sizes of the monitor for
+     * fullscreen windows. Supported sizes can be get with
+     * Window.getSupportedVideoModes()
      * 
-     * @param videoMode Video mode to set
+     * @param width  New window width
+     * @param height New window height
      */
-    public static void setVideoMode(GLFWVidMode videoMode) {
-        Window.selectedVideoMode = videoMode;
+    public static void setSize(int width, int height) {
+        SIZE.setSize(width, height);
+        glfwSetWindowSize(window, width, height);
     }
 
     /**
-     * Switch between fullscreen and windowed mode for the glfw window
+     * Only affective on WINDOWED typed windows
      * 
-     * @param fullscreen true (fullscreen), false (windowed)
+     * @param resizeable Should the window be resizeable
      */
-    public static void setFullscreen(boolean fullscreen) {
-        if (window == 0) {
-            Logger.err("Window not created", "GLFW window was not created yet!");
-            return;
-        }
+    public static void setReiszeable(boolean resizeable) {
+        Window.resizeable = resizeable;
+        recreate();
+    }
 
-        // Switch mode, sets width, height, refreshRate to selected mode refresh rate
-        GLFW.glfwSetWindowMonitor(window, fullscreen ? de.coreengine.framework.GLFW.primMonitor : 0, 0, 0,
-                selectedVideoMode.width(), selectedVideoMode.height(), selectedVideoMode.refreshRate());
-
-        Window.fullscreen = fullscreen;
+    /**
+     * Switch between window types
+     * 
+     * @param type New window type
+     */
+    public static void setType(Type type) {
+        Window.type = type;
+        recreate();
     }
 
     /**
@@ -175,7 +225,7 @@ public class Window implements GLFWWindowSizeCallbackI {
             return false;
         }
 
-        return !GLFW.glfwWindowShouldClose(window);
+        return !glfwWindowShouldClose(window);
     }
 
     /**
@@ -188,15 +238,27 @@ public class Window implements GLFWWindowSizeCallbackI {
      * @param interval Interval for the update
      */
     public static void setVsyncInterval(int interval) {
-        GLFW.glfwSwapInterval(interval);
+        glfwSwapInterval(interval);
     }
 
     /**
      * Updates glfw window
      */
     public static void update() {
-        GLFW.glfwSwapBuffers(window);
-        GLFW.glfwPollEvents();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+
+        // Trigger all callbacks
+        if (resolutionChanged) {
+            resolutionChanged = false;
+
+            // Update window stuff
+            aspect = 1.0f * SIZE.width / SIZE.height;
+            recalcOrthoMatrix();
+
+            // Call first callback
+            WINDOW_LISTENERS.forEach((t) -> t.resolutionChanged(SIZE.width, SIZE.height, aspect));
+        }
     }
 
     /**
@@ -206,16 +268,6 @@ public class Window implements GLFWWindowSizeCallbackI {
      */
     public static void setIcon(TextureData textureData) {
 
-        // Create GLFWImage from ressource
-        GLFWImage glfwImage = GLFWImage.malloc();
-        glfwImage.set(textureData.getWidth(), textureData.getHeight(), textureData.getData());
-
-        // Create GLFWImage-Buffer from GLFWImage
-        GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
-        imagebf.put(0, glfwImage);
-
-        // Set window textureData from GLFWImage-Buffer
-        GLFW.glfwSetWindowIcon(window, imagebf);
     }
 
     /**
@@ -256,10 +308,10 @@ public class Window implements GLFWWindowSizeCallbackI {
     }
 
     /**
-     * @return Is the window currently in fullscreen mode
+     * @return Current window type
      */
-    public static boolean isFullscreen() {
-        return fullscreen;
+    public static Type getType() {
+        return type;
     }
 
     /**
@@ -273,13 +325,10 @@ public class Window implements GLFWWindowSizeCallbackI {
 
     @Override
     public void invoke(long window, int width, int height) {
+        if (width == 0 || height == 0)
+            return;
 
-        // Update window stuff
-        recalcOrthoMatrix();
         SIZE.setSize(width, height);
-        aspect = 1.0f * width / height;
-
-        // Call listeners
-        WINDOW_LISTENERS.forEach((t) -> t.resolutionChanged(width, height, aspect));
+        resolutionChanged = true;
     }
 }
