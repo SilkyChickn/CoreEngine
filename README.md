@@ -80,5 +80,5 @@ All rights reserved.
 [vecmath-url]: https://mvnrepository.com/artifact/javax.vecmath/vecmath/1.5.2
 [license-img]: https://img.shields.io/badge/license-BSD-blue.svg?style=flat-square
 [maven-central-img]: https://img.shields.io/badge/maven--central-v.1.1.2-red.svg?style=flat-square
-[maven-central-url]: https://mvnrepository.com/artifact/io.github.suuirad/coreengine/1.1.1
+[maven-central-url]: https://mvnrepository.com/artifact/io.github.suuirad/coreengine/1.1.2
 [progress-img]: https://img.shields.io/badge/v.1.2.0-14%25-red.svg?style=flat-square
