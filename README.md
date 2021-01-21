@@ -33,7 +33,7 @@ compile group: 'io.github.suuirad', name: 'coreengine', version: '1.1.2'
 
 #### Manual
 
-For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.1/). Just download, what you need (javadoc/sources) and add it to your project.
+For manual installation, you can download the jar files [here](http://central.maven.org/maven2/io/github/suuirad/coreengine/1.1.2/). Just download, what you need (javadoc/sources) and add it to your project.
 
 ### Simple Game
 
