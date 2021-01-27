@@ -120,7 +120,7 @@ public class GUIPane {
      */
     public void setScaleX(float scaleX) {
         transform.setScaleX(scaleX);
-        text.setLineWidth(transform.getScaleX() * 2.0f);
+        text.setLineWidth(transform.getGlobalScaleX() * 2.0f);
     }
 
     /**

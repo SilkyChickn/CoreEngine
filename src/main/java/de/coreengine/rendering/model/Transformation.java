@@ -175,6 +175,18 @@ public class Transformation {
     }
 
     /**
+     * Get the global x scale of this transformation matrix. Performance intensive!
+     * 
+     * @return Global scale x
+     */
+    public float getGlobalScaleX() {
+        if (parent != null)
+            return this.localScaleMat.m00 * this.parent.getGlobalScaleX();
+        else
+            return this.localScaleMat.m00;
+    }
+
+    /**
      * @return Y Scale of the transformation
      */
     public float getScaleY() {
