@@ -42,14 +42,22 @@ import java.util.List;
  * @author Darius Dinger
  */
 public class GUIText {
+    public static enum Alignment {
+        CENTER, LEFT, RIGHT
+    }
+
     private static final float DEFAULT_PADDING = Configuration.getValuef("GUI_TEXT_DEFAULT_PADDING");
     private static final float DEFAULT_FONT_SIZE = Configuration.getValuef("GUI_TEXT_DEFAULT_FONT_SIZE");
+    private static final String DEFAULT_ALIGNMENT = Configuration.getValues("GUI_TEXT_DEFAULT_ALIGNMENT");
 
     // Text of the GUIText
     private String text = "";
 
     // Font of the text
     private String font;
+
+    // Text alignment
+    private Alignment alignment = Alignment.valueOf(DEFAULT_ALIGNMENT);
 
     // Size of the font
     private float fontSize = DEFAULT_FONT_SIZE;
@@ -107,6 +115,17 @@ public class GUIText {
     }
 
     /**
+     * Setting the text alignment. Text will be aligned CENTERED, on the RIGHT or
+     * LEFT edge of the GUIPane (note the padding).
+     * 
+     * @param alignment New alignment
+     */
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
+        recreateChars();
+    }
+
+    /**
      * Recreating all characters to render
      */
     private void recreateChars() {
@@ -118,12 +137,17 @@ public class GUIText {
 
         for (int i = 0; i < text.length(); i++) {
             int ascii = text.charAt(i);
+            Character c = AssetDatabase.getFont(font).getCharacter(ascii);
+
+            // Check if char exist in font
+            if (c == null) {
+                Logger.warn("Char not found", "Character '" + text.charAt(i) + "' not found in the font! (Skipping)");
+                continue;
+            }
 
             // Next line?
-            if (cursor > lineWidth - padding || ascii == 10) {
-                for (GUIChar lineChar : lineChars) {
-                    lineChar.getOffset().x -= cursor / 2.0f;
-                }
+            if (cursor + c.getAdvancex() * fontSize > lineWidth - padding || ascii == 10) {
+                alignChars(lineChars, cursor);
 
                 line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
                 cursor = 0;
@@ -132,14 +156,6 @@ public class GUIText {
 
                 if (ascii == 10)
                     continue;
-            }
-
-            Character c = AssetDatabase.getFont(font).getCharacter(ascii);
-
-            // Check if char exist in font
-            if (c == null) {
-                Logger.warn("Char not found", "Character '" + text.charAt(i) + "' not found in the font! (Skipping)");
-                continue;
             }
 
             // Transform char
@@ -154,9 +170,7 @@ public class GUIText {
         }
 
         // Center last line horizontal
-        for (GUIChar lineChar : lineChars) {
-            lineChar.getOffset().x -= cursor / 2.0f;
-        }
+        alignChars(lineChars, cursor);
 
         // Center all chars vertical
         line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
@@ -164,6 +178,28 @@ public class GUIText {
         for (int i = 0; i < textChars.size(); i++) {
             textChars.get(i).getOffset().y -= line / 2.0f;
             chars[i] = textChars.get(i);
+        }
+    }
+
+    /**
+     * Align chars of a line horizontal, by the selected alignment.
+     * 
+     * @param lineChars Chars to align
+     * @param cursor    Cursor offset
+     */
+    private void alignChars(List<GUIChar> lineChars, float cursor) {
+        for (GUIChar lineChar : lineChars) {
+            switch (alignment) {
+                case CENTER:
+                    lineChar.getOffset().x += cursor / -2.0f;
+                    break;
+                case LEFT:
+                    lineChar.getOffset().x += lineWidth / -2.0f + padding / 2.0f;
+                    break;
+                case RIGHT:
+                    lineChar.getOffset().x += -cursor - padding / 2.0f + lineWidth / 2.0f;
+                    break;
+            }
         }
     }
 
@@ -201,6 +237,7 @@ public class GUIText {
      */
     public void setPadding(float padding) {
         this.padding = padding;
+        recreateChars();
     }
 
     /**
