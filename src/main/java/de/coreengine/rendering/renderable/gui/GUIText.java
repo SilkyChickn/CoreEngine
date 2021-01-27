@@ -146,7 +146,7 @@ public class GUIText {
             }
 
             // Next line?
-            if (cursor + c.getAdvancex() * fontSize > lineWidth - padding || ascii == 10) {
+            if (cursor + c.getAdvancex() * fontSize > lineWidth - (padding * lineWidth) || ascii == 10) {
                 alignChars(lineChars, cursor);
 
                 line -= AssetDatabase.getFont(font).getLineHeight() * fontSize;
@@ -194,10 +194,10 @@ public class GUIText {
                     lineChar.getOffset().x += cursor / -2.0f;
                     break;
                 case LEFT:
-                    lineChar.getOffset().x += lineWidth / -2.0f + padding / 2.0f;
+                    lineChar.getOffset().x += lineWidth / -2.0f + (padding * lineWidth) / 2.0f;
                     break;
                 case RIGHT:
-                    lineChar.getOffset().x += -cursor - padding / 2.0f + lineWidth / 2.0f;
+                    lineChar.getOffset().x += -cursor - (padding * lineWidth) / 2.0f + lineWidth / 2.0f;
                     break;
             }
         }
