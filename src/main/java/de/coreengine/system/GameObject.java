@@ -143,7 +143,7 @@ public abstract class GameObject {
      * another GameObject as child. If the GameObject gets removed and readded, the
      * method will be called again.
      */
-    private void onAdd() {
+    protected void onAdd() {
     }
 
     /**
@@ -151,7 +151,7 @@ public abstract class GameObject {
      * or its parent GameObject (if it had one). If the GameObject gets added and
      * removed again, the method will be called again.
      */
-    private void onRemove() {
+    protected void onRemove() {
     }
 
     /**
