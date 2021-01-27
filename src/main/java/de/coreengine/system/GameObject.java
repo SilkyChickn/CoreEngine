@@ -100,7 +100,24 @@ public abstract class GameObject {
         } catch (InterruptedException ex) {
             Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while updating childs!");
         }
+    }
 
+    /**
+     * This method gets called every frame when the game is paused before the render
+     * method.
+     */
+    public void onPauseUpdate() {
+        try {
+            childsSem.acquire();
+            childs.forEach((child) -> {
+                if (!child.initialized)
+                    child.onInit();
+                child.onPauseUpdate();
+            });
+            childsSem.release();
+        } catch (InterruptedException ex) {
+            Logger.err("Interrupted Exception", "An Interrupted exception occurs " + "while pause updating childs!");
+        }
     }
 
     /**

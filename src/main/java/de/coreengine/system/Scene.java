@@ -68,6 +68,13 @@ public class Scene {
     }
 
     /**
+     * Pause updating scene
+     */
+    public void pauseUpdate() {
+        rootGameObject.onPauseUpdate();
+    }
+
+    /**
      * Rendering scene
      */
     public void render() {

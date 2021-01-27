@@ -58,6 +58,9 @@ public class Game {
     // Time since last sync
     private static float tsls = 0;
 
+    // Is game paused
+    private static boolean paused = false;
+
     // Scenes of the game
     private static List<Scene> scenes = new LinkedList<>();
     private static Semaphore scenesSem = new Semaphore(1);
@@ -180,7 +183,11 @@ public class Game {
                 }
             }
 
-            curScene.update();
+            if (paused)
+                curScene.pauseUpdate();
+            else
+                curScene.update();
+
             curScene.render();
         }
 
@@ -191,6 +198,22 @@ public class Game {
         FrameTimer.update();
 
         Window.update();
+    }
+
+    /**
+     * Set the game in paused state or the other way round.
+     * 
+     * @param paused Should game be paused
+     */
+    public static void setPaused(boolean paused) {
+        Game.paused = paused;
+    }
+
+    /**
+     * @return Is the game currently paused.
+     */
+    public static boolean isPaused() {
+        return paused;
     }
 
     /**
