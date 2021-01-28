@@ -62,10 +62,10 @@ public class TPCamera extends GameObject {
     private Camera camera = new Camera();
 
     // Limits for the distance
-    private float[] distanceLimit = DEFAULT_DISTANCE_LIMIT;
+    private float[] distanceLimit = DEFAULT_DISTANCE_LIMIT.clone();
 
     // Limits for the pitch
-    private float[] pitchLimit = DEFAULT_PITCH_LIMIT;
+    private float[] pitchLimit = DEFAULT_PITCH_LIMIT.clone();
 
     // State variables
     private float distance = DEFAULT_DISTANCE, pitch = DEFAULT_PITCH, rotation;

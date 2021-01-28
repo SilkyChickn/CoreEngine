@@ -68,7 +68,7 @@ public class TerrainConfig {
     private String blendMap = Material.TEXTURE_BLACK;
 
     // Terrains lod stage area sizes
-    private float[] lodRanges = DEFAULT_LOD_RANGES;
+    private float[] lodRanges = DEFAULT_LOD_RANGES.clone();
 
     // Terrains vertical scaling in terrain space
     private float amplitude = DEFAULT_AMPLITUDE;

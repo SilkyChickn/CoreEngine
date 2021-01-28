@@ -38,11 +38,11 @@ import javax.vecmath.Vector3f;
  * @author Darius Dinger
  */
 public class PointLight extends AmbientLight {
-    private static Vector2f DEFAULT_ATTENUATION = new Vector2f(Configuration.getValuef("LIGHT_DEFAULT_LINEAR_DROP"),
-            Configuration.getValuef("LIGHT_DEFAULT_SQUARED_DROP"));
+    private static float DEFAULT_LINEAR_DROP = Configuration.getValuef("LIGHT_DEFAULT_LINEAR_DROP");
+    private static float DEFAULT_SQUARED_DROP = Configuration.getValuef("LIGHT_DEFAULT_SQUARED_DROP");
 
     // Lights attenuation (x = linear drop, y = squared drop)
-    private Vector2f attenuation = DEFAULT_ATTENUATION;
+    private Vector2f attenuation = new Vector2f(DEFAULT_LINEAR_DROP, DEFAULT_SQUARED_DROP);
 
     // Position of the point light in the 3d world
     private Vector3f position = new Vector3f();

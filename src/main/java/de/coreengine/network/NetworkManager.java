@@ -140,6 +140,24 @@ public class NetworkManager {
     }
 
     /**
+     * Stops every connection
+     * 
+     * @param message Message to send to connections before closing
+     */
+    public static void stop(String message) {
+        switch (state) {
+            case CLIENT:
+                TCPClient.stop(message);
+                break;
+            case HOSTER:
+                TCPClient.stop(message);
+            case DEDICATED_SERVER:
+                TCPServer.stop(message);
+            case SINGLEPLAYER:
+        }
+    }
+
+    /**
      * Updating the network manager
      */
     public static void sync() {

@@ -195,7 +195,7 @@ public class TCPClient implements Runnable {
      * 
      * @param message Message to send to server before close
      */
-    public void stop(String message) {
+    static void stop(String message) {
 
         // Sending exit message to server
         writer.println(message);
