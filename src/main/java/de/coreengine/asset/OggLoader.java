@@ -27,12 +27,15 @@
  */
 package de.coreengine.asset;
 
+import de.coreengine.util.BufferUtils;
 import de.coreengine.util.Logger;
 import de.coreengine.util.gl.MemoryDumper;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 
@@ -46,13 +49,14 @@ public class OggLoader {
     /**
      * Loading ogg sound file and storing into asset database
      *
-     * @param file Ogg sound file
+     * @param file         Ogg sound file
+     * @param fromResouces Load sound from resources
      */
-    public static void loadSound(String file) {
+    public static void loadSound(String file, boolean fromResouces) {
         if (AssetDatabase.getSound(file) != 0)
             return;
 
-        ShortBuffer audioData;
+        ShortBuffer audioData = null;
         int channels, sampleRate;
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -61,7 +65,17 @@ public class OggLoader {
             IntBuffer sampleRateBuffer = stack.mallocInt(1);
 
             // Load sound file into buffers
-            audioData = STBVorbis.stb_vorbis_decode_filename(file, channelsBuffer, sampleRateBuffer);
+            if (fromResouces) {
+                ByteBuffer buffer = BufferUtils.ioResourceToByteBuffer(file, 8 * 1024);
+                if (buffer == null) {
+                    Logger.warn("Error by loading sound", "The OGG file " + file + " could not be found!");
+                    return;
+                }
+                audioData = STBVorbis.stb_vorbis_decode_memory(buffer, channelsBuffer, sampleRateBuffer);
+            } else {
+                audioData = STBVorbis.stb_vorbis_decode_filename(file, channelsBuffer, sampleRateBuffer);
+            }
+
             if (audioData == null) {
                 Logger.warn("Error by loading audio", "The audio file " + file + " could not be loaded!");
             }
@@ -69,6 +83,10 @@ public class OggLoader {
             // Get data from buffers
             channels = channelsBuffer.get();
             sampleRate = sampleRateBuffer.get();
+
+        } catch (IOException e) {
+            Logger.warn("Error by loading audio", "The audio file " + file + " could not be loaded!");
+            return;
         }
 
         // Getting format (Mono/Stereo)

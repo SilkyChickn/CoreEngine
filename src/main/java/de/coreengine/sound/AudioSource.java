@@ -27,6 +27,7 @@
  */
 package de.coreengine.sound;
 
+import de.coreengine.asset.AssetDatabase;
 import de.coreengine.util.gl.MemoryDumper;
 import org.lwjgl.openal.AL10;
 
@@ -53,7 +54,7 @@ public class AudioSource {
      * 
      * @param sound Sound to play from source
      */
-    public void play(int sound) {
+    public void play(String sound) {
         setSound(sound);
         play();
     }
@@ -61,8 +62,8 @@ public class AudioSource {
     /**
      * @param sound Setting sound to play from this source
      */
-    public void setSound(int sound) {
-        AL10.alSourcei(id, AL10.AL_BUFFER, sound);
+    public void setSound(String sound) {
+        AL10.alSourcei(id, AL10.AL_BUFFER, AssetDatabase.getSound(sound));
     }
 
     /**
