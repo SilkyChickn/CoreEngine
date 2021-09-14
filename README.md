@@ -57,9 +57,9 @@ Now you are ready to go, to create any game you want!
 
 ## Links
 
-> Example Code: [https://github.com/Suuirad/CoreEngine/tree/master/examples](https://github.com/Suuirad/CoreEngine/tree/master/examples)
+> Example Code: [https://github.com/SilkyChickn/CoreEngine/tree/master/examples](https://github.com/SilkyChickn/CoreEngine/tree/master/examples)
 
-> JavaDoc: [https://suuirad.github.io/CoreEngine/](https://suuirad.github.io/CoreEngine/)
+> JavaDoc: [https://silkychickn.github.io/CoreEngine/](https://silkychickn.github.io/CoreEngine/)
 
 > Snapshots: [https://oss.sonatype.org/content/repositories/snapshots/io/github/suuirad/coreengine/](https://oss.sonatype.org/content/repositories/snapshots/io/github/suuirad/coreengine/)
 
