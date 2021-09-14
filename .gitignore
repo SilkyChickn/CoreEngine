@@ -1,0 +1,19 @@
+# Various
+.vscode
+.settings
+src/test
+
+# Java stuff
+target
+GenerateJavaDoc.bat
+.classpath
+.project
+
+# Docs
+*.ods
+*.aux
+*.log
+*.gz
+*.tex
+*.cls
+*.odg
