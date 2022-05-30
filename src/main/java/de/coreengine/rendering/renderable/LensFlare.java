@@ -85,7 +85,7 @@ public class LensFlare {
     }
 
     /**
-     * @param size New brightness of the lens flare textures
+     * @param brightness New brightness of the lens flare textures
      */
     public void setBrightness(float brightness) {
         this.brightness = brightness;

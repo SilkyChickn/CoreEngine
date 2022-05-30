@@ -71,11 +71,12 @@ public class LensFlareShader extends Shader {
     /**
      * Prepare next lens flare tile
      * 
-     * @param tex  Next lens flare texture
-     * @param size Next lens flare size
-     * @param x    Next lens flare x position
-     * @param y    Next lens flare y position
-     * @param z    Next lens flare z position
+     * @param tex        Next lens flare texture
+     * @param size       Next lens flare size
+     * @param x          Next lens flare x position
+     * @param y          Next lens flare y position
+     * @param z          Next lens flare z position
+     * @param brightness Next lens flares brightness
      */
     public void prepareLensFlareTile(int tex, float size, float x, float y, float z, float brightness) {
         bindTexture(tex, lensFlareTextureUnit, GL11.GL_TEXTURE_2D);
