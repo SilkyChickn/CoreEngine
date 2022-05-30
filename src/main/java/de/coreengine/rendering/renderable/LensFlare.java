@@ -37,12 +37,15 @@ import de.coreengine.util.Toolbox;
  */
 public class LensFlare {
     private static final float DEFAULT_SIZE = Configuration.getValuef("LENS_FLARE_DEFAULT_SIZE");
+    private static final float DEFAULT_BRIGHTNESS = Configuration.getValuef("LENS_FLARE_DEFAULT_BRIGHTNESS");
 
     // Lens flare textures to place onto the lens flare vector
     private int[] textures = new int[0];
 
     // Size of the lens flare textures
     private float size = DEFAULT_SIZE;
+
+    private float brightness = DEFAULT_BRIGHTNESS;
 
     /**
      * Setting lens flare textures to place onto the lens flare vector
@@ -72,6 +75,20 @@ public class LensFlare {
      */
     public void setSize(float size) {
         this.size = size;
+    }
+
+    /**
+     * @return Brightness of the lens flare textures
+     */
+    public float getBrightness() {
+        return brightness;
+    }
+
+    /**
+     * @param size New brightness of the lens flare textures
+     */
+    public void setBrightness(float brightness) {
+        this.brightness = brightness;
     }
 
     /**

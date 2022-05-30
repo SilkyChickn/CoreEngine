@@ -50,6 +50,9 @@ public abstract class Shader {
     // Id of the shader program
     private final int program;
 
+    // Name of the shader
+    private String shaderName = "NoName";
+
     /**
      * Creates new Shader and creating shader program in opengl
      */
@@ -86,6 +89,7 @@ public abstract class Shader {
     protected final void addShader(String[] shaderCode, int shaderType, String name) {
 
         // Create shader
+        this.shaderName = name;
         int id = GL20.glCreateShader(shaderType);
 
         // Store shader code into shader and compile the shader
@@ -123,7 +127,8 @@ public abstract class Shader {
         stop();
 
         if (uniformLocation == -1) {
-            Logger.warn("Uniform not found", "The uniform " + uniform + " could" + "not be found in a shader!");
+            Logger.warn("Uniform not found",
+                    "The uniform " + uniform + " could" + "not be found in the " + shaderName + " shader!");
         }
 
         return uniformLocation;

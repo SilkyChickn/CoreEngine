@@ -25,7 +25,7 @@ void main(void){
 	tan_frag_in = normalize((transMat * vec4(tangent, 0.0)).xyz);
 	nrm_frag_in = normalize((transMat * vec4(normal, 0.0)).xyz);
 	bit_frag_in = normalize(cross(nrm_frag_in, tan_frag_in));
-	
+	 
 	gl_ClipDistance[0] = dot(pos_frag_in, clipPlane);
 	gl_Position = vpMat * pos_frag_in;
 }

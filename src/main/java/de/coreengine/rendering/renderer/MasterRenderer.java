@@ -326,6 +326,9 @@ public class MasterRenderer {
      */
     private static void render2D() {
 
+        if (lensFlare != null)
+            LENS_FLARE_RENDERER.prepare(GBUFFER);
+
         // Rendering 2d guis into output gbuffer and blit to screen
         OUTPUT_GBUFFER.bind(GL30.GL_COLOR_ATTACHMENT0);
 

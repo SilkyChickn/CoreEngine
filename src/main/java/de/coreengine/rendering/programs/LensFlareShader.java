@@ -43,7 +43,7 @@ public class LensFlareShader extends Shader {
 
     private final int lensFlareTextureUnit = 0;
 
-    private int sizeLoc, posLoc, pMatLoc;
+    private int sizeLoc, posLoc, pMatLoc, brightnessLoc;
 
     @Override
     protected void addShaders() {
@@ -65,6 +65,7 @@ public class LensFlareShader extends Shader {
         posLoc = getUniformLocation("pos");
         sizeLoc = getUniformLocation("size");
         pMatLoc = getUniformLocation("pMat");
+        brightnessLoc = getUniformLocation("brightness");
     }
 
     /**
@@ -76,10 +77,11 @@ public class LensFlareShader extends Shader {
      * @param y    Next lens flare y position
      * @param z    Next lens flare z position
      */
-    public void prepareLensFlareTile(int tex, float size, float x, float y, float z) {
+    public void prepareLensFlareTile(int tex, float size, float x, float y, float z, float brightness) {
         bindTexture(tex, lensFlareTextureUnit, GL11.GL_TEXTURE_2D);
         setUniform(posLoc, x, y, z);
         setUniform(sizeLoc, size);
+        setUniform(brightnessLoc, brightness);
     }
 
     /**

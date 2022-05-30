@@ -28,11 +28,17 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.framework.Window;
+import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.model.singletons.Quad2D;
 import de.coreengine.rendering.programs.LensFlareShader;
 import de.coreengine.rendering.renderable.LensFlare;
+
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
+
+import java.nio.FloatBuffer;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector2f;
@@ -48,6 +54,10 @@ public class LensFlareRenderer {
     private LensFlareShader shader = new LensFlareShader();
     private Vector4f sunPos = new Vector4f();
     private Vector2f fromSun = new Vector2f();
+    private boolean sunVisible;
+
+    // For checking if sun is visible
+    private static final FloatBuffer SUN_PICK_DATA = BufferUtils.createFloatBuffer(4);
 
     /**
      * Creating new lens flare renderer
@@ -66,6 +76,29 @@ public class LensFlareRenderer {
         shader.stop();
     }
 
+    void prepare(GBuffer gBuffer) {
+
+        // Calculate sun position on screen
+        Matrix4f vpMat = MasterRenderer.getCamera().getViewProjectionMatrix();
+        sunPos.set(MasterRenderer.getSun().getPosition().x, MasterRenderer.getSun().getPosition().y,
+                MasterRenderer.getSun().getPosition().z, 1.0f);
+        vpMat.transform(sunPos);
+        sunPos.x /= sunPos.w;
+        sunPos.y /= sunPos.w;
+
+        // Check if sun is visible
+        gBuffer.bind(GL30.GL_COLOR_ATTACHMENT7);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        GL11.glReadPixels((int) (Window.getWidth() * (sunPos.x * 0.5f + 0.5f)),
+                (int) (Window.getHeight() * (sunPos.y * 0.5f + 0.5f)),
+                1, 1,
+                GL11.GL_RGBA,
+                GL11.GL_FLOAT, SUN_PICK_DATA);
+        sunVisible = SUN_PICK_DATA.get(0) != 0 || SUN_PICK_DATA.get(1) != 0 ||
+                SUN_PICK_DATA.get(2) != 0;
+        gBuffer.unbind();
+    }
+
     /**
      * Rendering lens flare effect onto the bound framebuffer
      * 
@@ -81,19 +114,9 @@ public class LensFlareRenderer {
         model.getVao().enableAttributes();
         model.getIndexBuffer().bind();
 
-        // Calculate sun position on screen
-        Matrix4f vpMat = MasterRenderer.getCamera().getViewProjectionMatrix();
-        sunPos.set(MasterRenderer.getSun().getPosition().x, MasterRenderer.getSun().getPosition().y,
-                MasterRenderer.getSun().getPosition().z, 1.0f);
-
-        vpMat.transform(sunPos);
-
-        sunPos.x /= sunPos.w;
-        sunPos.y /= sunPos.w;
-
         // Check if sun is visible, else dont render
         if (sunPos.w < 0.0f || sunPos.x < -1.0f || sunPos.x > 1.0f || sunPos.y < -1.0f || sunPos.y > 1.0f
-                || !MasterRenderer.getSun().isLensFlareEnabled()) {
+                || !MasterRenderer.getSun().isLensFlareEnabled() || !sunVisible) {
             return;
         }
 
@@ -112,9 +135,11 @@ public class LensFlareRenderer {
             float x = sunPos.x + fromSun.x * delta * i;
             float y = sunPos.y + fromSun.y * delta * i;
 
+            float brightness = lensFlare.getBrightness() * (1.0f * i / lensFlare.getTextures().length);
+
             // Setting next lens flare
             shader.prepareLensFlareTile(lensFlare.getTextures()[i], lensFlare.getSize(), x, y,
-                    1.0f - (i + 1) * delta / 2.0f);
+                    1.0f - (i + 1) * delta / 2.0f, brightness);
 
             // Render tile
             GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
