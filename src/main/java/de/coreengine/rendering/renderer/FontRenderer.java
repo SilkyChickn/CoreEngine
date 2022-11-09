@@ -67,7 +67,7 @@ public class FontRenderer {
                 AssetDatabase.getFont(t.getText().getFont()).getVao().bind();
                 AssetDatabase.getFont(t.getText().getFont()).getVao().enableAttributes();
 
-                shader.prepareText(t);
+                shader.prepareText(t, cam);
 
                 for (GUIChar c : t.getText().getChars()) {
                     c.getIndex().bind();

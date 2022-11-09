@@ -29,6 +29,7 @@ package de.coreengine.rendering.programs;
 
 import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
+import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.gui.GUIChar;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.util.Toolbox;
@@ -46,7 +47,7 @@ public class FontShader extends Shader {
 
     private final int fontAtlasUnit = 0;
 
-    private int mMatTextLoc, vpMatLoc, offsetLoc, scaleLoc, fontColorLoc;
+    private int mMatTextLoc, vpMatLoc, offsetLoc, scaleLoc, fontColorLoc, additionalScaleLoc;
 
     @Override
     protected void addShaders() {
@@ -71,6 +72,7 @@ public class FontShader extends Shader {
         scaleLoc = getUniformLocation("scale");
         vpMatLoc = getUniformLocation("vpMat");
         fontColorLoc = getUniformLocation("fontColor");
+        additionalScaleLoc = getUniformLocation("additionalScale");
     }
 
     /**
@@ -85,12 +87,21 @@ public class FontShader extends Shader {
      * 
      * @param pane Pane that contains the text
      */
-    public void prepareText(GUIPane pane) {
+    public void prepareText(GUIPane pane, Camera cam) {
         bindTexture(AssetDatabase.getTexture(AssetDatabase.getFont(pane.getText().getFont()).getTextureAtlas()),
                 fontAtlasUnit, GL11.GL_TEXTURE_2D);
-        setUniform(mMatTextLoc, pane.getTransMat());
         setUniform(scaleLoc, pane.getText().getFontSize());
         setUniform(fontColorLoc, pane.getText().getFontColor());
+
+        if (pane.isFacingCamera()) {
+            setUniform(mMatTextLoc, pane.getTransMatFacing(cam));
+            setUniform(additionalScaleLoc, pane.getScaleY(), pane.getScaleY());
+        } else {
+            setUniform(mMatTextLoc, pane.getTransMat());
+            setUniform(additionalScaleLoc, 1, 1);
+        }
+
+        setUniform(additionalScaleLoc, pane.getText().getFontColor());
     }
 
     /**

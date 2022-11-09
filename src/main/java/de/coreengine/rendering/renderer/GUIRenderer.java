@@ -72,7 +72,7 @@ public class GUIRenderer {
         guis.forEach(gui -> {
 
             // Render pane
-            shader.prepareGui(gui);
+            shader.prepareGui(gui, cam);
             GL11.glDrawElements(GL11.GL_TRIANGLES, model.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
         });
 

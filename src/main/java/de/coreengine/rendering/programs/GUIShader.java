@@ -30,6 +30,7 @@ package de.coreengine.rendering.programs;
 import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.util.Toolbox;
 import org.lwjgl.opengl.GL11;
@@ -46,7 +47,7 @@ public class GUIShader extends Shader {
 
     private final int colorTextureUnit = 0;
 
-    private int transMatLoc, vpMatLoc, colorLoc, textureSetLoc, pickColorLoc;
+    private int transMatLoc, vpMatLoc, colorLoc, textureSetLoc, pickColorLoc, additionalScaleLoc;
 
     @Override
     protected void addShaders() {
@@ -70,6 +71,7 @@ public class GUIShader extends Shader {
         transMatLoc = getUniformLocation("transMat");
         textureSetLoc = getUniformLocation("textureSet");
         vpMatLoc = getUniformLocation("vpMat");
+        additionalScaleLoc = getUniformLocation("additionalScale");
     }
 
     /**
@@ -77,10 +79,17 @@ public class GUIShader extends Shader {
      * 
      * @param gui Next gui to render
      */
-    public void prepareGui(GUIPane gui) {
-        setUniform(transMatLoc, gui.getTransMat());
+    public void prepareGui(GUIPane gui, Camera cam) {
         setUniform(colorLoc, gui.getColor());
         setUniform(pickColorLoc, gui.getPickColor());
+
+        if (gui.isFacingCamera()) {
+            setUniform(transMatLoc, gui.getTransMatFacing(cam));
+            setUniform(additionalScaleLoc, gui.getScaleY(), gui.getScaleY());
+        } else {
+            setUniform(transMatLoc, gui.getTransMat());
+            setUniform(additionalScaleLoc, 1, 1);
+        }
 
         if (gui.getTexture() != Material.TEXTURE_BLACK) {
             bindTexture(AssetDatabase.getTexture(gui.getTexture()), colorTextureUnit, GL11.GL_TEXTURE_2D);

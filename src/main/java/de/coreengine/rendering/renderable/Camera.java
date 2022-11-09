@@ -424,6 +424,33 @@ public class Camera {
     }
 
     /**
+     * Gets the current rotation matrix around the x axis
+     * 
+     * @return X axis rotation matrix
+     */
+    public Matrix4f getRotX() {
+        return rotX;
+    }
+
+    /**
+     * Gets the current rotation matrix around the y axis
+     * 
+     * @return Y axis rotation matrix
+     */
+    public Matrix4f getRotY() {
+        return rotY;
+    }
+
+    /**
+     * Gets the current rotation matrix around the z axis
+     * 
+     * @return Z axis rotation matrix
+     */
+    public Matrix4f getRotZ() {
+        return rotZ;
+    }
+
+    /**
      * Getting cameras facing matrix, where the object every time facing the camera
      *
      * @return Facing matrix of the camera

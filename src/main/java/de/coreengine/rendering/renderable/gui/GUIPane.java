@@ -30,6 +30,7 @@ package de.coreengine.rendering.renderable.gui;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.model.Transformation;
+import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.util.Toolbox;
 
@@ -55,6 +56,9 @@ public class GUIPane {
 
     // Rendering text of the pane?
     private boolean renderText = false;
+
+    // Is the gui pane always facing the camera?
+    private boolean facingCamera = false;
 
     /**
      * Creating new GUI Pane and setting its parent or null, if no parent gui exist
@@ -293,6 +297,19 @@ public class GUIPane {
     }
 
     /**
+     * @return Transformation matrix of the gui, that always facing the camera
+     */
+    public float[] getTransMatFacing(Camera cam) {
+        float[] transformFloats = Toolbox.matrixToFloatArray(cam.getFacingMatrix());
+        transformFloats[12] = getPosX();
+        transformFloats[13] = getPosY();
+        transformFloats[14] = getPosZ();
+        transformFloats[15] = 1;
+
+        return transformFloats;
+    }
+
+    /**
      * @return Picking color for this gui
      */
     public Color getPickColor() {
@@ -304,5 +321,24 @@ public class GUIPane {
      */
     public GUIText getText() {
         return text;
+    }
+
+    /**
+     * When facing is enabled, the gui pane is always facing the camera. Rotations
+     * of the gui element then became redundant!<br>
+     * Currenly this behave a little buggy with parent gui objects, so its not
+     * recommended to use this with parent objects.
+     * 
+     * @param facingCamera Should the gui pane always facing the camera
+     */
+    public void setFacingCamera(boolean facingCamera) {
+        this.facingCamera = facingCamera;
+    }
+
+    /**
+     * @return True if the gui pane always facing the camera, else false
+     */
+    public boolean isFacingCamera() {
+        return facingCamera;
     }
 }

@@ -9,6 +9,7 @@ out vec3 norm_frag_in;
 
 uniform vec2 offset;
 uniform float scale;
+uniform vec2 additionalScale;
 
 uniform mat4 mMatText;
 
@@ -25,7 +26,7 @@ void main(void){
 	tex_frag_in = texCoord;
 	norm_frag_in = normalize((transMat * vec4(0, 0, -1, 1)).xyz);
 	
-	vec2 charPos = position * scale +offset;
+	vec2 charPos = (position * scale + offset) * additionalScale;
 	
 	pos_frag_in = (transMat * vec4(charPos, 0.1, 1.0)).xyz;
 	
