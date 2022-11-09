@@ -133,7 +133,7 @@ public class Material {
          */
         public float shineDamping = Configuration.getValuef("MATERIAL_DEFAULT_SHINE_DAMPING");
 
-        static {
+        public static void init() {
 
                 // Load default textures
                 TextureLoader.loadTextureFile(TEXTURE_WHITE, true, GL11.GL_LINEAR, true);

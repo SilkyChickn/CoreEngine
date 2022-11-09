@@ -33,6 +33,7 @@ import de.coreengine.framework.Keyboard;
 import de.coreengine.framework.Mouse;
 import de.coreengine.framework.Window;
 import de.coreengine.network.NetworkManager;
+import de.coreengine.rendering.model.Material;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.rendering.renderer.PostProcesser;
 import de.coreengine.sound.AL;
@@ -95,6 +96,7 @@ public class Game {
         // Init engine
         MasterRenderer.init();
         PostProcesser.init();
+        Material.init();
     }
 
     /**
