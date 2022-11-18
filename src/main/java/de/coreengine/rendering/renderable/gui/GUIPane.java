@@ -298,6 +298,8 @@ public class GUIPane {
 
     /**
      * @return Transformation matrix of the gui, that always facing the camera
+     * 
+     * @param cam Camera that the transmat should face to
      */
     public float[] getTransMatFacing(Camera cam) {
         float[] transformFloats = Toolbox.matrixToFloatArray(cam.getFacingMatrix());

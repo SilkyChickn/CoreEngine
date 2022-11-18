@@ -271,7 +271,7 @@ public abstract class GameObject {
     /**
      * Should the gameobject and all childrens get updated
      * 
-     * @param shouldRender New value of should update
+     * @param shouldUpdate New value of should update
      */
     public void setShouldUpdate(boolean shouldUpdate) {
         this.shouldUpdate = shouldUpdate;
@@ -280,7 +280,7 @@ public abstract class GameObject {
     /**
      * Should the gameobject and all childrens get syncronized
      * 
-     * @param shouldRender New value of should syncronize
+     * @param shouldSyncronize New value of should syncronize
      */
     public void setShouldSyncronize(boolean shouldSyncronize) {
         this.shouldSyncronize = shouldSyncronize;

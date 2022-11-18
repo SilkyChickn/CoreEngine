@@ -78,6 +78,7 @@ public class GUIShader extends Shader {
      * Prepare shader for next gui to render
      * 
      * @param gui Next gui to render
+     * @param cam Current set camera
      */
     public void prepareGui(GUIPane gui, Camera cam) {
         setUniform(colorLoc, gui.getColor());

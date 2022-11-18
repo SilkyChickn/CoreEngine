@@ -86,6 +86,7 @@ public class FontShader extends Shader {
      * Prepare shader for next text to render
      * 
      * @param pane Pane that contains the text
+     * @param cam  Current set camera
      */
     public void prepareText(GUIPane pane, Camera cam) {
         bindTexture(AssetDatabase.getTexture(AssetDatabase.getFont(pane.getText().getFont()).getTextureAtlas()),
