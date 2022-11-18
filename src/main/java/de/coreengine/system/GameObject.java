@@ -55,6 +55,12 @@ public abstract class GameObject {
     // Is the game object initialized
     private boolean initialized = false;
 
+    // Variables that define which callback will be called of this gameobject
+    // When false the callback and also the childrens callbacks will not be called
+    private boolean shouldUpdate = true;
+    private boolean shouldRender = true;
+    private boolean shouldSyncronize = true;
+
     /**
      * This method gets called once in the GameObject life cycle. Even if the
      * GameObject gets removed and readded, this method dont gets called again. Its
@@ -76,7 +82,8 @@ public abstract class GameObject {
             childs.forEach((child) -> {
                 if (!child.initialized)
                     child.onInit();
-                child.onSyncronize();
+                if (child.shouldSyncronize)
+                    child.onSyncronize();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -94,7 +101,8 @@ public abstract class GameObject {
             childs.forEach((child) -> {
                 if (!child.initialized)
                     child.onInit();
-                child.onUpdate();
+                if (child.shouldUpdate)
+                    child.onUpdate();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -112,7 +120,8 @@ public abstract class GameObject {
             childs.forEach((child) -> {
                 if (!child.initialized)
                     child.onInit();
-                child.onPauseUpdate();
+                if (child.shouldUpdate)
+                    child.onPauseUpdate();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -130,7 +139,8 @@ public abstract class GameObject {
             childs.forEach((child) -> {
                 if (!child.initialized)
                     child.onInit();
-                child.onRender();
+                if (child.shouldRender)
+                    child.onRender();
             });
             childsSem.release();
         } catch (InterruptedException ex) {
@@ -247,5 +257,32 @@ public abstract class GameObject {
      */
     protected void addActionToPhysicWorld(ActionInterface ai) {
         getScene().getPhysicWorld().addAction(ai);
+    }
+
+    /**
+     * Should the gameobject and all childrens get rendered
+     * 
+     * @param shouldRender New value of should render
+     */
+    public void setShouldRender(boolean shouldRender) {
+        this.shouldRender = shouldRender;
+    }
+
+    /**
+     * Should the gameobject and all childrens get updated
+     * 
+     * @param shouldRender New value of should update
+     */
+    public void setShouldUpdate(boolean shouldUpdate) {
+        this.shouldUpdate = shouldUpdate;
+    }
+
+    /**
+     * Should the gameobject and all childrens get syncronized
+     * 
+     * @param shouldRender New value of should syncronize
+     */
+    public void setShouldSyncronize(boolean shouldSyncronize) {
+        this.shouldSyncronize = shouldSyncronize;
     }
 }
