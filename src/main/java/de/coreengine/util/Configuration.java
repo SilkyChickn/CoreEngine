@@ -48,6 +48,8 @@ public class Configuration {
 
     /**
      * Initializing the configuration and (re)loading the config file
+     * 
+     * @param configFile Configfile in resources to load
      */
     public static void loadConfig(String configFile) {
 
