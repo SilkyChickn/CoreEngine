@@ -70,14 +70,22 @@ public class Game {
     /**
      * Initializing the game and all relevant libraries
      * 
-     * @param windowWidth  Initial width of the game window
-     * @param windowHeight Initial height of the game window
-     * @param windowTitle  Initial title of the game window
-     * @param windowType   Initial window type
-     * @param windowIcon   Icon of the window, or null for no icon
+     * @param windowWidth    Initial width of the game window
+     * @param windowHeight   Initial height of the game window
+     * @param windowTitle    Initial title of the game window
+     * @param windowType     Initial window type
+     * @param windowIcon     Icon of the window, or null for no icon
+     * @param configOverride Location of the engine configuration file in resources,
+     *                       or null to use default configuration
      */
     public static void init(int windowWidth, int windowHeight, String windowTitle, Window.Type windowType,
-            TextureData windowIcon) {
+            TextureData windowIcon, String configOverride) {
+
+        // Load configuration from defaults or override config
+        if (configOverride != null)
+            Configuration.loadConfig(configOverride);
+        else
+            Configuration.loadConfig();
 
         // Init glfw and create window
         GLFW.init();
