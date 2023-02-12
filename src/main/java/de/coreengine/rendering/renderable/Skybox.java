@@ -27,6 +27,8 @@
  */
 package de.coreengine.rendering.renderable;
 
+import de.coreengine.framework.Window;
+import de.coreengine.rendering.FrameBufferObject;
 import de.coreengine.util.Toolbox;
 
 import javax.vecmath.Matrix4f;
@@ -46,11 +48,23 @@ public class Skybox {
     private float rotation = 0.0f;
     private Matrix4f transMat = new Matrix4f();
 
+    // Fbo to store only the rendered skybox, to fade fog
+    private FrameBufferObject skyboxFbo;
+
     /**
      * Creating new skybox, init variables
      */
     public Skybox() {
         transMat.setIdentity();
+        recreateFbo();
+        Window.addWindowListener((x, y, a) -> recreateFbo());
+    }
+
+    /**
+     * (Re)creating water reflection/refraction fbos
+     */
+    private void recreateFbo() {
+        skyboxFbo = new FrameBufferObject((int) Window.getWidth(), (int) Window.getHeight(), false);
     }
 
     /**
@@ -61,6 +75,16 @@ public class Skybox {
             transMat.rotY((float) Math.toRadians(rotation));
             this.rotation = rotation;
         }
+    }
+
+    /**
+     * Fbo that stores the rendered skybox. Can be used f.e. to fade fog into the
+     * skybox.
+     * 
+     * @return Skybox fbo
+     */
+    public FrameBufferObject getSkyboxFbo() {
+        return skyboxFbo;
     }
 
     /**

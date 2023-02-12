@@ -47,6 +47,8 @@ public class Water {
     private static final float DEFAULT_SOFT_EDGE_DEPTH = Configuration.getValuef("WATER_DEFAULT_SOFT_EDGE_DEPTH");
     private static final float DEFAULT_QUALITY = Configuration.getValuef("WATER_DEFAULT_QUALITY");
     private static final float DEFAULT_TRANSPARENCY = Configuration.getValuef("WATER_DEFAULT_TRANSPARENCY");
+    private static final float DEFAULT_SHININESS = Configuration.getValuef("WATER_DEFAULT_SHININESS");
+    private static final float DEFAULT_SHINE_DAMPER = Configuration.getValuef("WATER_DEFAULT_SHINE_DAMPER");
 
     // Transformation matrix of the water
     private Matrix4f transMat = new Matrix4f();
@@ -74,6 +76,12 @@ public class Water {
 
     // Transparency of the water (ratio reflection/refraction)
     private float softEdgeDepth = DEFAULT_SOFT_EDGE_DEPTH;
+
+    // Shininess of the water for specular lighting
+    private float shininess = DEFAULT_SHININESS;
+
+    // Shine damping of the water for specular lighting
+    private float shineDamper = DEFAULT_SHINE_DAMPER;
 
     // Color of the water
     private final Color multiplicativeColor = new Color();
@@ -336,5 +344,41 @@ public class Water {
      */
     public void setTransparency(float transparency) {
         this.transparency = transparency;
+    }
+
+    /**
+     * Get shine damper for specular lighting
+     * 
+     * @return Water shine damper
+     */
+    public float getShineDamper() {
+        return shineDamper;
+    }
+
+    /**
+     * Set shine damper for specular lighting
+     * 
+     * @param shineDamper Water shine damper
+     */
+    public void setShineDamper(float shineDamper) {
+        this.shineDamper = shineDamper;
+    }
+
+    /**
+     * Get shininess for specular lighting
+     * 
+     * @return Water shininess
+     */
+    public float getShininess() {
+        return shininess;
+    }
+
+    /**
+     * Set shininess for specular lighting
+     * 
+     * @param shininess Water shininess
+     */
+    public void setShininess(float shininess) {
+        this.shininess = shininess;
     }
 }

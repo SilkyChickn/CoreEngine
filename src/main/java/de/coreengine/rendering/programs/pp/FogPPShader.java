@@ -37,9 +37,9 @@ import org.lwjgl.opengl.GL11;
  */
 public class FogPPShader extends PPShader {
 
-    private final int strengthTextureUnit = 2;
+    private final int strengthTextureUnit = 2, blendingTextureUnit = 3;
 
-    private int areaLoc, colorLoc;
+    private int areaLoc, colorLoc, blendingLoc;
 
     @Override
     protected String getPPFragShaderFile() {
@@ -50,7 +50,9 @@ public class FogPPShader extends PPShader {
     protected void setUniformLocations() {
         areaLoc = getUniformLocation("area");
         colorLoc = getUniformLocation("color");
+        blendingLoc = getUniformLocation("blending");
         bindTextureUnit("strengthTexture", strengthTextureUnit);
+        bindTextureUnit("blendingTexture", blendingTextureUnit);
     }
 
     /**
@@ -64,14 +66,26 @@ public class FogPPShader extends PPShader {
     }
 
     /**
+     * Setting blending texture, the fog will blend into this texture, when blending
+     * is enabled.
+     * 
+     * @param tex New blending texture
+     */
+    public void setBlendingTexture(int tex) {
+        bindTexture(tex, blendingTextureUnit, GL11.GL_TEXTURE_2D);
+    }
+
+    /**
      * Setting values for the fog shader
      * 
      * @param density  Fog density
      * @param gradient Fog gradient
      * @param color    Fog color
+     * @param blending Fog blending enabled
      */
-    public void setValues(float density, float gradient, Color color) {
+    public void setValues(float density, float gradient, Color color, boolean blending) {
         setUniform(areaLoc, density, gradient);
         setUniform(colorLoc, color);
+        setUniform(blendingLoc, blending);
     }
 }

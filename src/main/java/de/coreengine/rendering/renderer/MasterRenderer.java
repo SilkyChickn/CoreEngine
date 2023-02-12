@@ -254,8 +254,17 @@ public class MasterRenderer {
         }
 
         // Rendring skybox
-        if (skybox != null)
+        if (skybox != null) {
             SKYBOX_RENDERER.render(skybox, camera);
+
+            // Render skybox again into fbo
+            GBUFFER.unbind();
+            skybox.getSkyboxFbo().bind(GL30.GL_COLOR_ATTACHMENT0);
+            clear();
+            SKYBOX_RENDERER.render(skybox, camera);
+            skybox.getSkyboxFbo().unbind();
+            GBUFFER.bind(GL30.GL_COLOR_ATTACHMENT0);
+        }
 
         // Rendering terrains
         TERRAIN_RENDERER.render(TERRAINS, camera, CLIP_PLANE_RENDER_ALL);
@@ -627,5 +636,12 @@ public class MasterRenderer {
      */
     public static Camera getCamera() {
         return camera;
+    }
+
+    /**
+     * @return Current set skybox, or null when no skybox is set
+     */
+    public static Skybox getSkybox() {
+        return skybox;
     }
 }

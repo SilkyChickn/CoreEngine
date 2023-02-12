@@ -46,7 +46,7 @@ public class WaterShader extends Shader {
             normalMapUnit = 4;
 
     private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, addColorLoc, mulColorLoc, softEdgeDepthLoc, vpMatLoc,
-            camPosLoc;
+            camPosLoc, shininessLoc, shineDamperLoc;
 
     @Override
     protected void addShaders() {
@@ -78,6 +78,8 @@ public class WaterShader extends Shader {
         softEdgeDepthLoc = getUniformLocation("softEdgeDepth");
         vpMatLoc = getUniformLocation("vpMat");
         camPosLoc = getUniformLocation("camPos");
+        shininessLoc = getUniformLocation("shininess");
+        shineDamperLoc = getUniformLocation("shineDamper");
     }
 
     /**
@@ -111,5 +113,7 @@ public class WaterShader extends Shader {
                 water.getMultiplicativeColor().getBlue(),
                 water.getTransparency());
         setUniform(softEdgeDepthLoc, water.getSoftEdgeDepth());
+        setUniform(shininessLoc, water.getShininess());
+        setUniform(shineDamperLoc, water.getShineDamper());
     }
 }

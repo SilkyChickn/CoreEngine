@@ -42,6 +42,7 @@ import java.util.List;
 public class FogEffect extends PostProcessingEffect {
     private static final float DEFAULT_DENSITY = Configuration.getValuef("FOG_DEFAULT_DENSITY");
     private static final float DEFAULT_GRADIENT = Configuration.getValuef("FOG_DEFAULT_GRADIENT");
+    private static final float DEFAULT_BLENDING_ENABLED = Configuration.getValuei("FOG_DEFAULT_BLENDING_ENABLED");
 
     // Fogs density
     private float density = DEFAULT_DENSITY;
@@ -51,6 +52,9 @@ public class FogEffect extends PostProcessingEffect {
 
     // Fogs color
     private Color color = new Color();
+
+    // Fog blending enabled
+    private boolean blending = DEFAULT_BLENDING_ENABLED != 0;
 
     /**
      * Creating new fog effect
@@ -62,11 +66,12 @@ public class FogEffect extends PostProcessingEffect {
     @Override
     protected void setUniforms() {
         ((FogPPShader) shader).setStrengthTexture(MasterRenderer.getGBUFFER().getVariable1Buffer());
-        ((FogPPShader) shader).setValues(density, gradient, color);
+        ((FogPPShader) shader).setBlendingTexture(MasterRenderer.getSkybox().getSkyboxFbo().getColorAttachment0());
+        ((FogPPShader) shader).setValues(density, gradient, color, blending);
     }
 
     /**
-     * Setting fogs gradient. Fog visibility will be calculated by this formula:<br>
+     * Setting fogs density. Fog visibility will be calculated by this formula:<br>
      * f(x) = e^-(density * x)^gradient
      * 
      * @param density Fogs new density
@@ -76,7 +81,7 @@ public class FogEffect extends PostProcessingEffect {
     }
 
     /**
-     * Setting fogs density. Fog visibility will be calculated by this formula:<br>
+     * Setting fogs gradient. Fog visibility will be calculated by this formula:<br>
      * f(x) = e^-(density * x)^gradient
      * 
      * @param gradient Fogs new gradient
@@ -90,6 +95,36 @@ public class FogEffect extends PostProcessingEffect {
      */
     public Color getColor() {
         return color;
+    }
+
+    /**
+     * Getting fogs density. Fog visibility will be calculated by this formula:<br>
+     * f(x) = e^-(density * x)^gradient
+     * 
+     * @return Fogs density
+     */
+    public float getDensity() {
+        return density;
+    }
+
+    /**
+     * Getting fogs gradient. Fog visibility will be calculated by this formula:<br>
+     * f(x) = e^-(density * x)^gradient
+     * 
+     * @return Fogs gradient
+     */
+    public float getGradient() {
+        return gradient;
+    }
+
+    /**
+     * Enable or disable blending. When enabled the fog will blend into the
+     * background. For example skybox.
+     * 
+     * @param blending New blending status
+     */
+    public void setBlending(boolean blending) {
+        this.blending = blending;
     }
 
     @Override

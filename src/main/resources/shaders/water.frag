@@ -18,6 +18,8 @@ uniform vec4 multiplicativeColor;
 uniform vec3 additiveColor;
 uniform float softEdgeDepth;
 uniform float offset;
+uniform float shininess;
+uniform float shineDamper;
 
 const float near = 0.01f;
 const float far = 1000.0f;
@@ -54,15 +56,15 @@ void main(void){
     
     vec3 normToCameraVector = normalize(tcam_frag_in);
     float refractionFactor = dot(normToCameraVector, vec3(0, 1, 0));
-	refractionFactor = pow(refractionFactor, color.a);
+	refractionFactor = pow(refractionFactor, multiplicativeColor.a);
     
 	float alpha = clamp(waterDepth * softEdgeDepth, 0.0, 1.0);
 	
-	out_Color[0] = mix(reflectionColor, refractionColor, refractionFactor) * vec4(color.rgb, 1) + vec4(additiveColor, 0);
+	out_Color[0] = mix(reflectionColor, refractionColor, refractionFactor) * vec4(multiplicativeColor.rgb, 1) + vec4(additiveColor, 0);
     out_Color[0].a = alpha;
 	out_Color[1] = vec4(pos_frag_in, 1);
 	out_Color[2] = vec4(normal, 1);
-	out_Color[3] = vec4(0.25, 75, 1, 1);
+	out_Color[3] = vec4(shininess, shineDamper, 1, 1);
 	out_Color[4] = vec4(1, 1, 1, 1);
 	out_Color[5] = vec4(0, 0, 0, 1);
 	out_Color[6] = vec4(0, 0, 0, 1);

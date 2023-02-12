@@ -48,10 +48,8 @@ public class Configuration {
 
     /**
      * Initializing the configuration and (re)loading the config file
-     * 
-     * @param configFile Configfile in resources to load
      */
-    public static void loadConfig(String configFile) {
+    private static void reloadConfig() {
 
         // Creating config map
         config = new HashMap<>();
@@ -73,13 +71,6 @@ public class Configuration {
     }
 
     /**
-     * Initializing the configuration and (re)loading the config file
-     */
-    public static void loadConfig() {
-        loadConfig(CONFIG_FILE);
-    }
-
-    /**
      * Getting float value of setting Loggin an error and returning 1, if setting
      * not found
      * 
@@ -87,6 +78,11 @@ public class Configuration {
      * @return Setting as float
      */
     public static float getValuef(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
+            reloadConfig();
+        }
 
         // Check if config contains setting
         if (config.containsKey(id)) {
@@ -107,6 +103,11 @@ public class Configuration {
      */
     public static int getValuei(String id) {
 
+        // Check if config is loaded
+        if (config == null) {
+            reloadConfig();
+        }
+
         // Check if config contains setting
         if (config.containsKey(id)) {
             return Integer.parseInt((String) config.get(id));
@@ -126,6 +127,11 @@ public class Configuration {
      */
     public static String getValues(String id) {
 
+        // Check if config is loaded
+        if (config == null) {
+            reloadConfig();
+        }
+
         // Check if config contains setting
         if (config.containsKey(id)) {
             return (String) config.get(id);
@@ -144,6 +150,11 @@ public class Configuration {
      * @return Setting as float array
      */
     public static float[] getValuefa(String id) {
+
+        // Check if config is loaded
+        if (config == null) {
+            reloadConfig();
+        }
 
         // Check if config contains setting
         if (config.containsKey(id)) {
