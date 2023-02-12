@@ -41,7 +41,7 @@ The following code creates a simple game with an empty scene.
 If you run this code you shuold see a black 800 by 600 pixel sized window.
 
 ```java
-Game.init(800, 600, "My first CoreEngine Game", Window.Type.WINDOWED, null);
+Game.init(800, 600, "My first CoreEngine Game", Window.Type.WINDOWED, null, null);
 
 Scene scene = new Scene();
 Game.registerScene(scene);
