@@ -37,6 +37,11 @@ import de.coreengine.util.Pair;
 import javax.vecmath.Matrix4f;
 
 public class BoneParser {
+    private class Vertex extends Pair<Integer, Float> {
+        public Vertex(Integer key, Float value) {
+            super(key, value);
+        }
+    }
 
     // Input
     private final AIBone aiBone;
@@ -68,7 +73,7 @@ public class BoneParser {
 
         // Get effected vertices
         int vertexCount = aiBone.mNumWeights();
-        effectedVertices = new Pair[vertexCount];
+        effectedVertices = new Vertex[vertexCount];
         for (int i = 0; i < vertexCount; i++) {
             AIVertexWeight aiVertexWeight = aiBone.mWeights().get(i);
             effectedVertices[i] = new Pair<>(aiVertexWeight.mVertexId(), aiVertexWeight.mWeight());

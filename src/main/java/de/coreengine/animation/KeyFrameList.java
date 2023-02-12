@@ -77,7 +77,7 @@ public class KeyFrameList<Component> {
      * @return Pair of the previous as key and the next keyframe as value
      */
     Pair<KeyFrame<Component>, KeyFrame<Component>> getRelevantKeyFrames(float time) {
-        KeyFrame previous = null, next = null;
+        KeyFrame<Component> previous = null, next = null;
 
         if (keyFrames.size() == 0)
             return new Pair<>(null, null);
