@@ -38,7 +38,7 @@ For manual installation, you can download the jar files [here](https://repo.mave
 ### Simple Game
 
 The following code creates a simple game with an empty scene.
-If you run this code you shuold see a black 800 by 600 pixel sized window.
+If you run this code, you should see a black 800 by 600 pixel sized window.
 
 ```java
 Game.init(800, 600, "My first CoreEngine Game", Window.Type.WINDOWED, null, null);
