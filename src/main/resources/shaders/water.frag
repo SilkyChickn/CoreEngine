@@ -14,7 +14,8 @@ uniform sampler2D refractionTexture;
 uniform sampler2D depthTexture;
 
 uniform float waveStrength;
-uniform vec4 color;
+uniform vec4 multiplicativeColor;
+uniform vec3 additiveColor;
 uniform float softEdgeDepth;
 uniform float offset;
 
@@ -57,7 +58,7 @@ void main(void){
     
 	float alpha = clamp(waterDepth * softEdgeDepth, 0.0, 1.0);
 	
-	out_Color[0] = mix(reflectionColor, refractionColor, refractionFactor) * vec4(color.rgb, 1);
+	out_Color[0] = mix(reflectionColor, refractionColor, refractionFactor) * vec4(color.rgb, 1) + vec4(additiveColor, 0);
     out_Color[0].a = alpha;
 	out_Color[1] = vec4(pos_frag_in, 1);
 	out_Color[2] = vec4(normal, 1);

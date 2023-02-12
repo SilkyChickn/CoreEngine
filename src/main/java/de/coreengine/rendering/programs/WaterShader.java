@@ -45,7 +45,8 @@ public class WaterShader extends Shader {
     private final int dudvMapUnit = 0, reflectionTextureUnit = 1, refractionTextureUnit = 2, depthTexureUnit = 3,
             normalMapUnit = 4;
 
-    private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, colorLoc, softEdgeDepthLoc, vpMatLoc, camPosLoc;
+    private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, addColorLoc, mulColorLoc, softEdgeDepthLoc, vpMatLoc,
+            camPosLoc;
 
     @Override
     protected void addShaders() {
@@ -72,7 +73,8 @@ public class WaterShader extends Shader {
         tilingLoc = getUniformLocation("tiling");
         offsetLoc = getUniformLocation("offset");
         waveStrengthLoc = getUniformLocation("waveStrength");
-        colorLoc = getUniformLocation("color");
+        addColorLoc = getUniformLocation("additiveColor");
+        mulColorLoc = getUniformLocation("multiplicativeColor");
         softEdgeDepthLoc = getUniformLocation("softEdgeDepth");
         vpMatLoc = getUniformLocation("vpMat");
         camPosLoc = getUniformLocation("camPos");
@@ -104,7 +106,9 @@ public class WaterShader extends Shader {
         setUniform(tilingLoc, water.getTiling());
         setUniform(offsetLoc, water.getOffset());
         setUniform(waveStrengthLoc, water.getWaveStrength());
-        setUniform(colorLoc, water.getColor().getRed(), water.getColor().getGreen(), water.getColor().getBlue(),
+        setUniform(addColorLoc, water.getAdditiveColor());
+        setUniform(mulColorLoc, water.getMultiplicativeColor().getRed(), water.getMultiplicativeColor().getGreen(),
+                water.getMultiplicativeColor().getBlue(),
                 water.getTransparency());
         setUniform(softEdgeDepthLoc, water.getSoftEdgeDepth());
     }

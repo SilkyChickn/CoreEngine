@@ -189,6 +189,11 @@ public class MasterRenderer {
             TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane());
             ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
             ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
+
+            // Rendring skybox
+            if (skybox != null)
+                SKYBOX_RENDERER.render(skybox, camera);
+
             w.getReflectionFbo().unbind();
 
             w.getClipPlane().y = (-1);
@@ -203,6 +208,11 @@ public class MasterRenderer {
             TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane());
             ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
             ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
+
+            // Rendring skybox
+            if (skybox != null)
+                SKYBOX_RENDERER.render(skybox, camera);
+
             w.getRefractionFbo().unbind();
             w.getClipPlane().w = (clipDistance);
         });

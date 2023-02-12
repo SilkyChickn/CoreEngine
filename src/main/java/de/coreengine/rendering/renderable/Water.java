@@ -76,7 +76,8 @@ public class Water {
     private float softEdgeDepth = DEFAULT_SOFT_EDGE_DEPTH;
 
     // Color of the water
-    private final Color color = new Color();
+    private final Color multiplicativeColor = new Color();
+    private final Color additiveColor = new Color(0, 0, 0);
 
     // Water Quality (0 - 1)
     private float quality = DEFAULT_QUALITY;
@@ -89,9 +90,9 @@ public class Water {
      * Creating new water
      */
     public Water() {
-        color.setRed(DEFAULT_COLOR[0]);
-        color.setGreen(DEFAULT_COLOR[1]);
-        color.setBlue(DEFAULT_COLOR[2]);
+        multiplicativeColor.setRed(DEFAULT_COLOR[0]);
+        multiplicativeColor.setGreen(DEFAULT_COLOR[1]);
+        multiplicativeColor.setBlue(DEFAULT_COLOR[2]);
 
         recreateFbos();
         Window.addWindowListener((x, y, aspect) -> recreateFbos());
@@ -172,10 +173,19 @@ public class Water {
     }
 
     /**
-     * @return Color of the water
+     * @return Read/writeable multiplicative color part of the water.
+     *         (watercolor = multiplicativeColor * color + additiveColor)
      */
-    public Color getColor() {
-        return color;
+    public Color getMultiplicativeColor() {
+        return multiplicativeColor;
+    }
+
+    /**
+     * @return Read/writeable additive color part of the water.
+     *         (color(x) = multiplicativeColor * x + additiveColor)
+     */
+    public Color getAdditiveColor() {
+        return additiveColor;
     }
 
     /**
