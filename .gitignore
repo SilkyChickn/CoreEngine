@@ -2,6 +2,7 @@
 .vscode
 .settings
 src/test
+docs
 
 # Java stuff
 target

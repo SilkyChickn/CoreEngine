@@ -15,12 +15,11 @@ uniform vec3 color;
 
 uniform float blending;
 
-const float zNear = 0.01f;
-const float zFar  = 2000.0f;
+uniform vec2 cameraPlanes;
 
 float LinearizeDepth(){
     float depth = texture2D(depthTexture, tex_frag_in).r;
-    return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
+    return (2.0 * cameraPlanes.x) / (cameraPlanes.y + cameraPlanes.x - depth * (cameraPlanes.y - cameraPlanes.x));
 }
 
 void main(void){

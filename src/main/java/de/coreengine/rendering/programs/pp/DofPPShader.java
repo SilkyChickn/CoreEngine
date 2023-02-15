@@ -27,39 +27,40 @@
  */
 package de.coreengine.rendering.programs.pp;
 
-import de.coreengine.rendering.model.Color;
-import de.coreengine.rendering.renderer.MasterRenderer;
-
 import org.lwjgl.opengl.GL11;
 
+import de.coreengine.framework.Window;
+import de.coreengine.rendering.renderer.MasterRenderer;
+
 /**
- * Shader for fog effect
+ * Shader for dof effect
  *
  * @author Darius Dinger
  */
-public class FogPPShader extends PPShader {
+public class DofPPShader extends PPShader {
 
-    private final int strengthTextureUnit = 2, blendingTextureUnit = 3;
+    private final int strengthTextureUnit = 2;
 
-    private int areaLoc, colorLoc, blendingLoc, cameraPlanesLoc;
+    private int directionsLoc, qualityLoc, sizeLoc, resolutionLoc, cameraPlanesLoc, areaLoc;
 
     @Override
     protected String getPPFragShaderFile() {
-        return "fog.frag";
+        return "dof.frag";
     }
 
     @Override
     protected void setUniformLocations() {
-        areaLoc = getUniformLocation("area");
-        colorLoc = getUniformLocation("color");
-        blendingLoc = getUniformLocation("blending");
+        directionsLoc = getUniformLocation("directions");
+        qualityLoc = getUniformLocation("quality");
+        sizeLoc = getUniformLocation("size");
+        resolutionLoc = getUniformLocation("resolution");
         cameraPlanesLoc = getUniformLocation("cameraPlanes");
+        areaLoc = getUniformLocation("area");
         bindTextureUnit("strengthTexture", strengthTextureUnit);
-        bindTextureUnit("blendingTexture", blendingTextureUnit);
     }
 
     /**
-     * Setting strength texture, where the g value represent the strength of the fog
+     * Setting strength texture, where the g value represent the strength of the dof
      * at this point.
      * 
      * @param tex New strength texture
@@ -69,27 +70,27 @@ public class FogPPShader extends PPShader {
     }
 
     /**
-     * Setting blending texture, the fog will blend into this texture, when blending
-     * is enabled.
+     * Set dof area
      * 
-     * @param tex New blending texture
+     * @param density  Dof density
+     * @param gradient Dof gradient
      */
-    public void setBlendingTexture(int tex) {
-        bindTexture(tex, blendingTextureUnit, GL11.GL_TEXTURE_2D);
+    public void setArea(float density, float gradient) {
+        setUniform(areaLoc, density, gradient);
     }
 
     /**
-     * Setting values for the fog shader
+     * Prepare gaussian blur, by setting blur settings for next blur.
      * 
-     * @param density  Fog density
-     * @param gradient Fog gradient
-     * @param color    Fog color
-     * @param blending Fog blending enabled
+     * @param directions Directions to blur
+     * @param quality    Blur quality
+     * @param size       Blur size / radius
      */
-    public void setValues(float density, float gradient, Color color, boolean blending) {
-        setUniform(areaLoc, density, gradient);
-        setUniform(colorLoc, color);
-        setUniform(blendingLoc, blending);
+    public void prepareBlur(float directions, float quality, float size) {
+        setUniform(directionsLoc, directions);
+        setUniform(qualityLoc, quality);
+        setUniform(sizeLoc, size);
+        setUniform(resolutionLoc, Window.getWidth(), Window.getHeight());
         setUniform(cameraPlanesLoc, MasterRenderer.getCamera().getNearPlane(),
                 MasterRenderer.getCamera().getFarPlane());
     }
