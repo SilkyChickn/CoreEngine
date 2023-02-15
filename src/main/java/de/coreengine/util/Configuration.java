@@ -42,6 +42,7 @@ public class Configuration {
 
     // Configuration File location
     private static final String CONFIG_FILE = "res/config.ini";
+    private static final String CONFIG_OVERRIDE_FILE = "coreEngineConfig.ini";
 
     // Configurations loaded from config file
     private static HashMap<String, Object> config = null;
@@ -54,8 +55,22 @@ public class Configuration {
         // Creating config map
         config = new HashMap<>();
 
+        reloadConfig(CONFIG_FILE);
+
+        // Try to load config override, when exist
+        try {
+            reloadConfig(CONFIG_OVERRIDE_FILE);
+        } catch (NullPointerException e) {
+        }
+    }
+
+    /**
+     * Loading a config file
+     */
+    private static void reloadConfig(String file) {
+
         // Load config file and split into lines
-        String[] configLines = FileLoader.getResource(CONFIG_FILE, false);
+        String[] configLines = FileLoader.getResource(file, false);
 
         // Iterate lines
         for (String line : configLines) {
