@@ -401,7 +401,7 @@ public class Water {
      * the water. This
      * will have effect on the performance.
      * 
-     * @param reflectionEnabled Should refraction be enabled
+     * @param refractionEnabled Should refraction be enabled
      */
     public void setRefractionEnabled(boolean refractionEnabled) {
         this.refractionEnabled = refractionEnabled;

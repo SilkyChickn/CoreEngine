@@ -187,6 +187,7 @@ public class MasterRenderer {
 
                 w.getReflectionFbo().bind(GL30.GL_COLOR_ATTACHMENT0);
                 clear();
+
                 TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane());
                 ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
                 ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
@@ -196,18 +197,21 @@ public class MasterRenderer {
                     SKYBOX_RENDERER.render(skybox, camera);
 
                 w.getReflectionFbo().unbind();
+
+                // Reset camera
+                camera.setY(camera.getPosition().y + camMoveDistance);
+                camera.setPitch(-camera.getPitch());
+                camera.recalcViewMatrix();
+                camera.recalcViewProjectionMatrix();
             }
 
             if (w.isRefractionEnabled()) {
                 w.getClipPlane().y = (-1);
                 w.getClipPlane().w = (clipDistance + 0.15f);
-                camera.setY(camera.getPosition().y + camMoveDistance);
-                camera.setPitch(-camera.getPitch());
-                camera.recalcViewMatrix();
-                camera.recalcViewProjectionMatrix();
 
                 w.getRefractionFbo().bind(GL30.GL_COLOR_ATTACHMENT0);
                 clear();
+
                 TERRAIN_RENDERER.render(TERRAINS, camera, w.getClipPlane());
                 ENTITY_RENDERER.render(ENTITIES, camera, w.getClipPlane());
                 ANIMATED_ENTITY_RENDERER.render(ANIMATED_ENTITIES, camera, w.getClipPlane());
