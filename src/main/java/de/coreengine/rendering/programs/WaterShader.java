@@ -46,7 +46,7 @@ public class WaterShader extends Shader {
             normalMapUnit = 4;
 
     private int mMatLoc, tilingLoc, offsetLoc, waveStrengthLoc, addColorLoc, mulColorLoc, softEdgeDepthLoc, vpMatLoc,
-            camPosLoc, shininessLoc, shineDamperLoc;
+            camPosLoc, shininessLoc, shineDamperLoc, reflectionEnabledLoc, refractionEnabledLoc;
 
     @Override
     protected void addShaders() {
@@ -80,6 +80,8 @@ public class WaterShader extends Shader {
         camPosLoc = getUniformLocation("camPos");
         shininessLoc = getUniformLocation("shininess");
         shineDamperLoc = getUniformLocation("shineDamper");
+        refractionEnabledLoc = getUniformLocation("refractionEnabled");
+        reflectionEnabledLoc = getUniformLocation("reflectionEnabled");
     }
 
     /**
@@ -115,5 +117,7 @@ public class WaterShader extends Shader {
         setUniform(softEdgeDepthLoc, water.getSoftEdgeDepth());
         setUniform(shininessLoc, water.getShininess());
         setUniform(shineDamperLoc, water.getShineDamper());
+        setUniform(reflectionEnabledLoc, water.isReflectionEnabled());
+        setUniform(refractionEnabledLoc, water.isRefractionEnabled());
     }
 }

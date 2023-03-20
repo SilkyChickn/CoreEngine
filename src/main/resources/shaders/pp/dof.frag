@@ -36,7 +36,7 @@ vec4 blurPixel(vec4 clearPixel){
     }
     
     // Output to screen
-    color /= quality * directions - 15.0;
+    color /= quality * directions +1;
     return color;
 }
 

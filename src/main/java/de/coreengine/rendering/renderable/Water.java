@@ -94,6 +94,10 @@ public class Water {
     private FrameBufferObject reflectionFbo;
     private FrameBufferObject refractionFbo;
 
+    // Enable disable reflection or refraction
+    private boolean reflectionEnabled = true;
+    private boolean refractionEnabled = true;
+
     /**
      * Creating new water
      */
@@ -380,5 +384,40 @@ public class Water {
      */
     public void setShininess(float shininess) {
         this.shininess = shininess;
+    }
+
+    /**
+     * Enable or disable reflection. So the water will reflect the environment. This
+     * will have effect on the performance.
+     * 
+     * @param reflectionEnabled Should reflection be enabled
+     */
+    public void setReflectionEnabled(boolean reflectionEnabled) {
+        this.reflectionEnabled = reflectionEnabled;
+    }
+
+    /**
+     * Enable or disable refraction. So the water will refract theenvironment under
+     * the water. This
+     * will have effect on the performance.
+     * 
+     * @param reflectionEnabled Should refraction be enabled
+     */
+    public void setRefractionEnabled(boolean refractionEnabled) {
+        this.refractionEnabled = refractionEnabled;
+    }
+
+    /**
+     * @return Is reflection of the water enabled
+     */
+    public boolean isReflectionEnabled() {
+        return reflectionEnabled;
+    }
+
+    /**
+     * @return Is refraction of the water enabled
+     */
+    public boolean isRefractionEnabled() {
+        return refractionEnabled;
     }
 }
