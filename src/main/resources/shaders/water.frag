@@ -66,7 +66,7 @@ void main(void){
     }
     
     vec4 mixedColor;
-    if(reflectionEnabled == 1.0 && reflectionEnabled == 1.0){
+    if(reflectionEnabled == 1.0 && refractionEnabled == 1.0){
         vec3 normToCameraVector = normalize(tcam_frag_in);
         float refractionFactor = dot(normToCameraVector, vec3(0, 1, 0));
         refractionFactor = pow(refractionFactor, multiplicativeColor.a);
