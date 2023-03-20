@@ -64,12 +64,22 @@ void main(void){
 
         reflectionColor = texture(reflectionTexture, reflectTexCoords);
     }
-	
-    vec3 normToCameraVector = normalize(tcam_frag_in);
-    float refractionFactor = dot(normToCameraVector, vec3(0, 1, 0));
-	refractionFactor = pow(refractionFactor, multiplicativeColor.a);
     
-	out_Color[0] = mix(reflectionColor, refractionColor, refractionFactor) * vec4(multiplicativeColor.rgb, 1) + vec4(additiveColor, 0);
+    vec4 mixedColor;
+    if(reflectionEnabled == 1.0 && reflectionEnabled == 1.0){
+        vec3 normToCameraVector = normalize(tcam_frag_in);
+        float refractionFactor = dot(normToCameraVector, vec3(0, 1, 0));
+        refractionFactor = pow(refractionFactor, multiplicativeColor.a);
+        mixedColor = mix(reflectionColor, refractionColor, refractionFactor);
+    }else if(reflectionEnabled == 1.0){
+        mixedColor = reflectionColor;
+    }else if(refractionEnabled == 1.0){
+        mixedColor = refractionColor;
+    }else{
+        mixedColor = vec4(1.0);
+    }
+    
+	out_Color[0] = mixedColor * vec4(multiplicativeColor.rgb, 1) + vec4(additiveColor, 0);
     out_Color[0].a = alpha;
 	out_Color[1] = vec4(pos_frag_in, 1);
 	out_Color[2] = vec4(normal, 1);
