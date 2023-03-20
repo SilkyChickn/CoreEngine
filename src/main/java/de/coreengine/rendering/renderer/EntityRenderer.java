@@ -80,8 +80,14 @@ public class EntityRenderer {
                 if (entity.isRotateWithCam())
                     shader.setCamera(cam, true);
 
+                if (!entity.isCullFaces())
+                    GL11.glDisable(GL11.GL_CULL_FACE);
+
                 // Render entity
                 GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+
+                if (!entity.isCullFaces())
+                    GL11.glEnable(GL11.GL_CULL_FACE);
 
                 // Undo cam rotation, when entity rot with cam
                 if (entity.isRotateWithCam())

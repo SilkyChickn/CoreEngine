@@ -51,6 +51,9 @@ public class Entity {
     // Color for the mouse picking
     private final Color pickColor;
 
+    // Is backface ulling enabledfor this entity
+    private boolean cullFaces = true;
+
     public Entity() {
         pickColor = Toolbox.generateRandomColor();
     }
@@ -108,5 +111,19 @@ public class Entity {
      */
     public boolean isMouseOver() {
         return pickColor.compare(MasterRenderer.getPickedColor());
+    }
+
+    /**
+     * @return Is backface culling enabled
+     */
+    public boolean isCullFaces() {
+        return cullFaces;
+    }
+
+    /**
+     * @param cullFaces Should backface culling be enabled
+     */
+    public void setCullFaces(boolean cullFaces) {
+        this.cullFaces = cullFaces;
     }
 }
