@@ -34,6 +34,7 @@ import de.coreengine.framework.Window;
 import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Mesh;
+import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.renderable.*;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.light.*;
@@ -92,7 +93,7 @@ public class MasterRenderer {
     private static ShadowLight shadowLight = null;
 
     // Lists/maps that contains the stuff to render in the next frame
-    private static final HashMap<Mesh, List<Entity>> ENTITIES = new HashMap<>();
+    private static final HashMap<EntityShader, HashMap<Mesh, List<Entity>>> ENTITIES = new HashMap<>();
     private static final HashMap<Mesh, List<AnimatedEntity>> ANIMATED_ENTITIES = new HashMap<>();
     private static final HashMap<String, List<Particle>> PARTICLES = new HashMap<>();
     private static final List<Terrain> TERRAINS = new LinkedList<>();
@@ -529,11 +530,13 @@ public class MasterRenderer {
      * @param entity Entity to add
      */
     public static void renderEntity(Entity entity) {
+        HashMap<Mesh, List<Entity>> shaderBatch = ENTITIES.computeIfAbsent(entity.getShader(), k -> new HashMap<>());
+
         for (Mesh mesh : AssetDatabase.getModel(entity.getModel()).getMeshes()) {
 
             // Get batch for this mesh, if null -> create, then add entity to batch
-            List<Entity> batch = ENTITIES.computeIfAbsent(mesh, k -> new ArrayList<>());
-            batch.add(entity);
+            List<Entity> meshBatch = shaderBatch.computeIfAbsent(mesh, k -> new ArrayList<>());
+            meshBatch.add(entity);
         }
     }
 

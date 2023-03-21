@@ -45,7 +45,7 @@ public abstract class Shader {
     /**
      * Default location of the glsl shader files
      */
-    public static final String SHADERS_LOCATION = "shaders/";
+    public static final String SHADERS_LOCATION = "res/shaders/";
 
     // Id of the shader program
     private final int program;

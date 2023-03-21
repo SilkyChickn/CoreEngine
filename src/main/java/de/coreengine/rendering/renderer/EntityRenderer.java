@@ -31,6 +31,7 @@ import de.coreengine.rendering.model.Mesh;
 import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
+
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector4f;
@@ -44,7 +45,7 @@ import java.util.List;
  */
 public class EntityRenderer {
 
-    private EntityShader shader = new EntityShader();
+    private EntityShader defaultShader = new EntityShader();
 
     /**
      * Renders a list of entities into the bound framebuffer
@@ -53,54 +54,58 @@ public class EntityRenderer {
      * @param cam       Camera to render from
      * @param clipPlane Clip plane of the entities
      */
-    void render(HashMap<Mesh, List<Entity>> entities, Camera cam, Vector4f clipPlane) {
+    void render(HashMap<EntityShader, HashMap<Mesh, List<Entity>>> entities, Camera cam, Vector4f clipPlane) {
+        for (EntityShader currenShader : entities.keySet()) {
+            EntityShader shader = currenShader == null ? defaultShader : currenShader;
+            HashMap<Mesh, List<Entity>> entityBatch = entities.get(currenShader);
 
-        // Setup shader
-        shader.start();
-        shader.setCamera(cam, false);
-        shader.setClipPlane(clipPlane.x, clipPlane.y, clipPlane.z, clipPlane.w);
+            // Setup shader
+            shader.start();
+            shader.setCamera(cam, false);
+            shader.setClipPlane(clipPlane.x, clipPlane.y, clipPlane.z, clipPlane.w);
 
-        for (Mesh mesh : entities.keySet()) {
+            for (Mesh mesh : entityBatch.keySet()) {
 
-            // Bind mesh data
-            mesh.getVao().bind();
-            mesh.getVao().enableAttributes();
-            mesh.getIndexBuffer().bind();
+                // Bind mesh data
+                mesh.getVao().bind();
+                mesh.getVao().enableAttributes();
+                mesh.getIndexBuffer().bind();
 
-            // Load material into shader
-            shader.prepareMaterial(mesh.getMaterial());
+                // Load material into shader
+                shader.prepareMaterial(mesh.getMaterial());
 
-            // Iterate instanced entities
-            for (Entity entity : entities.get(mesh)) {
+                // Iterate instanced entities
+                for (Entity entity : entityBatch.get(mesh)) {
 
-                // Prepare entity
-                shader.prepareEntity(entity);
+                    // Prepare entity
+                    shader.prepareEntity(entity);
 
-                // Should entity rot with cam
-                if (entity.isRotateWithCam())
-                    shader.setCamera(cam, true);
+                    // Should entity rot with cam
+                    if (entity.isRotateWithCam())
+                        shader.setCamera(cam, true);
 
-                if (!entity.isCullFaces())
-                    GL11.glDisable(GL11.GL_CULL_FACE);
+                    if (!entity.isCullFaces())
+                        GL11.glDisable(GL11.GL_CULL_FACE);
 
-                // Render entity
-                GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+                    // Render entity
+                    GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
 
-                if (!entity.isCullFaces())
-                    GL11.glEnable(GL11.GL_CULL_FACE);
+                    if (!entity.isCullFaces())
+                        GL11.glEnable(GL11.GL_CULL_FACE);
 
-                // Undo cam rotation, when entity rot with cam
-                if (entity.isRotateWithCam())
-                    shader.setCamera(cam, false);
+                    // Undo cam rotation, when entity rot with cam
+                    if (entity.isRotateWithCam())
+                        shader.setCamera(cam, false);
+                }
+
+                // Unbind mesh data
+                mesh.getIndexBuffer().unbind();
+                mesh.getVao().disableAttributes();
+                mesh.getVao().unbind();
             }
 
-            // Unbind mesh data
-            mesh.getIndexBuffer().unbind();
-            mesh.getVao().disableAttributes();
-            mesh.getVao().unbind();
+            // Stop shader
+            shader.stop();
         }
-
-        // Stop shader
-        shader.stop();
     }
 }

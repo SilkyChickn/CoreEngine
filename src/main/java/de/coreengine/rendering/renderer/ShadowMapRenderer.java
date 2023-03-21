@@ -29,6 +29,7 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
+import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.programs.ShadowMapShader;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.renderable.gui.GUIPane;
@@ -51,39 +52,45 @@ public class ShadowMapRenderer {
      * @param guis        3 Dimensional GUIs to render
      * @param shadowLight Shadow Light to render from
      */
-    void render(HashMap<Mesh, List<Entity>> entities, List<GUIPane> guis, ShadowLight shadowLight) {
+    void render(HashMap<EntityShader, HashMap<Mesh, List<Entity>>> entities, List<GUIPane> guis,
+            ShadowLight shadowLight) {
         GL11.glCullFace(GL11.GL_FRONT);
         shadowLight.getShadowMap().bind(GL30.GL_COLOR_ATTACHMENT0);
         GL11.glClearColor(0, 0, 0, 1);
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
-        shader.start();
-        shader.setVPMat(shadowLight.getVpMat());
+        for (EntityShader currenShader : entities.keySet()) {
+            HashMap<Mesh, List<Entity>> entityBatch = entities.get(currenShader);
 
-        for (Mesh mesh : entities.keySet()) {
+            shader.start();
+            shader.setVPMat(shadowLight.getVpMat());
 
-            // Bind mesh data
-            mesh.getVao().bind();
-            mesh.getVao().enableAttributes();
-            mesh.getIndexBuffer().bind();
+            for (Mesh mesh : entityBatch.keySet()) {
 
-            // Iterate instanced entities
-            for (Entity entity : entities.get(mesh)) {
+                // Bind mesh data
+                mesh.getVao().bind();
+                mesh.getVao().enableAttributes();
+                mesh.getIndexBuffer().bind();
 
-                // Prepare entity
-                shader.prepareEntity(entity);
+                // Iterate instanced entities
+                for (Entity entity : entityBatch.get(mesh)) {
 
-                // Render entity
-                GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+                    // Prepare entity
+                    shader.prepareEntity(entity);
+
+                    // Render entity
+                    GL11.glDrawElements(GL11.GL_TRIANGLES, mesh.getIndexBuffer().getSize(), GL11.GL_UNSIGNED_INT, 0);
+                }
+
+                // Unbind mesh data
+                mesh.getIndexBuffer().unbind();
+                mesh.getVao().disableAttributes();
+                mesh.getVao().unbind();
             }
 
-            // Unbind mesh data
-            mesh.getIndexBuffer().unbind();
-            mesh.getVao().disableAttributes();
-            mesh.getVao().unbind();
+            shader.stop();
         }
 
-        shader.stop();
         shadowLight.getShadowMap().unbind();
         GL11.glCullFace(GL11.GL_BACK);
     }
