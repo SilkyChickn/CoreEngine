@@ -53,10 +53,10 @@ public class EntityShaderAdvanced extends EntityShader {
     protected void addShaders() {
         addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/entityAdvanced.vert", true),
                 GL20.GL_VERTEX_SHADER,
-                "Entity Vertex Shader");
+                "Advanced Entity Vertex Shader");
         addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/entityAdvanced.frag", true),
                 GL20.GL_FRAGMENT_SHADER,
-                "Entity Fragment Shader");
+                "Advanced Entity Fragment Shader");
     }
 
     @Override
