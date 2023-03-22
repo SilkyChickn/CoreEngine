@@ -29,7 +29,8 @@ package de.coreengine.rendering.renderable;
 
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Transformation;
-import de.coreengine.rendering.programs.EntityShader;
+import de.coreengine.rendering.programs.entity.EntityShader;
+import de.coreengine.rendering.renderer.EntityRenderer;
 import de.coreengine.rendering.renderer.MasterRenderer;
 import de.coreengine.util.Toolbox;
 
@@ -55,8 +56,8 @@ public class Entity {
     // Is backface ulling enabledfor this entity
     private boolean cullFaces = true;
 
-    // When not null, this shader will be used to render the entity
-    private EntityShader shader = null;
+    // Shader to use when render the entity
+    private EntityShader shader = EntityRenderer.DEFAULT_SHADER;
 
     public Entity() {
         pickColor = Toolbox.generateRandomColor();
@@ -132,19 +133,14 @@ public class Entity {
     }
 
     /**
-     * Set shader for rendering the entity or null to use the default entity shader.
-     * 
-     * @param shader Shader or null
+     * @param shader Shader for rendering the entity.
      */
     public void setShader(EntityShader shader) {
         this.shader = shader;
     }
 
     /**
-     * Get current shader to render this entity, returns null when using the default
-     * entity shader.
-     * 
-     * @return Shader or null
+     * @return Shader to render this entity.
      */
     public EntityShader getShader() {
         return shader;

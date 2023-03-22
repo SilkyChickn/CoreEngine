@@ -31,7 +31,7 @@ package de.coreengine.rendering.renderer;
 import de.coreengine.animation.Joint;
 import de.coreengine.framework.Keyboard;
 import de.coreengine.rendering.model.Mesh;
-import de.coreengine.rendering.programs.AnimatedEntityShader;
+import de.coreengine.rendering.programs.entity.AnimatedEntityShader;
 import de.coreengine.rendering.renderable.AnimatedEntity;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.util.Toolbox;

@@ -34,7 +34,7 @@ import de.coreengine.framework.Window;
 import de.coreengine.rendering.GBuffer;
 import de.coreengine.rendering.model.Color;
 import de.coreengine.rendering.model.Mesh;
-import de.coreengine.rendering.programs.EntityShader;
+import de.coreengine.rendering.programs.entity.EntityShader;
 import de.coreengine.rendering.renderable.*;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.light.*;

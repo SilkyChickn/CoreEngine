@@ -28,7 +28,8 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
-import de.coreengine.rendering.programs.EntityShader;
+import de.coreengine.rendering.programs.entity.EntityShader;
+import de.coreengine.rendering.programs.entity.EntityShaderAdvanced;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
 
@@ -44,8 +45,8 @@ import java.util.List;
  * @author Darius Dinger
  */
 public class EntityRenderer {
-
-    private EntityShader defaultShader = new EntityShader();
+    public static final EntityShader ADVANCED_SHADER = new EntityShaderAdvanced();
+    public static final EntityShader DEFAULT_SHADER = new EntityShader();
 
     /**
      * Renders a list of entities into the bound framebuffer
@@ -55,9 +56,8 @@ public class EntityRenderer {
      * @param clipPlane Clip plane of the entities
      */
     void render(HashMap<EntityShader, HashMap<Mesh, List<Entity>>> entities, Camera cam, Vector4f clipPlane) {
-        for (EntityShader currenShader : entities.keySet()) {
-            EntityShader shader = currenShader == null ? defaultShader : currenShader;
-            HashMap<Mesh, List<Entity>> entityBatch = entities.get(currenShader);
+        for (EntityShader shader : entities.keySet()) {
+            HashMap<Mesh, List<Entity>> entityBatch = entities.get(shader);
 
             // Setup shader
             shader.start();

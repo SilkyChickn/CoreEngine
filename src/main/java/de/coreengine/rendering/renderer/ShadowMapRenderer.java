@@ -29,8 +29,8 @@
 package de.coreengine.rendering.renderer;
 
 import de.coreengine.rendering.model.Mesh;
-import de.coreengine.rendering.programs.EntityShader;
 import de.coreengine.rendering.programs.ShadowMapShader;
+import de.coreengine.rendering.programs.entity.EntityShader;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.rendering.renderable.gui.GUIPane;
 import de.coreengine.rendering.renderable.light.ShadowLight;

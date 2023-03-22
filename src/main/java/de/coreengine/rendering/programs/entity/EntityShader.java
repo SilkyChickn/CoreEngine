@@ -25,11 +25,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package de.coreengine.rendering.programs;
+package de.coreengine.rendering.programs.entity;
 
 import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.programs.Shader;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.rendering.renderable.Entity;
 import de.coreengine.util.Toolbox;
@@ -38,22 +39,24 @@ import org.lwjgl.opengl.GL20;
 
 /**
  * Shader for the object renderer
+ * 
+ * Default simple entity shader. Supports diffuse map and diffusecolor, tiling,
+ * reflectivity and shine damping, picking and simple glow color.
  *
  * @author Darius Dinger
  */
 public class EntityShader extends Shader {
 
-    private final int diffuseMapUnit = 0, normalMapUnit = 1, specularMapUnit = 2, displacementMapUnit = 3,
-            aoMapUnit = 4, glowMapUnit = 5;
+    protected int diffuseMapUnit = 0;
 
-    private int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, displacementFactorLoc, reflectivityLoc, shineDamperLoc,
-            diffuseColorLoc, pickingColorLoc, glowColorLoc, clipPlaneLoc;
+    protected int vpMatLoc, transMatLoc, tilingLoc, camPosLoc, reflectivityLoc, shineDamperLoc,
+            diffuseColorLoc, pickingColorLoc, clipPlaneLoc, glowColorLoc;
 
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.vert", true), GL20.GL_VERTEX_SHADER,
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/entity.vert", true), GL20.GL_VERTEX_SHADER,
                 "Entity Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity.frag", true), GL20.GL_FRAGMENT_SHADER,
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/entity.frag", true), GL20.GL_FRAGMENT_SHADER,
                 "Entity Fragment Shader");
     }
 
@@ -62,7 +65,6 @@ public class EntityShader extends Shader {
         bindAttribute(0, "position");
         bindAttribute(1, "texCoord");
         bindAttribute(2, "normal");
-        bindAttribute(3, "tangent");
     }
 
     @Override
@@ -71,20 +73,14 @@ public class EntityShader extends Shader {
         transMatLoc = getUniformLocation("transMat");
         tilingLoc = getUniformLocation("tiling");
         camPosLoc = getUniformLocation("camPos");
-        displacementFactorLoc = getUniformLocation("displacementFactor");
         reflectivityLoc = getUniformLocation("shininess");
         shineDamperLoc = getUniformLocation("shineDamper");
         diffuseColorLoc = getUniformLocation("diffuseColor");
         pickingColorLoc = getUniformLocation("pickingColor");
-        glowColorLoc = getUniformLocation("glowColor");
         clipPlaneLoc = getUniformLocation("clipPlane");
+        glowColorLoc = getUniformLocation("glowColor");
 
         bindTextureUnit("diffuseMap", diffuseMapUnit);
-        bindTextureUnit("normalMap", normalMapUnit);
-        bindTextureUnit("specularMap", specularMapUnit);
-        bindTextureUnit("displacementMap", displacementMapUnit);
-        bindTextureUnit("aoMap", aoMapUnit);
-        bindTextureUnit("glowMap", glowMapUnit);
     }
 
     /**
@@ -124,16 +120,10 @@ public class EntityShader extends Shader {
     public void prepareMaterial(Material mat) {
         setUniform(tilingLoc, mat.tiling);
         setUniform(diffuseColorLoc, mat.diffuseColor);
-        setUniform(displacementFactorLoc, mat.displacementFactor);
         setUniform(reflectivityLoc, mat.shininess);
         setUniform(shineDamperLoc, mat.shineDamping);
         setUniform(glowColorLoc, mat.glowColor);
 
         bindTexture(AssetDatabase.getTexture(mat.diffuseMap), diffuseMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(mat.normalMap), normalMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(mat.specularMap), specularMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(mat.ambientOcclusionMap), aoMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(mat.displacementMap), displacementMapUnit, GL11.GL_TEXTURE_2D);
-        bindTexture(AssetDatabase.getTexture(mat.glowMap), glowMapUnit, GL11.GL_TEXTURE_2D);
     }
 }

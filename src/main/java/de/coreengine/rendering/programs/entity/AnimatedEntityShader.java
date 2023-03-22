@@ -26,12 +26,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package de.coreengine.rendering.programs;
+package de.coreengine.rendering.programs.entity;
 
 import de.coreengine.animation.Joint;
 import de.coreengine.asset.AssetDatabase;
 import de.coreengine.asset.FileLoader;
 import de.coreengine.rendering.model.Material;
+import de.coreengine.rendering.programs.Shader;
 import de.coreengine.rendering.renderable.AnimatedEntity;
 import de.coreengine.rendering.renderable.Camera;
 import de.coreengine.util.Toolbox;
@@ -54,9 +55,10 @@ public class AnimatedEntityShader extends Shader {
 
     @Override
     protected void addShaders() {
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "animatedEntity.vert", true), GL20.GL_VERTEX_SHADER,
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/animatedEntity.vert", true),
+                GL20.GL_VERTEX_SHADER,
                 "AnimatedEntity Vertex Shader");
-        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "animatedEntity.frag", true),
+        addShader(FileLoader.getResource(Shader.SHADERS_LOCATION + "entity/animatedEntity.frag", true),
                 GL20.GL_FRAGMENT_SHADER, "AnimatedEntity Fragment Shader");
     }
 
