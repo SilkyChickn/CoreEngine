@@ -37,7 +37,7 @@ void main(void){
 	
 	out_Color[0] = getDiffuseColor(texCoords);
 	out_Color[1] = pos_frag_in;
-	out_Color[2] = vec4(nrm_frag_in, 0.0);
+	out_Color[2] = vec4(nrm_frag_in, 1.0);
 	out_Color[3] = vec4(shininess, shineDamper, 0, 1);
 	out_Color[4] = vec4(1.0, 1.0, 1.0, 1.0);
 	out_Color[5] = vec4(pickingColor, 1.0);

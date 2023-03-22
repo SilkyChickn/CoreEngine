@@ -20,7 +20,7 @@ void main(void){
 	pos_frag_in = transMat * vec4(position, 1.0);
 	
 	nrm_frag_in = normalize((transMat * vec4(normal, 0.0)).xyz);
-	 
+	
 	gl_ClipDistance[0] = dot(pos_frag_in, clipPlane);
 	gl_Position = vpMat * pos_frag_in;
 }
